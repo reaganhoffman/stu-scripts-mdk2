@@ -1,4 +1,5 @@
-﻿using Sandbox.Game.Entities.Cube;
+﻿//#mixin
+using Sandbox.Game.Entities.Cube;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;

@@ -29,4 +29,45 @@
       <AdditionalFiles Include="Instructions.readme" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="..\..\Shared Projects\Airlock Control Module\AirlockControlModule.cs" Link="Mixins\ACM\AirlockControlModule.cs" />
+      <Compile Include="..\..\Shared Projects\Airlock Control Module\AirlockStateMachine.cs" Link="Mixins\ACM\AirlockStateMachine.cs" />
+      <Compile Include="..\..\Shared Projects\Airlock Control Module\SoloAirlockStateMachine.cs" Link="Mixins\ACM\SoloAirlockStateMachine.cs" />
+      <Compile Include="..\..\Shared Projects\Displays\STU Display Draw Mapper\STUDisplayDrawMapper.cs" Link="Mixins\Displays\STUDisplayDrawMapper.cs" />
+      <Compile Include="..\..\Shared Projects\Displays\STU Display Type\STUDisplayType.cs" Link="Mixins\Displays\STUDisplayType.cs" />
+      <Compile Include="..\..\Shared Projects\Displays\STU Display\STUDisplay.cs" Link="Mixins\Displays\STUDisplay.cs" />
+      <Compile Include="..\..\Shared Projects\Displays\STU Image\STUImage.cs" Link="Mixins\Displays\STUImage.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\GotoAndKeepGoing.cs" Link="Mixins\FC\GotoAndKeepGoing.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\GotoAndStop.cs" Link="Mixins\FC\GotoAndStop.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\HardStop.cs" Link="Mixins\FC\HardStop.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\NavigateOverPlanetSurface.cs" Link="Mixins\FC\NavigateOverPlanetSurface.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\PointAtTarget.cs" Link="Mixins\FC\PointAtTarget.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\SmallBuggyCockpit.cs" Link="Mixins\FC\SmallBuggyCockpit.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\StandardOutput.cs" Link="Mixins\FC\StandardOutput.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUAltitudeController.cs" Link="Mixins\FC\STUAltitudeController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUFlightController.cs" Link="Mixins\FC\STUFlightController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUInterceptCalculator.cs" Link="Mixins\FC\STUInterceptCalculator.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUOrientationController.cs" Link="Mixins\FC\STUOrientationController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUPlanetOrbitController.cs" Link="Mixins\FC\STUPlanetOrbitController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUPointOrbitController.cs" Link="Mixins\FC\STUPointOrbitController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUTransformationUtils.cs" Link="Mixins\FC\STUTransformationUtils.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Flight Controller\STUVelocityController.cs" Link="Mixins\FC\STUVelocityController.cs" />
+      <Compile Include="..\..\Shared Projects\Flight\STU Galactic Map\STUGalacticMap.cs" Link="Mixins\Galactic Map\STUGalacticMap.cs" />
+      <Compile Include="..\..\Shared Projects\Misc\CBT Variables\CBTVariables.cs" Link="Mixins\CBTVariables.cs" />
+      <Compile Include="..\..\Shared Projects\Misc\STU Damage Monitor\STUDamageMonitor.cs" Link="Mixins\STUDamageMonitor.cs" />
+      <Compile Include="..\..\Shared Projects\Misc\STU Inventory Enumerator\STUInventoryEnumerator.cs" Link="Mixins\STUInventoryEnumerator.cs" />
+      <Compile Include="..\..\Shared Projects\Misc\STU State Machine\STUStateMachine.cs" Link="Mixins\STUStateMachine.cs" />
+      <Compile Include="..\..\Shared Projects\STU Log\StuLog.cs" Link="Mixins\STU Log\StuLog.cs" />
+      <Compile Include="..\..\Shared Projects\STU Master Log Broadcaster\STUMasterLogBroadcaster.cs" Link="Mixins\STU Log\STUMasterLogBroadcaster.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Mixins\ACM\" />
+      <Folder Include="Mixins\Displays\" />
+      <Folder Include="Mixins\FC\" />
+      <Folder Include="Mixins\Galactic Map\" />
+      <Folder Include="Mixins\" />
+      <Folder Include="Mixins\STU Log\" />
+    </ItemGroup>
+
 </Project>
