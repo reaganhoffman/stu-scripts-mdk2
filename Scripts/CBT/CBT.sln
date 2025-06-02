@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178
+VisualStudioVersion = 17.13.35919.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU CBT 2", "STU CBT 2.csproj", "{4C64963D-ED60-420E-9CD1-F77C96E85147}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBT", "CBT.csproj", "{EB8D51C2-F852-41D9-AA36-C99D03978DE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4C64963D-ED60-420E-9CD1-F77C96E85147}.Debug|x64.ActiveCfg = Debug|x64
-		{4C64963D-ED60-420E-9CD1-F77C96E85147}.Debug|x64.Build.0 = Debug|x64
-		{4C64963D-ED60-420E-9CD1-F77C96E85147}.Release|x64.ActiveCfg = Release|x64
-		{4C64963D-ED60-420E-9CD1-F77C96E85147}.Release|x64.Build.0 = Release|x64
+		{EB8D51C2-F852-41D9-AA36-C99D03978DE1}.Debug|x64.ActiveCfg = Debug|x64
+		{EB8D51C2-F852-41D9-AA36-C99D03978DE1}.Debug|x64.Build.0 = Debug|x64
+		{EB8D51C2-F852-41D9-AA36-C99D03978DE1}.Release|x64.ActiveCfg = Release|x64
+		{EB8D51C2-F852-41D9-AA36-C99D03978DE1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {93037728-6CFA-4E40-8A0F-1D4F3883BF65}
+		SolutionGuid = {654E6F6C-336F-469B-A4F3-8669DB2EBFD6}
 	EndGlobalSection
 EndGlobal
