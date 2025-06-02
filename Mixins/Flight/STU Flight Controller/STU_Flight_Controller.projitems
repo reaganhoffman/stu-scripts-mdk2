@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>61eba249-19f3-48b6-a25b-a4cee90168ba</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>IngameScript</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\STUAltitudeController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\STUOrientationController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\STUPlanetOrbitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\STUPointOrbitController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\STUVelocityController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Displays\PlanetOrbitModeAdapters\SmallBuggyCockpit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Displays\StandardOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subroutines\GotoAndKeepGoing.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subroutines\NavigateOverPlanetSurface.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subroutines\PointAtTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subroutines\GotoAndStop.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)STUFlightController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subroutines\HardStop.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\STUInterceptCalculator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\STUTransformationUtils.cs" />
+  </ItemGroup>
+</Project>

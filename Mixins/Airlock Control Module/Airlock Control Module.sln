@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Airlock Control Module", "Airlock Control Module.shproj", "{7760BA51-8C8D-41D2-A9DE-649C33D7AA89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{557BF447-B0BE-45AB-95B6-8AEF2CAE5D2C}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F11004B5-239E-4BB2-960B-4011C4820F02}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Airlock_Control_Module.projitems*{7760ba51-8c8d-41d2-a9de-649c33d7aa89}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
