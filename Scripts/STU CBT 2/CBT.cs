@@ -161,6 +161,7 @@ namespace IngameScript {
                 LoadMedicalRoom(grid);
                 LoadH2O2Generators(grid);
                 LoadOxygenTanks(grid);
+                LoadHydrogenTanks(grid);
                 LoadHydrogenEngines(grid);
                 LoadGravityGenerators(grid);
                 LoadMergeBlock(grid);
@@ -582,20 +583,27 @@ namespace IngameScript {
                 AddToLogQueue("H2O2 generators ... loaded", STULogType.INFO);
             }
             private static void LoadOxygenTanks(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> gasTankBlocks = new List<IMyTerminalBlock>();
+                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
                 grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Oxygen"));
                 if (gasTankBlocks.Count == 0) {
                     AddToLogQueue("No oxygen tanks found on the CBT", STULogType.ERROR);
                     return;
                 }
 
-                IMyGasTank[] oxygenTanks = new IMyGasTank[gasTankBlocks.Count];
-                for (int i = 0; i < gasTankBlocks.Count; ++i) {
-                    oxygenTanks[i] = gasTankBlocks[i] as IMyGasTank;
-                }
-
-                OxygenTanks = oxygenTanks;
+                OxygenTanks = gasTankBlocks.ToArray();
                 AddToLogQueue("Oxygen tanks ... loaded", STULogType.INFO);
+            }
+            private static void LoadHydrogenTanks(IMyGridTerminalSystem grid)
+            {
+                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
+                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Hydrogen"));
+                if (gasTankBlocks.Count == 0)
+                {
+                    AddToLogQueue("No hydrogen tanks found on the CBT", STULogType.ERROR);
+                    return;
+                }
+                HydrogenTanks = gasTankBlocks.ToArray();
+                AddToLogQueue("Hydrogen tanks ... loaded", STULogType.INFO);
             }
             private static void LoadHydrogenEngines(IMyGridTerminalSystem grid) {
                 List<IMyTerminalBlock> hydrogenEngineBlocks = new List<IMyTerminalBlock>();
@@ -667,22 +675,12 @@ namespace IngameScript {
             }
             #region Weaponry
             private static void LoadGatlingGuns(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> gatlingGunBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.CubeGrid == Me.CubeGrid);
+                List<IMyUserControllableGun> gatlingGunBlocks = new List<IMyUserControllableGun>();
+                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId != "LargeGatlingTurret");
 
-                List<IMyTerminalBlock> blocksToRemove = new List<IMyTerminalBlock>();
-                foreach (var block in gatlingGunBlocks) {
-                    if (block.BlockDefinition.SubtypeId != "LargeGatlingTurret")
-                        blocksToRemove.Add(block);
-                }
-                foreach (var block in blocksToRemove) { gatlingGunBlocks.Remove(block); }
                 if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found on the CBT", STULogType.ERROR); return; }
-                IMyUserControllableGun[] gatlingGuns = new IMyUserControllableGun[gatlingGunBlocks.Count];
-                for (int i = 0; i < gatlingGunBlocks.Count; ++i) {
-                    gatlingGuns[i] = gatlingGunBlocks[i] as IMyUserControllableGun;
-                }
-
-                GatlingTurrets = gatlingGuns;
+                
+                GatlingTurrets = gatlingGunBlocks.ToArray();
                 AddToLogQueue("Gatling guns ... loaded", STULogType.INFO);
             }
             private static void LoadAssaultCannonTurrets(IMyGridTerminalSystem grid) {
@@ -749,22 +747,10 @@ namespace IngameScript {
             }
 
             private static void LoadHangarMagPlates(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> magPlateBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyShipConnector>(magPlateBlocks, block => block.CubeGrid == Me.CubeGrid);
+                List<IMyShipConnector> magPlateBlocks = new List<IMyShipConnector>();
+                grid.GetBlocksOfType<IMyShipConnector>(magPlateBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("Connector"));
 
-                // for some reason, mag plates are considered connectors by space engineers
-                // therefore, we need to remove any connectors we picked up in the GetBlocksOfType call above
-                foreach (var item in magPlateBlocks) {
-                    if (item.BlockDefinition.SubtypeName.Contains("Connector")) {
-                        magPlateBlocks.Remove(item);
-                    }
-                }
-
-                IMyShipConnector[] magPlates = new IMyShipConnector[magPlateBlocks.Count];
-                for (int i = 0; i < magPlateBlocks.Count; i++) {
-                    magPlates[i] = magPlateBlocks[i] as IMyShipConnector;
-                }
-                HangarMagPlates = magPlates;
+                HangarMagPlates = magPlateBlocks.ToArray();
                 AddToLogQueue("Hangar Mag Plates ... loaded", STULogType.INFO);
             }
 
@@ -790,16 +776,10 @@ namespace IngameScript {
             }
 
             private static void LoadLowerDeckControlSeats(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> controlSeatBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyCockpit>(controlSeatBlocks, block => block.CubeGrid == Me.CubeGrid);
-                foreach (var block in controlSeatBlocks) {
-                    if (block.BlockDefinition.SubtypeName.Contains("LargeBlockCockpit")) { } else { controlSeatBlocks.Remove(block); }
-                }
-                IMyCockpit[] controlSeats = new IMyCockpit[controlSeatBlocks.Count];
-                for (int i = 0; i < controlSeatBlocks.Count; i++) {
-                    controlSeats[i] = controlSeatBlocks[i] as IMyCockpit;
-                }
-                LowerDeckControlSeats = controlSeats;
+                List<IMyCockpit> controlSeatBlocks = new List<IMyCockpit>();
+                grid.GetBlocksOfType<IMyCockpit>(controlSeatBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("LargeBlockCockpit"));
+                
+                LowerDeckControlSeats = controlSeatBlocks.ToArray();
                 AddToLogQueue("Lower deck control seats ... loaded", STULogType.INFO);
             }
 
@@ -846,6 +826,8 @@ namespace IngameScript {
             #endregion Other
 
             public static void AssignPowerClasses(IMyGridTerminalSystem grid) {
+                echo("CBT.AddPowerClasses(): Initializing power classes...");
+                CBT.AddToLogQueue("Initializing power classes...", STULogType.INFO);
                 /// level 1 power class:
                 /// button panels are NOT functional blocks, omitted here
                 /// Gatling guns
@@ -855,12 +837,16 @@ namespace IngameScript {
                 }
                 PowerClasses[1] = level1blocks;
 
+                echo("CBT.AddPowerClasses(): Power class 1 initialized with " + PowerClasses[1].Count + " blocks");
+
                 /// level 2 power class:
                 /// O2 tanks
                 /// Cryo pods are NOT functional blocks, omitted here
                 /// H2 tanks
                 /// Hangar mag plates
                 /// connectors (the CBT only has the one connector on the stinger, and due to inherited LIGMA code, it must be named "Connector"... I think.
+                echo("CBT.AddPowerClasses(): Initializing power class 2...");
+                echo($"level2blocks has {PowerClasses[2].Count} blocks before initialization");
                 List<IMyFunctionalBlock> level2blocks = new List<IMyFunctionalBlock>();
                 foreach (var item in OxygenTanks) {
                     level2blocks.Add(item);
@@ -873,6 +859,8 @@ namespace IngameScript {
                 }
                 level2blocks.Add(Connector);
                 PowerClasses[2] = level2blocks;
+
+                echo("CBT.AddPowerClasses(): Power class 2 initialized with " + PowerClasses[2].Count + " blocks");
 
                 /// level 3 power class:
                 /// doors
