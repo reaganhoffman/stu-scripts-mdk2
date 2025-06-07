@@ -1,5 +1,6 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
+using System.Security.Cryptography.X509Certificates;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -87,15 +88,16 @@ namespace IngameScript {
                     Type = SpriteType.TEXT,
                     Data = "RG",
                     Position = TopLeft + new Vector2(ScreenWidth / 6 * 5 - GetTextSpriteWidth("RG") / 2, 1),
-                    Color = new Color(255, 255, 255),
+                    Color = RailgunStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
-                MySprite RG_ammo_amount = new MySprite() {
+                MySprite RG_ammo_amount = new MySprite()
+                {
                     Type = SpriteType.TEXT,
                     Data = RailgunAmmo.ToString(),
                     Position = TopLeft + new Vector2(ScreenWidth / 6 * 5 - GetTextSpriteWidth(RailgunAmmo.ToString()) / 2, ScreenHeight / 4 + 1),
-                    Color = new Color(255, 255, 255),
+                    Color = RailgunStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
@@ -112,6 +114,20 @@ namespace IngameScript {
                 frame.Add(RG_text);
                 frame.Add(RG_ammo_amount);
 
+            }
+
+            public static Color RailgunStatus()
+            {
+                int runningTotal = 0;
+                runningTotal += CBT.Railguns[0].IsWorking ? 1 : 0;
+                runningTotal += CBT.Railguns[1].IsWorking ? 1 : 0;
+                switch (runningTotal)
+                {
+                    case 0: return new Color(255, 0, 0);
+                    case 1: return new Color(0, 255, 255);
+                    case 2: return new Color(0, 255, 0);
+                    default: return new Color(255, 255, 255);
+                }
             }
         }
     }

@@ -37,6 +37,12 @@ namespace IngameScript {
 
             public bool CanDockWithCR = false;
 
+            public static bool CruiseControlActivated = false;
+            public static float CruiseControlSpeed = 0f;
+
+            public static bool AltitudeControlActivated = false;
+            public static float AltitudeControlHeight = 0f;
+
             //public static Vector3D NextWaypoint;
 
             /// <summary>
@@ -103,10 +109,8 @@ namespace IngameScript {
             public static IMyRefinery Refinery { get; set; }
             public static IMyReflectorLight[] Spotlights { get; set; }
             public static IMyOreDetector OreDetector { get; set; }
+            public static IMyAirVent[] AirVents { get; set; }
 
-            /// <summary>
-            /// establish fuel and power levels
-            /// 
             public static double CurrentFuel { get; set; }
             public static double CurrentPower { get; set; }
             public static double FuelCapacity { get; set; }
@@ -143,43 +147,62 @@ namespace IngameScript {
                 CBTGrid = grid;
                 echo = Echo;
 
+                // overhead
                 AddLogSubscribers(grid);
-                LoadRemoteController(grid);
-                LoadFlightSeat(grid);
-                LoadThrusters(grid);
-                LoadGyros(grid);
-                LoadBatteries(grid);
-                LoadFuelTanks(grid);
-                LoadLandingGear(grid);
-                LoadConnector(grid);
-                LoadRearDockArm(grid);
-                LoadGangwayActuators(grid);
-                LoadCamera(grid);
                 AddAutopilotIndicatorSubscribers(grid);
                 AddManeuverQueueSubscribers(grid);
                 AddAmmoScreens(grid);
-                LoadMedicalRoom(grid);
-                LoadH2O2Generators(grid);
-                LoadOxygenTanks(grid);
-                LoadHydrogenTanks(grid);
+
+                // zero power draw
+                LoadBatteries(grid);
+                LoadButtonPanels(grid);
                 LoadHydrogenEngines(grid);
-                LoadGravityGenerators(grid);
                 LoadMergeBlock(grid);
                 LoadCargoContainers(grid);
-                LoadGatlingGuns(grid);
-                LoadAssaultCannonTurrets(grid);
-                LoadRailguns(grid);
-                LoadSensors(grid);
-                LoadInteriorLights(grid);
-                LoadButtonPanels(grid);
+                LoadOxygenTanks(grid);
+                LoadHydrogenTanks(grid);
+
+                // flight critical ("power level 0" / negligible or intermittent power draw)
+                LoadRemoteController(grid);
+                LoadThrusters(grid);
+                LoadGyros(grid);
+                LoadFlightSeat(grid);
+                LoadConnector(grid);
                 LoadCryoPods(grid);
-                LoadHangarMagPlates(grid);
+                LoadLandingGear(grid);
                 LoadDoors(grid);
+                LoadHangarMagPlates(grid);
+
+                // power level 1
+                LoadGatlingGuns(grid);
+
+                // power level 2
+                LoadRearDockArm(grid);
+                LoadGangwayActuators(grid);
+
+                // power level 3
+                LoadInteriorLights(grid);
+                LoadSpotlights(grid);
+                LoadGravityGenerators(grid);
+                LoadMedicalRoom(grid);
+                LoadCamera(grid);
+
+                // power level 4
                 LoadAntenna(grid);
+                LoadH2O2Generators(grid);
+                LoadAirVents(grid);
+
+                // power level 5
+                LoadAssaultCannonTurrets(grid);
                 LoadLowerDeckControlSeats(grid);
+                LoadRailguns(grid);
+
+                // power level 6
                 LoadRefinery(grid);
                 LoadAssembler(grid);
-                LoadSpotlights(grid);
+
+                // power level 7
+                LoadSensors(grid);
                 LoadOreDetector(grid);
 
                 AssignPowerClasses(grid);
@@ -193,7 +216,6 @@ namespace IngameScript {
                 AddToLogQueue("CBT initialized", STULogType.OK);
             }
 
-            // high-level software interoperability methods and helpers
             #region High-Level Software Control Methods
             public static void EchoPassthru(string text) {
                 echo(text);
@@ -227,9 +249,30 @@ namespace IngameScript {
                     });
                 }
             }
-            #endregion
+            public static int GetAmmoLevel(string ammoType) {
+                int ammo = 0;
+                foreach (var container in CargoContainers) {
+                    List<MyInventoryItem> items = new List<MyInventoryItem>();
+                    container.GetInventory(0).GetItems(items);
+                    foreach (var item in items) {
+                        if (item.Type.SubtypeId == ammoType) {
+                            ammo += (int)item.Amount;
+                        }
+                    }
+                }
 
-            // screen update methods
+                // search guns themselves
+                return ammo;
+            }
+
+            private static void SetPowerLevel(int powerLevel) {
+                for (int i = 0; i < PowerClasses.Count; i++) {
+                    foreach (var item in PowerClasses[i]) {
+                        if (i <= powerLevel) { item.Enabled = true; } else { item.Enabled = false; }
+                    }
+                }
+            }
+            
             #region Screen Update Methods
             // define the method to pull logs from the queue and display them on the screens
             // this will be called on every loop in Program.cs
@@ -276,22 +319,19 @@ namespace IngameScript {
                 foreach (var screen in AmmoChannel) {
                     screen.StartFrame();
                     screen.LoadAmmoData(
-                        0, 0, 0 // fix and remove later
-                                //inventory.ContainsKey("Gatling Ammo Box") ? (int)inventory["Gatling Ammo Box"] : 0,
-                                //inventory.ContainsKey("Artillery Shell") ? (int)inventory["Artillery Shell"] : 0,
-                                //inventory.ContainsKey("Large Railgun Sabot") ? (int)inventory["Large Railgun Sabot"] : 0
+                        inventory.ContainsKey("Gatling Ammo Box") ? (int)inventory["Gatling Ammo Box"] : 0,
+                        inventory.ContainsKey("Assault Cannon Shell") ? (int)inventory["Assault Cannon Shell"] : 0,
+                        inventory.ContainsKey("Large Railgun Sabot") ? (int)inventory["Large Railgun Sabot"] : 0
                         );
                     screen.BuildScreen(screen.CurrentFrame, screen.Center);
                     screen.EndAndPaintFrame();
                 }
             }
             #endregion
+            #endregion
 
-            // initialize hardware on the CBT
             #region Hardware Initialization
-            #region Screens
-            // generate a list of the display blocks on the CBT that are subscribed to the flight log
-            // do this by searching through all the blocks on the CBT and finding the ones whose custom data says they are subscribed
+            #region Overhead
             private static void AddLogSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
@@ -318,7 +358,6 @@ namespace IngameScript {
                     }
                 }
             }
-
             private static void AddAutopilotIndicatorSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
@@ -333,7 +372,6 @@ namespace IngameScript {
                     }
                 }
             }
-
             private static void AddManeuverQueueSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
@@ -348,7 +386,6 @@ namespace IngameScript {
                     }
                 }
             }
-
             private static void AddAmmoScreens(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
@@ -365,7 +402,90 @@ namespace IngameScript {
             }
             #endregion
 
-            #region Flight Critical
+            #region Zero Power Draw
+            private static void LoadBatteries(IMyGridTerminalSystem grid)
+            {
+                List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
+                grid.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (batteryBlocks.Count == 0)
+                {
+                    AddToLogQueue("No batteries found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                Batteries = batteryBlocks.ToArray();
+            }
+            private static void LoadButtonPanels(IMyGridTerminalSystem grid)
+            {
+                List<IMyButtonPanel> buttonPanelBlocks = new List<IMyButtonPanel>();
+                grid.GetBlocksOfType<IMyButtonPanel>(buttonPanelBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (buttonPanelBlocks.Count == 0)
+                {
+                    AddToLogQueue("No button panels found on the CBT", STULogType.ERROR);
+                    return;
+                }
+                ButtonPanels = buttonPanelBlocks.ToArray();
+            }
+            private static void LoadHydrogenEngines(IMyGridTerminalSystem grid)
+            {
+                List<IMyPowerProducer> hydrogenEngineBlocks = new List<IMyPowerProducer>();
+                grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (hydrogenEngineBlocks.Count == 0)
+                {
+                    AddToLogQueue("No hydrogen engines found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                HydrogenEngines = hydrogenEngineBlocks.ToArray();
+            }
+            private static void LoadMergeBlock(IMyGridTerminalSystem grid)
+            {
+                var mergeBlock = grid.GetBlockWithName("CBT Merge Block");
+                if (mergeBlock == null)
+                {
+                    AddToLogQueue("Could not locate \"CBT Merge Block\"; ensure merge block is named appropriately", STULogType.ERROR);
+                    return;
+                }
+                MergeBlock = mergeBlock as IMyShipMergeBlock;
+            }
+            private static void LoadCargoContainers(IMyGridTerminalSystem grid)
+            {
+                List<IMyCargoContainer> cargoContainerBlocks = new List<IMyCargoContainer>();
+                grid.GetBlocksOfType<IMyCargoContainer>(cargoContainerBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (cargoContainerBlocks.Count == 0)
+                {
+                    AddToLogQueue("No cargo containers found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                CargoContainers = cargoContainerBlocks.ToArray();
+            }
+            private static void LoadOxygenTanks(IMyGridTerminalSystem grid)
+            {
+                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
+                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Oxygen"));
+                if (gasTankBlocks.Count == 0)
+                {
+                    AddToLogQueue("No oxygen tanks found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                OxygenTanks = gasTankBlocks.ToArray();
+            }
+            private static void LoadHydrogenTanks(IMyGridTerminalSystem grid)
+            {
+                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
+                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Hydrogen"));
+                if (gasTankBlocks.Count == 0)
+                {
+                    AddToLogQueue("No hydrogen tanks found on the CBT", STULogType.ERROR);
+                    return;
+                }
+                HydrogenTanks = gasTankBlocks.ToArray();
+            }
+            #endregion
+
+            #region Flight Critical (Power Level 0)
             private static void LoadRemoteController(IMyGridTerminalSystem grid) {
                 List<IMyTerminalBlock> remoteControlBlocks = new List<IMyTerminalBlock>();
                 grid.GetBlocksOfType<IMyRemoteControl>(remoteControlBlocks, block => block.CubeGrid == Me.CubeGrid);
@@ -375,15 +495,6 @@ namespace IngameScript {
                 }
                 RemoteControl = remoteControlBlocks[0] as IMyRemoteControl;
                 AddToLogQueue("Remote control ... loaded", STULogType.INFO);
-            }
-            // load main flight seat BY NAME. Name must be "CBT Flight Seat"
-            private static void LoadFlightSeat(IMyGridTerminalSystem grid) {
-                FlightSeat = grid.GetBlockWithName("CBT Flight Seat") as IMyTerminalBlock;
-                if (FlightSeat == null) {
-                    AddToLogQueue("Could not locate \"CBT Flight Seat\"; ensure flight seat is named appropriately", STULogType.ERROR);
-                    return;
-                }
-                AddToLogQueue("Main flight seat ... loaded", STULogType.INFO);
             }
             // load ALL thrusters of ALL types
             // in later versions, fix this to have a list of ALL thrusters, plus subdivided groups of JUST ions and JUST hydros. 
@@ -421,81 +532,21 @@ namespace IngameScript {
                 Gyros = gyros;
                 AddToLogQueue("Gyros ... loaded", STULogType.INFO);
             }
-            private static void LoadBatteries(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> batteryBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (batteryBlocks.Count == 0) {
-                    AddToLogQueue("No batteries found on the CBT", STULogType.ERROR);
+            private static void LoadFlightSeat(IMyGridTerminalSystem grid)
+            {
+                FlightSeat = grid.GetBlockWithName("CBT Flight Seat") as IMyTerminalBlock;
+                if (FlightSeat == null)
+                {
+                    AddToLogQueue("Could not locate \"CBT Flight Seat\"; ensure flight seat is named appropriately", STULogType.ERROR);
                     return;
                 }
-
-                IMyBatteryBlock[] batteries = new IMyBatteryBlock[batteryBlocks.Count];
-                for (int i = 0; i < batteryBlocks.Count; i++) {
-                    batteries[i] = batteryBlocks[i] as IMyBatteryBlock;
-                }
-
-                Batteries = batteries;
-                AddToLogQueue("Batteries ... loaded", STULogType.INFO);
+                AddToLogQueue("Main flight seat ... loaded", STULogType.INFO);
             }
-            private static void LoadFuelTanks(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> gasTankBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Hydrogen"));
-                if (gasTankBlocks.Count == 0) {
-                    AddToLogQueue("No fuel tanks found on the CBT", STULogType.ERROR);
-                    return;
-                }
-
-                IMyGasTank[] fuelTanks = new IMyGasTank[gasTankBlocks.Count];
-                for (int i = 0; i < gasTankBlocks.Count; ++i) {
-                    fuelTanks[i] = gasTankBlocks[i] as IMyGasTank;
-                }
-
-                HydrogenTanks = fuelTanks;
-                AddToLogQueue("Fuel tanks ... loaded", STULogType.INFO);
-            }
-            #endregion Flight Critical
-
-            // load landing gear
-            private static void LoadLandingGear(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> landingGearBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyLandingGear>(landingGearBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (landingGearBlocks.Count == 0) {
-                    AddToLogQueue("No landing gear found on the CBT", STULogType.ERROR);
-                    return;
-                }
-
-                IMyLandingGear[] landingGear = new IMyLandingGear[landingGearBlocks.Count];
-                for (int i = 0; i < landingGearBlocks.Count; ++i) {
-                    landingGear[i] = landingGearBlocks[i] as IMyLandingGear;
-                }
-
-                LandingGear = landingGear;
-                AddToLogQueue("Landing gear ... loaded", STULogType.INFO);
-            }
-
-            public static void SetLandingGear(bool @lock) {
-                foreach (var gear in LandingGear) {
-                    if (@lock)
-                        gear.Lock();
-                    else
-                        gear.Unlock();
-                }
-                LandingGearState = @lock;
-            }
-
-            public static void ToggleLandingGear() {
-                foreach (var gear in LandingGear) {
-                    if (LandingGearState)
-                        gear.Unlock();
-                    else
-                        gear.Lock();
-                }
-            }
-
-            // load connector (stinger)
-            private static void LoadConnector(IMyGridTerminalSystem grid) {
+            private static void LoadConnector(IMyGridTerminalSystem grid)
+            {
                 var connector = grid.GetBlockWithName("CBT Rear Connector");
-                if (connector == null) {
+                if (connector == null)
+                {
                     AddToLogQueue("Could not locate \"CBT Rear Connector\"; ensure connector is named appropriately.", STULogType.ERROR);
                     return;
                 }
@@ -505,12 +556,81 @@ namespace IngameScript {
                 Connector.PullStrength = 0;
                 AddToLogQueue("Connector ... loaded", STULogType.INFO);
             }
+            private static void LoadCryoPods(IMyGridTerminalSystem grid)
+            {
+                List<IMyTerminalBlock> cryoPodBlocks = new List<IMyTerminalBlock>();
+                grid.GetBlocksOfType<IMyCryoChamber>(cryoPodBlocks, block => block.CubeGrid == Me.CubeGrid);
 
-            private static void LoadRearDockArm(IMyGridTerminalSystem grid) {
+                IMyCryoChamber[] cryoPods = new IMyCryoChamber[cryoPodBlocks.Count];
+                for (int i = 0; i < cryoPodBlocks.Count; i++)
+                {
+                    cryoPods[i] = cryoPodBlocks[i] as IMyCryoChamber;
+                }
+
+                AddToLogQueue("Cryo Pods ... loaded", STULogType.INFO);
+            }
+            private static void LoadLandingGear(IMyGridTerminalSystem grid)
+            {
+                List<IMyTerminalBlock> landingGearBlocks = new List<IMyTerminalBlock>();
+                grid.GetBlocksOfType<IMyLandingGear>(landingGearBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (landingGearBlocks.Count == 0)
+                {
+                    AddToLogQueue("No landing gear found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                IMyLandingGear[] landingGear = new IMyLandingGear[landingGearBlocks.Count];
+                for (int i = 0; i < landingGearBlocks.Count; ++i)
+                {
+                    landingGear[i] = landingGearBlocks[i] as IMyLandingGear;
+                }
+
+                LandingGear = landingGear;
+                AddToLogQueue("Landing gear ... loaded", STULogType.INFO);
+            }
+            private static void LoadDoors(IMyGridTerminalSystem grid)
+            {
+                List<IMyTerminalBlock> doorBlocks = new List<IMyTerminalBlock>();
+                grid.GetBlocksOfType<IMyDoor>(doorBlocks, block => block.CubeGrid == Me.CubeGrid);
+                IMyDoor[] doors = new IMyDoor[doorBlocks.Count];
+                for (int i = 0; i < doorBlocks.Count; i++)
+                {
+                    doors[i] = doorBlocks[i] as IMyDoor;
+                }
+                Doors = doors;
+                AddToLogQueue("Doors ... loaded", STULogType.INFO);
+            }
+            private static void LoadHangarMagPlates(IMyGridTerminalSystem grid)
+            {
+                List<IMyShipConnector> magPlateBlocks = new List<IMyShipConnector>();
+                grid.GetBlocksOfType<IMyShipConnector>(magPlateBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("Connector"));
+
+                HangarMagPlates = magPlateBlocks.ToArray();
+                AddToLogQueue("Hangar Mag Plates ... loaded", STULogType.INFO);
+            }
+            #endregion
+
+            #region Power Level 1
+            private static void LoadGatlingGuns(IMyGridTerminalSystem grid)
+            {
+                List<IMyUserControllableGun> gatlingGunBlocks = new List<IMyUserControllableGun>();
+                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId != "LargeGatlingTurret");
+
+                if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found on the CBT", STULogType.ERROR); return; }
+
+                GatlingTurrets = gatlingGunBlocks.ToArray();
+                AddToLogQueue("Gatling guns ... loaded", STULogType.INFO);
+            }
+            #endregion
+
+            #region Power Level 2
+            private static void LoadRearDockArm(IMyGridTerminalSystem grid)
+            {
                 var hinge1 = grid.GetBlockWithName("CBT Rear Hinge 1");
                 var hinge2 = grid.GetBlockWithName("CBT Rear Hinge 2");
                 var piston = grid.GetBlockWithName("CBT Rear Piston");
-                if (hinge1 == null || hinge2 == null || piston == null) {
+                if (hinge1 == null || hinge2 == null || piston == null)
+                {
                     AddToLogQueue("Could not locate at least one stinger arm component; ensure all components are named appropriately", STULogType.ERROR);
                     return;
                 }
@@ -523,11 +643,12 @@ namespace IngameScript {
 
                 AddToLogQueue("Stinger arm actuator assembly ... loaded", STULogType.INFO);
             }
-
-            private static void LoadGangwayActuators(IMyGridTerminalSystem grid) {
+            private static void LoadGangwayActuators(IMyGridTerminalSystem grid)
+            {
                 var hinge1 = grid.GetBlockWithName("CBT Gangway Hinge 1");
                 var hinge2 = grid.GetBlockWithName("CBT Gangway Hinge 2");
-                if (hinge1 == null || hinge2 == null) {
+                if (hinge1 == null || hinge2 == null)
+                {
                     AddToLogQueue("Could not locate at least one gangway actuator component; ensure all components are named appropriately", STULogType.ERROR);
                     return;
                 }
@@ -541,12 +662,57 @@ namespace IngameScript {
 
                 AddToLogQueue("Gangway actuator assembly ... loaded", STULogType.INFO);
             }
+            #endregion
 
-            private static void LoadCamera(IMyGridTerminalSystem grid) {
+            #region Power Level 3
+            private static void LoadInteriorLights(IMyGridTerminalSystem grid)
+            {
+                List<IMyInteriorLight> lightBlocks = new List<IMyInteriorLight>();
+                grid.GetBlocksOfType<IMyInteriorLight>(lightBlocks, block => block.CubeGrid == Me.CubeGrid);
+
+                InteriorLights = lightBlocks.ToArray();
+
+                AddToLogQueue("Interior Lights ... loaded", STULogType.INFO);
+            }
+            private static void LoadSpotlights(IMyGridTerminalSystem grid)
+            {
+                List<IMyReflectorLight> spotlightBlocks = new List<IMyReflectorLight>();
+                grid.GetBlocksOfType<IMyReflectorLight>(spotlightBlocks, block => block.CubeGrid == Me.CubeGrid);
+                
+                Spotlights = spotlightBlocks.ToArray();
+
+                AddToLogQueue("Spotlights ... loaded", STULogType.INFO);
+            }
+            private static void LoadGravityGenerators(IMyGridTerminalSystem grid)
+            {
+                List<IMyGravityGenerator> gravityGeneratorBlocks = new List<IMyGravityGenerator>();
+                grid.GetBlocksOfType<IMyGravityGenerator>(gravityGeneratorBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (gravityGeneratorBlocks.Count == 0)
+                {
+                    AddToLogQueue("No gravity generators found on the CBT", STULogType.ERROR);
+                    return;
+                }
+
+                GravityGenerators = gravityGeneratorBlocks.ToArray();
+                AddToLogQueue("Gravity generators ... loaded", STULogType.INFO);
+            }
+            private static void LoadMedicalRoom(IMyGridTerminalSystem grid)
+            {
+                MedicalRoom = grid.GetBlockWithName("CBT Medical Room") as IMyMedicalRoom;
+                if (MedicalRoom == null)
+                {
+                    AddToLogQueue("Could not locate \"CBT Medical Room\"; ensure medical room is named appropriately", STULogType.ERROR);
+                    return;
+                }
+                AddToLogQueue("Medical Room ... loaded", STULogType.INFO);
+            }
+            private static void LoadCamera(IMyGridTerminalSystem grid)
+            {
                 var rotor = grid.GetBlockWithName("CBT Camera Rotor");
                 var hinge = grid.GetBlockWithName("CBT Camera Hinge");
                 var camera = grid.GetBlockWithName("CBT Bottom Camera");
-                if (rotor == null || hinge == null || camera == null) {
+                if (rotor == null || hinge == null || camera == null)
+                {
                     AddToLogQueue("Could not locate at least one camera component; ensure all components are named appropriately", STULogType.ERROR);
                     return;
                 }
@@ -556,446 +722,272 @@ namespace IngameScript {
                 Camera = camera as IMyCameraBlock;
                 AddToLogQueue("Camera and actuator assembly ... loaded", STULogType.INFO);
             }
+            #endregion
 
-            #region Life Support
-            private static void LoadMedicalRoom(IMyGridTerminalSystem grid) {
-                MedicalRoom = grid.GetBlockWithName("CBT Medical Room") as IMyMedicalRoom;
-                if (MedicalRoom == null) {
-                    AddToLogQueue("Could not locate \"CBT Medical Room\"; ensure medical room is named appropriately", STULogType.ERROR);
+            #region Power Level 4
+            private static void LoadAntenna(IMyGridTerminalSystem grid)
+            {
+                try
+                {
+                    Antenna = grid.GetBlockWithName("CBT Antenna") as IMyRadioAntenna;
+                }
+                catch
+                {
+                    AddToLogQueue("Error trying to find \"CBT Antenna\". Not loaded.", STULogType.WARNING);
                     return;
                 }
-                AddToLogQueue("Medical Room ... loaded", STULogType.INFO);
+                AddToLogQueue("Antenna ... loaded", STULogType.INFO);
             }
-            private static void LoadH2O2Generators(IMyGridTerminalSystem grid) {
+            private static void LoadH2O2Generators(IMyGridTerminalSystem grid)
+            {
                 List<IMyTerminalBlock> generatorBlocks = new List<IMyTerminalBlock>();
                 grid.GetBlocksOfType<IMyGasGenerator>(generatorBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (generatorBlocks.Count == 0) {
+                if (generatorBlocks.Count == 0)
+                {
                     AddToLogQueue("No H2O2 generators found on the CBT", STULogType.ERROR);
                     return;
                 }
 
                 IMyGasGenerator[] generators = new IMyGasGenerator[generatorBlocks.Count];
-                for (int i = 0; i < generatorBlocks.Count; i++) {
+                for (int i = 0; i < generatorBlocks.Count; i++)
+                {
                     generators[i] = generatorBlocks[i] as IMyGasGenerator;
                 }
 
                 H2O2Generators = generators;
                 AddToLogQueue("H2O2 generators ... loaded", STULogType.INFO);
             }
-            private static void LoadOxygenTanks(IMyGridTerminalSystem grid) {
-                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
-                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Oxygen"));
-                if (gasTankBlocks.Count == 0) {
-                    AddToLogQueue("No oxygen tanks found on the CBT", STULogType.ERROR);
-                    return;
-                }
-
-                OxygenTanks = gasTankBlocks.ToArray();
-                AddToLogQueue("Oxygen tanks ... loaded", STULogType.INFO);
-            }
-            private static void LoadHydrogenTanks(IMyGridTerminalSystem grid)
+            private static void LoadAirVents(IMyGridTerminalSystem grid)
             {
-                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
-                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Hydrogen"));
-                if (gasTankBlocks.Count == 0)
+                List<IMyAirVent> airVentBlocks = new List<IMyAirVent>();
+                grid.GetBlocksOfType<IMyAirVent>(airVentBlocks, block => block.CubeGrid == Me.CubeGrid);
+                if (airVentBlocks.Count == 0)
                 {
-                    AddToLogQueue("No hydrogen tanks found on the CBT", STULogType.ERROR);
+                    AddToLogQueue("No air vents found on the CBT", STULogType.ERROR);
                     return;
                 }
-                HydrogenTanks = gasTankBlocks.ToArray();
-                AddToLogQueue("Hydrogen tanks ... loaded", STULogType.INFO);
-            }
-            private static void LoadHydrogenEngines(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> hydrogenEngineBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (hydrogenEngineBlocks.Count == 0) {
-                    AddToLogQueue("No hydrogen engines found on the CBT", STULogType.ERROR);
-                    return;
-                }
-
-                IMyPowerProducer[] hydrogenEngines = new IMyPowerProducer[hydrogenEngineBlocks.Count];
-                for (int i = 0; i < hydrogenEngineBlocks.Count; ++i) {
-                    hydrogenEngines[i] = hydrogenEngineBlocks[i] as IMyPowerProducer;
-                }
-
-                HydrogenEngines = hydrogenEngines;
-                AddToLogQueue("Hydrogen engines ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadCryoPods(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> cryoPodBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyCryoChamber>(cryoPodBlocks, block => block.CubeGrid == Me.CubeGrid);
-
-                IMyCryoChamber[] cryoPods = new IMyCryoChamber[cryoPodBlocks.Count];
-                for (int i = 0; i < cryoPodBlocks.Count; i++) {
-                    cryoPods[i] = cryoPodBlocks[i] as IMyCryoChamber;
-                }
-
-                AddToLogQueue("Cryo Pods ... loaded", STULogType.INFO);
-            }
-            #endregion Life Support
-
-            // load gravity generators
-            private static void LoadGravityGenerators(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> gravityGeneratorBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyGravityGenerator>(gravityGeneratorBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (gravityGeneratorBlocks.Count == 0) {
-                    AddToLogQueue("No gravity generators found on the CBT", STULogType.ERROR);
-                    return;
-                }
-
-                IMyGravityGenerator[] gravityGenerators = new IMyGravityGenerator[gravityGeneratorBlocks.Count];
-                for (int i = 0; i < gravityGeneratorBlocks.Count; ++i) {
-                    gravityGenerators[i] = gravityGeneratorBlocks[i] as IMyGravityGenerator;
-                }
-
-                GravityGenerators = gravityGenerators;
-                AddToLogQueue("Gravity generators ... loaded", STULogType.INFO);
-            }
-            private static void LoadSensors(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> sensorBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMySensorBlock>(sensorBlocks, block => block.CubeGrid == Me.CubeGrid);
-                IMySensorBlock[] sensors = new IMySensorBlock[sensorBlocks.Count];
-                for (int i = 0; i < sensorBlocks.Count; ++i) {
-                    sensors[i] = sensorBlocks[i] as IMySensorBlock;
-                }
-                Sensors = sensors;
-                AddToLogQueue("Sensors ... loaded", STULogType.INFO);
-            }
-            private static void LoadInteriorLights(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> lightBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyInteriorLight>(lightBlocks, block => block.CubeGrid == Me.CubeGrid);
-
-                IMyInteriorLight[] interiorLights = new IMyInteriorLight[lightBlocks.Count];
-                for (int i = 0; i < lightBlocks.Count; i++) {
-                    interiorLights[i] = lightBlocks[i] as IMyInteriorLight;
-                }
-
-                AddToLogQueue("Interior Lights ... loaded", STULogType.INFO);
-            }
-            #region Weaponry
-            private static void LoadGatlingGuns(IMyGridTerminalSystem grid) {
-                List<IMyUserControllableGun> gatlingGunBlocks = new List<IMyUserControllableGun>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId != "LargeGatlingTurret");
-
-                if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found on the CBT", STULogType.ERROR); return; }
                 
-                GatlingTurrets = gatlingGunBlocks.ToArray();
-                AddToLogQueue("Gatling guns ... loaded", STULogType.INFO);
+                AirVents = airVentBlocks.ToArray();
+                AddToLogQueue("Air vents ... loaded", STULogType.INFO);
             }
-            private static void LoadAssaultCannonTurrets(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> assaultCannonBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(assaultCannonBlocks, block => block.CubeGrid == Me.CubeGrid);
+            #endregion
 
-                List<IMyTerminalBlock> blocksToRemove = new List<IMyTerminalBlock>();
-                foreach (var block in assaultCannonBlocks) {
-                    if (block.BlockDefinition.SubtypeId != "LargeMissileTurret/LargeBlockMediumCalibreTurret")
-                        blocksToRemove.Add(block);
-                }
-                foreach (var block in blocksToRemove) { assaultCannonBlocks.Remove(block); }
-                if (assaultCannonBlocks.Count == 0) { AddToLogQueue("No assault cannons found on the CBT", STULogType.ERROR); return; }
-                IMyUserControllableGun[] assaultCannons = new IMyUserControllableGun[assaultCannonBlocks.Count];
-                for (int i = 0; i < assaultCannonBlocks.Count; ++i) {
-                    assaultCannons[i] = assaultCannonBlocks[i] as IMyUserControllableGun;
-                }
+            #region Power Level 5
+            private static void LoadAssaultCannonTurrets(IMyGridTerminalSystem grid)
+            {
+                List<IMyUserControllableGun> assaultCannonBlocks = new List<IMyUserControllableGun>();
+                grid.GetBlocksOfType<IMyUserControllableGun>(assaultCannonBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId.Contains("LargeBlockMediumCalibreTurret"));
 
-                AssaultCannons = assaultCannons;
+                if (assaultCannonBlocks.Count == 0) { 
+                    AddToLogQueue("No assault cannons found on the CBT", STULogType.ERROR);
+                    echo("No assault cannons found on the CBT");
+                    return; 
+                }
+                
+                AssaultCannons = assaultCannonBlocks.ToArray();
                 AddToLogQueue("Assault cannons ... loaded", STULogType.INFO);
             }
-            private static void LoadRailguns(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> railgunBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(railgunBlocks, block => block.CubeGrid == Me.CubeGrid);
-
-                List<IMyTerminalBlock> blocksToRemove = new List<IMyTerminalBlock>();
-                foreach (var block in railgunBlocks) {
-                    if (block.BlockDefinition.SubtypeId != "LargeRailgunTurret")
-                        blocksToRemove.Add(block);
-                }
-                foreach (var block in blocksToRemove) { railgunBlocks.Remove(block); }
-                if (railgunBlocks.Count == 0) { AddToLogQueue("No railguns found on the CBT", STULogType.ERROR); return; }
-                IMyUserControllableGun[] railguns = new IMyUserControllableGun[railgunBlocks.Count];
-                for (int i = 0; i < railgunBlocks.Count; ++i) {
-                    railguns[i] = railgunBlocks[i] as IMyUserControllableGun;
-                }
-
-                Railguns = railguns;
-                AddToLogQueue("Railguns ... loaded", STULogType.INFO);
-            }
-            #endregion Weaponry
-
-            #region Other
-
-            private static void LoadMergeBlock(IMyGridTerminalSystem grid) {
-                var mergeBlock = grid.GetBlockWithName("CBT Merge Block");
-                if (mergeBlock == null) {
-                    AddToLogQueue("Could not locate \"CBT Merge Block\"; ensure merge block is named appropriately", STULogType.ERROR);
-                    return;
-                }
-                MergeBlock = mergeBlock as IMyShipMergeBlock;
-                AddToLogQueue("Merge block ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadButtonPanels(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> buttonPanelBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyButtonPanel>(buttonPanelBlocks, block => block.CubeGrid == Me.CubeGrid);
-                IMyButtonPanel[] buttonPanels = new IMyButtonPanel[buttonPanelBlocks.Count];
-                for (int i = 0; i < buttonPanelBlocks.Count; ++i) {
-                    buttonPanels[i] = buttonPanelBlocks[i] as IMyButtonPanel;
-                }
-                ButtonPanels = buttonPanels;
-                AddToLogQueue("Button panels ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadHangarMagPlates(IMyGridTerminalSystem grid) {
-                List<IMyShipConnector> magPlateBlocks = new List<IMyShipConnector>();
-                grid.GetBlocksOfType<IMyShipConnector>(magPlateBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("Connector"));
-
-                HangarMagPlates = magPlateBlocks.ToArray();
-                AddToLogQueue("Hangar Mag Plates ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadDoors(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> doorBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyDoor>(doorBlocks, block => block.CubeGrid == Me.CubeGrid);
-                IMyDoor[] doors = new IMyDoor[doorBlocks.Count];
-                for (int i = 0; i < doorBlocks.Count; i++) {
-                    doors[i] = doorBlocks[i] as IMyDoor;
-                }
-                Doors = doors;
-                AddToLogQueue("Doors ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadAntenna(IMyGridTerminalSystem grid) {
-                try {
-                    Antenna = grid.GetBlockWithName("CBT Antenna") as IMyRadioAntenna;
-                } catch {
-                    AddToLogQueue("Error trying to find \"CBT Antenna\". Not loaded.", STULogType.WARNING);
-                    return;
-                }
-                AddToLogQueue("Antenna ... loaded", STULogType.INFO);
-            }
-
-            private static void LoadLowerDeckControlSeats(IMyGridTerminalSystem grid) {
+            private static void LoadLowerDeckControlSeats(IMyGridTerminalSystem grid)
+            {
                 List<IMyCockpit> controlSeatBlocks = new List<IMyCockpit>();
                 grid.GetBlocksOfType<IMyCockpit>(controlSeatBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("LargeBlockCockpit"));
-                
+
+                if (controlSeatBlocks.Count == 0)
+                {
+                    AddToLogQueue("No control seats found on the CBT", STULogType.ERROR);
+                    echo("No control seats found on the CBT");
+                    return;
+                }
                 LowerDeckControlSeats = controlSeatBlocks.ToArray();
                 AddToLogQueue("Lower deck control seats ... loaded", STULogType.INFO);
             }
+            private static void LoadRailguns(IMyGridTerminalSystem grid)
+            {
+                List<IMyUserControllableGun> railgunBlocks = new List<IMyUserControllableGun>();
+                grid.GetBlocksOfType<IMyUserControllableGun>(railgunBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId.Contains("LargeRailgun"));
 
-            private static void LoadAssembler(IMyGridTerminalSystem grid) {
-                try {
+                if (railgunBlocks.Count == 0) { 
+                    AddToLogQueue("No railguns found on the CBT", STULogType.ERROR);
+                    echo("No railguns found on the CBT");
+                    return; 
+                }
+
+                Railguns = railgunBlocks.ToArray();
+                AddToLogQueue("Railguns ... loaded", STULogType.INFO);
+            }
+            #endregion
+
+            #region Power Level 6
+            private static void LoadAssembler(IMyGridTerminalSystem grid)
+            {
+                try
+                {
                     Assembler = grid.GetBlockWithName("CBT Assembler") as IMyAssembler;
-                } catch {
+                }
+                catch
+                {
                     AddToLogQueue("Error finding \"CBT Assembler\". Not loaded", STULogType.WARNING);
                     return;
                 }
                 AddToLogQueue("Assembler ... loaded", STULogType.INFO);
             }
-
-            private static void LoadRefinery(IMyGridTerminalSystem grid) {
-                try {
+            private static void LoadRefinery(IMyGridTerminalSystem grid)
+            {
+                try
+                {
                     Refinery = grid.GetBlockWithName("CBT Refinery") as IMyRefinery;
-                } catch {
+                }
+                catch
+                {
                     AddToLogQueue("Error finding \"CBT Refinery\". Not loaded", STULogType.WARNING);
                     return;
                 }
                 AddToLogQueue("Refinery ... loaded", STULogType.INFO);
             }
+            #endregion
 
-            private static void LoadSpotlights(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> spotlightBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyReflectorLight>(spotlightBlocks, block => block.CubeGrid == Me.CubeGrid);
-                IMyReflectorLight[] spotlights = new IMyReflectorLight[spotlightBlocks.Count];
-                for (int i = 0; i < spotlightBlocks.Count; i++) {
-                    spotlights[i] = spotlightBlocks[i] as IMyReflectorLight;
-                }
-                Spotlights = spotlights;
-                AddToLogQueue("Spotlights ... loaded", STULogType.INFO);
+            #region Power Level 7
+            private static void LoadSensors(IMyGridTerminalSystem grid)
+            {
+                List<IMySensorBlock> sensorBlocks = new List<IMySensorBlock>();
+                grid.GetBlocksOfType<IMySensorBlock>(sensorBlocks, block => block.CubeGrid == Me.CubeGrid);
+                
+                Sensors = sensorBlocks.ToArray();
+                AddToLogQueue("Sensors ... loaded", STULogType.INFO);
             }
-
-            private static void LoadOreDetector(IMyGridTerminalSystem grid) {
-                try {
+            private static void LoadOreDetector(IMyGridTerminalSystem grid)
+            {
+                try
+                {
                     OreDetector = grid.GetBlockWithName("CBT Ore Detector") as IMyOreDetector;
-                } catch {
+                }
+                catch
+                {
                     AddToLogQueue("Error finding \"CBT Ore Detector\". Not loaded.", STULogType.WARNING);
                     return;
                 }
                 AddToLogQueue("Ore Detector ... loaded");
             }
-            #endregion Other
+            #endregion
 
             public static void AssignPowerClasses(IMyGridTerminalSystem grid) {
-                echo("CBT.AddPowerClasses(): Initializing power classes...");
-                CBT.AddToLogQueue("Initializing power classes...", STULogType.INFO);
-                /// level 1 power class:
-                /// button panels are NOT functional blocks, omitted here
-                /// Gatling guns
-                List<IMyFunctionalBlock> level1blocks = new List<IMyFunctionalBlock>();
-                foreach (var item in GatlingTurrets) {
-                    level1blocks.Add(item);
-                }
-                PowerClasses[1] = level1blocks;
+                try
+                {
+                    CBT.AddToLogQueue("Initializing power classes...", STULogType.INFO);
+                    /// level 1 power class:
+                    /// Gatling guns
+                    List<IMyFunctionalBlock> level1blocks = new List<IMyFunctionalBlock>();
+                    foreach (var item in GatlingTurrets)
+                    {
+                        level1blocks.Add(item);
+                    }
+                    PowerClasses[1] = level1blocks;
 
-                echo("CBT.AddPowerClasses(): Power class 1 initialized with " + PowerClasses[1].Count + " blocks");
+                    /// level 2 power class:
+                    /// rear dock arm assembly
+                    /// gangway assembly
+                    List<IMyFunctionalBlock> level2blocks = new List<IMyFunctionalBlock>();
+                    level2blocks.Add(RearHinge1);
+                    level2blocks.Add(RearHinge2);
+                    level2blocks.Add(RearPiston);
+                    level2blocks.Add(GangwayHinge1);
+                    level2blocks.Add(GangwayHinge2);
+                    PowerClasses[2] = level2blocks;
 
-                /// level 2 power class:
-                /// O2 tanks
-                /// Cryo pods are NOT functional blocks, omitted here
-                /// H2 tanks
-                /// Hangar mag plates
-                /// connectors (the CBT only has the one connector on the stinger, and due to inherited LIGMA code, it must be named "Connector"... I think.
-                echo("CBT.AddPowerClasses(): Initializing power class 2...");
-                echo($"level2blocks has {PowerClasses[2].Count} blocks before initialization");
-                List<IMyFunctionalBlock> level2blocks = new List<IMyFunctionalBlock>();
-                foreach (var item in OxygenTanks) {
-                    level2blocks.Add(item);
-                }
-                foreach (var item in HydrogenTanks) {
-                    level2blocks.Add(item);
-                }
-                foreach (var item in HangarMagPlates) {
-                    level2blocks.Add(item);
-                }
-                level2blocks.Add(Connector);
-                PowerClasses[2] = level2blocks;
+                    /// level 3 power class:
+                    /// interior lights
+                    /// exterior lights (spotlights)
+                    /// gravity generator
+                    /// med bay
+                    /// camera
+                    List<IMyFunctionalBlock> level3blocks = new List<IMyFunctionalBlock>();
+                    foreach (var item in InteriorLights)
+                    {
+                        level3blocks.Add(item);
+                    }
+                    foreach (var item in Spotlights)
+                    {
+                        level3blocks.Add(item);
+                    }
+                    foreach (var item in GravityGenerators)
+                    {
+                        level3blocks.Add(item);
+                    }
+                    level3blocks.Add(MedicalRoom);
+                    level3blocks.Add(Camera);
+                    List<IMyTerminalBlock> allLCDs = new List<IMyTerminalBlock>();
+                    grid.GetBlocksOfType<IMyTextPanel>(allLCDs, block => block.CubeGrid == Me.CubeGrid);
+                    foreach (var item in allLCDs)
+                    {
+                        level3blocks.Add(item as IMyFunctionalBlock);
+                    }
+                    PowerClasses[3] = level3blocks;
 
-                echo("CBT.AddPowerClasses(): Power class 2 initialized with " + PowerClasses[2].Count + " blocks");
+                    /// level 4 power class:
+                    /// Antenna
+                    /// h2/o2 generators
+                    /// Air vents
+                    List<IMyFunctionalBlock> level4blocks = new List<IMyFunctionalBlock>();
+                    level4blocks.Add(Antenna);
+                    foreach (var item in H2O2Generators)
+                    {
+                        level4blocks.Add(item);
+                    }
+                    foreach (var item in AirVents)
+                    {
+                        level4blocks.Add(item);
+                    }
+                    PowerClasses[4] = level4blocks;
 
-                /// level 3 power class:
-                /// doors
-                /// lights, interior and exterior
-                /// gravity generator
-                /// med bay
-                /// hinges, pistons, rotors
-                /// cameras
-                /// LCD panels
-                List<IMyFunctionalBlock> level3blocks = new List<IMyFunctionalBlock>();
-                foreach (var item in Doors) {
-                    level3blocks.Add(item);
-                }
-                foreach (var item in InteriorLights) {
-                    level3blocks.Add(item);
-                }
-                foreach (var item in Spotlights) {
-                    level3blocks.Add(item);
-                }
-                foreach (var item in GravityGenerators) {
-                    level3blocks.Add(item);
-                }
-                level3blocks.Add(MedicalRoom);
-                List<IMyTerminalBlock> allHingesAndRotors = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyMotorStator>(allHingesAndRotors, block => block.CubeGrid == Me.CubeGrid);
-                foreach (var item in allHingesAndRotors) {
-                    level3blocks.Add(item as IMyFunctionalBlock); // this chicanery might break...
-                }
-                List<IMyTerminalBlock> allPistons = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyPistonBase>(allPistons, block => block.CubeGrid == Me.CubeGrid);
-                foreach (var item in allPistons) {
-                    level3blocks.Add(item as IMyFunctionalBlock);
-                }
-                level3blocks.Add(Camera);
-                List<IMyTerminalBlock> allLCDs = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyTextPanel>(allLCDs, block => block.CubeGrid == Me.CubeGrid);
-                foreach (var item in allLCDs) {
-                    level3blocks.Add(item as IMyFunctionalBlock);
-                }
-                PowerClasses[3] = level3blocks;
+                    /// level 5 power class:
+                    /// Assault Cannons
+                    /// Lower deck control seats
+                    /// railguns
+                    List<IMyFunctionalBlock> level5blocks = new List<IMyFunctionalBlock>();
+                    foreach (var item in AssaultCannons)
+                    {
+                        level5blocks.Add(item);
+                    }
+                    foreach (var item in LowerDeckControlSeats)
+                    {
+                        level5blocks.Add(item as IMyFunctionalBlock);
+                    }
+                    foreach (var item in Railguns)
+                    {
+                        level5blocks.Add(item);
+                    }
+                    PowerClasses[5] = level5blocks;
 
-                /// level 4 power class:
-                /// Antenna
-                /// Air vents
-                /// h2/o2 generators
-                List<IMyFunctionalBlock> level4blocks = new List<IMyFunctionalBlock>();
-                level4blocks.Add(Antenna);
-                List<IMyTerminalBlock> airVents = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyAirVent>(airVents, block => block.CubeGrid == Me.CubeGrid);
-                foreach (var item in airVents) {
-                    level4blocks.Add(item as IMyFunctionalBlock);
-                }
-                foreach (var item in H2O2Generators) {
-                    level4blocks.Add(item);
-                }
-                PowerClasses[4] = level4blocks;
+                    /// level 6 power class:
+                    /// Assembler
+                    /// Refinery
+                    List<IMyFunctionalBlock> level6blocks = new List<IMyFunctionalBlock>();
+                    level6blocks.Add(Assembler);
+                    level6blocks.Add(Refinery);
+                    PowerClasses[6] = level6blocks;
 
-                /// level 5 power class:
-                /// Assault Cannons
-                /// Lower deck control seats
-                /// railguns
-                List<IMyFunctionalBlock> level5blocks = new List<IMyFunctionalBlock>();
-                foreach (var item in AssaultCannons) {
-                    level5blocks.Add(item);
+                    /// level 7 power class:
+                    /// sensors
+                    /// ore detector
+                    List<IMyFunctionalBlock> level7blocks = new List<IMyFunctionalBlock>();
+                    foreach (var item in Sensors)
+                    {
+                        level7blocks.Add(item);
+                    }
+                    level7blocks.Add(OreDetector);
+                    PowerClasses[7] = level7blocks;
                 }
-                foreach (var item in LowerDeckControlSeats) {
-                    level5blocks.Add(item as IMyFunctionalBlock);
+                catch (Exception ex)
+                {
+                    echo($"Something failed in CBT.AssignPowerClasses().\n{ex.Message}");
+                    AddToLogQueue($"Something failed in CBT.AssignPowerClasses().\n{ex.Message}");
                 }
-                foreach (var item in Railguns) {
-                    level5blocks.Add(item);
-                }
-                PowerClasses[5] = level5blocks;
-
-                /// level 6 power class:
-                /// Assembler
-                /// Refinery
-                List<IMyFunctionalBlock> level6blocks = new List<IMyFunctionalBlock>();
-                level6blocks.Add(Assembler);
-                level6blocks.Add(Refinery);
-                PowerClasses[6] = level6blocks;
-
-                /// level 7 power class:
-                /// sensors
-                /// ore detector
-                List<IMyFunctionalBlock> level7blocks = new List<IMyFunctionalBlock>();
-                foreach (var item in Sensors) {
-                    level7blocks.Add(item);
-                }
-                level7blocks.Add(OreDetector);
-                PowerClasses[7] = level7blocks;
-
             }
             #endregion Hardware Initialization
 
-            // inventory management methods
-            #region Inventory Management
-            private static void LoadCargoContainers(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> cargoContainerBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyCargoContainer>(cargoContainerBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (cargoContainerBlocks.Count == 0) {
-                    AddToLogQueue("No cargo containers found on the CBT", STULogType.ERROR);
-                    return;
-                }
 
-                IMyCargoContainer[] cargoContainers = new IMyCargoContainer[cargoContainerBlocks.Count];
-                for (int i = 0; i < cargoContainerBlocks.Count; ++i) {
-                    cargoContainers[i] = cargoContainerBlocks[i] as IMyCargoContainer;
-                }
-
-                CargoContainers = cargoContainers;
-                AddToLogQueue("Cargo containers ... loaded", STULogType.INFO);
-            }
-
-            public static int GetAmmoLevel(string ammoType) {
-                int ammo = 0;
-
-                // seach cargo containers
-                foreach (var container in CargoContainers) {
-                    List<MyInventoryItem> items = new List<MyInventoryItem>();
-                    container.GetInventory(0).GetItems(items);
-                    foreach (var item in items) {
-                        if (item.Type.SubtypeId == ammoType) {
-                            ammo += (int)item.Amount;
-                        }
-                    }
-                }
-
-                // search guns themselves
-                return ammo;
-            }
-
-            #endregion
-
-            // CBT helper functions
             #region CBT Helper Functions
+            #region Autopilot
             public static int GetAutopilotState() {
                 int autopilotState = 0;
                 if (FlightController.HasThrusterControl) { autopilotState += 1; }
@@ -1053,14 +1045,7 @@ namespace IngameScript {
                 SetAutopilotControl(thrusters, gyros, dampeners);
             }
 
-            private static void SetPowerLevel(int powerLevel) {
-                for (int i = 0; i < PowerClasses.Count; i++) {
-                    foreach (var item in PowerClasses[i]) {
-                        if (i <= powerLevel) { item.Enabled = true; } else { item.Enabled = false; }
-                    }
-                }
-
-            }
+            
 
             public static void ResetUserInputVelocities() {
                 UserInputForwardVelocity = 0;
@@ -1070,12 +1055,28 @@ namespace IngameScript {
                 UserInputPitchVelocity = 0;
                 UserInputYawVelocity = 0;
             }
-
-            public static void SetCruisingAltitude(double altitude) {
+            public static void SetCruisingAltitude(double altitude)
+            {
+                AltitudeControlActivated = true;
                 SetAutopilotControl(true, false, false);
                 FlightController.MaintainSeaLevelAltitude(altitude, 5, 5);
             }
             #endregion
+
+            public static void SetLandingGear(bool @lock)
+            {
+                foreach (var gear in LandingGear)
+                {
+                    if (@lock)
+                        gear.Lock();
+                    else
+                        gear.Unlock();
+                }
+                LandingGearState = @lock;
+            }
+
+            #endregion
+
         }
     }
 }

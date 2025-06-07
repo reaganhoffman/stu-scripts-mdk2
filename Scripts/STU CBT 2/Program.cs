@@ -46,10 +46,24 @@ namespace IngameScript {
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
         }
 
+        /// <summary>
+        /// This is the program's main method. It gets called by Space Engineers, it runs, then MUST return within 1/6 of a second
+        /// (the amound of time Space Engineers allots for scripts to run).
+        /// The paradigm of this script revolves around this constraint, and makes heavy use of state machines and enumerators and the like.
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <param name="updateSource"></param>
         public void Main(string argument, UpdateType updateSource) {
             try {
-                // fix and uncomment later
-                // InventoryEnumerator.EnumerateInventories();
+                try
+                {
+                    InventoryEnumerator.EnumerateInventories();
+                }
+                catch (Exception ex)
+                {
+                    CBT.AddToLogQueue("Something is wrong with the inventory enumerator...", STULogType.WARNING);
+                    CBT.AddToLogQueue($"{ex.Message}");
+                }
 
                 HandleWirelessMessages();
 
@@ -91,6 +105,8 @@ namespace IngameScript {
 
                 // update various subsystems that are independent of the maneuver queue
                 CBT.FlightController.UpdateState();
+                if (CBT.CruiseControlActivated) { CBT.FlightController.SetStableForwardVelocity(CBT.CruiseControlSpeed); } // continuously call SetStableForwardVelocity only if cruise control is activated.
+                if (CBT.AltitudeControlActivated) {  CBT.SetCruisingAltitude(CBT.AltitudeControlHeight); } // continuously set cruising altitude only if altitude control is activated.
                 CBT.Gangway.UpdateGangway(CBT.UserInputGangwayState);
                 CBT.RearDock.UpdateRearDock();
                 CBT.UpdateAutopilotScreens();
@@ -152,6 +168,8 @@ namespace IngameScript {
 
         public void ResetAutopilot() {
             ManeuverQueue.Clear();
+            CBT.CruiseControlActivated = false;
+            CBT.AltitudeControlActivated = false;
             CBT.ResetUserInputVelocities();
             foreach (var gyro in CBT.FlightController.AllGyroscopes) {
                 gyro.Pitch = 0;
@@ -211,7 +229,7 @@ namespace IngameScript {
         public bool ParseCommand(string arg) {
             // commands MUST follow the structure "[SUBJECT] [PREDICATE]".
             if (CommandLineParser.TryParse(arg)) {
-                if (CommandLineParser.ArgumentCount % 2 != 0) // check parity of argument count.
+                if (CommandLineParser.ArgumentCount % 2 != 0 && CommandLineParser.ArgumentCount > 1) // check parity of argument count, but ignore single-word commands.
                 {
                     CBT.AddToLogQueue($"Command string '{arg}' does not have an even number of arguments! Refusing to parse.", STULogType.ERROR);
                     return false;
@@ -225,181 +243,116 @@ namespace IngameScript {
                     }
 
                     string predicate;
-                    try {
+                    try
+                    {
                         predicate = CommandLineParser.Argument(i + 1);
                         predicate = predicate.ToUpper();
-                    } catch {
-                        CBT.AddToLogQueue($"Could not parse the NOUN part of the command. Defaulting to a blank string.", STULogType.ERROR);
+                    }
+                    catch
+                    {
+                        CBT.AddToLogQueue($"Could not parse predicate. Defaulting to a blank string.", STULogType.WARNING);
                         predicate = "";
                     }
-
+                        
                     float predicateAsFloat;
                     switch (subject) {
-                        case "FORWARD":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputForwardVelocity = predicateAsFloat;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
+                        case "HELP": // prints a help message to the screen
+                            switch (predicate)
+                            {
+                                case "":
+                                    CBT.AddToLogQueue("Enter a page number [1 - 3] to view detailed help. Commands are organized alphabetically.", STULogType.OK);
+                                    CBT.AddToLogQueue("CLOSEOUT {NOW} - Immediately goes to the 'closeout' state of the current maneuver.", STULogType.OK);
+                                    CBT.AddToLogQueue("HALT {NOW} - Executes a hover maneuver.", STULogType.OK);
+                                    CBT.AddToLogQueue("STOP {NOW} - Same as HALT, but changes the ship's orientation before firing thrusters to best counterract the current trajectory.", STULogType.OK);
+                                    CBT.AddToLogQueue("AP RESET - Resets the autopilot 'manually' (outisde of the maneuver queue) and clears the maneuver queue.", STULogType.OK);
+                                    CBT.AddToLogQueue("TEST - Executes hard-coded maneuver parameters. FOR TESTING PURPOSES ONLY.", STULogType.OK);
+                                    break;
+                                default:
+                                    CBT.AddToLogQueue("Page number out of range (probably not implemented yet).");
+                                    break;
                             }
                             break;
 
-                        case "BACKWARD":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputForwardVelocity = Math.Abs(predicateAsFloat) * -1;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
+                        #region CBT Software Commands
+                        case "CLOSEOUT": // instantly moves the current maneuver's state to the Closeout phase, if there is a currently executing maneuver.
+                            CBT.AddToLogQueue($"Cancelling maneuver '{CurrentManeuver.Name}'...", STULogType.INFO);
+                            if (CurrentManeuver != null)
+                            {
+                                CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Closeout;
                             }
                             break;
 
-                        case "UP":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputUpVelocity = predicateAsFloat;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
+                        case "POSITION": // prints the current world position of the remote control to the terminal
+                            CBT.AddToLogQueue($"Current position:", STULogType.INFO);
+                            CBT.AddToLogQueue($"X: {CBT.FlightController.CurrentPosition.X}", STULogType.INFO);
+                            CBT.AddToLogQueue($"Y: {CBT.FlightController.CurrentPosition.Y}", STULogType.INFO);
+                            CBT.AddToLogQueue($"Z: {CBT.FlightController.CurrentPosition.Z}", STULogType.INFO);
+                            break;
+
+                        case "CLEAR": // blanks all of the log screens by adding 20 lines of blank strings to the log queue.
+                            for (i = 0; i < 20; i++)
+                            {
+                                CBT.AddToLogQueue("");
+                            }
+                            break;
+                        #endregion
+
+                        #region CBT Hardware Commands
+                        case "POWER": // turns on/off various blocks on the grid according to their power level. Each successive level includes all the blocks in lower levels.
+                            int powerLevel;
+                            if (int.TryParse(predicate, out powerLevel))
+                            {
+                                if (0 <= powerLevel && powerLevel <= 7)
+                                {
+                                    CBT.PowerLevel = powerLevel;
+                                    break;
+                                }
+                                else
+                                {
+                                    CBT.AddToLogQueue($"Power level {powerLevel} is out of range. Must be between 1 and 7 (inclusive).");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+                        case "AIRLOCK":
+                            switch (predicate)
+                            {
+                                case "ENABLE":
+                                    CBT.ACM.EnableAutomaticControl();
+                                    break;
+                                case "DISABLE":
+                                    CBT.ACM.DisableAuomaticControl();
+                                    break;
+                                default:
+                                    CBT.AddToLogQueue($"Airlock command '{predicate}' is not valid. Try ENABLE or DISABLE. Skipping...", STULogType.WARNING);
+                                    break;
                             }
                             break;
 
-                        case "DOWN":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputUpVelocity = (predicateAsFloat) * -1;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
+                        case "GEAR":
+                            switch (predicate)
+                            {
+                                case "LOCK":
+                                    CBT.SetLandingGear(true);
+                                    break;
+                                case "UNLOCK":
+                                    CBT.SetLandingGear(false);
+                                    break;
+                                default:
+                                    CBT.AddToLogQueue($"Airlock command '{predicate}' is not valid. Try LOCK or UNLOCK. Skipping...", STULogType.WARNING);
+                                    break;
                             }
                             break;
+                        #endregion
 
-                        case "RIGHT":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputRightVelocity = predicateAsFloat;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "LEFT":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                CBT.UserInputRightVelocity = (predicateAsFloat) * -1;
-                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                    CBT.UserInputForwardVelocity,
-                                    CBT.UserInputRightVelocity,
-                                    CBT.UserInputUpVelocity,
-                                    CBT.UserInputRollVelocity,
-                                    CBT.UserInputPitchVelocity,
-                                    CBT.UserInputYawVelocity));
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "PITCH":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
-                                    CBT.UserInputPitchVelocity = predicateAsFloat * 3.14f;
-                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                        CBT.UserInputForwardVelocity,
-                                        CBT.UserInputRightVelocity,
-                                        CBT.UserInputUpVelocity,
-                                        CBT.UserInputRollVelocity,
-                                        CBT.UserInputPitchVelocity,
-                                        CBT.UserInputYawVelocity));
-                                } else { CBT.AddToLogQueue($"Pitch value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "ROLL":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
-                                    CBT.UserInputRollVelocity = predicateAsFloat * 3.14f;
-                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                        CBT.UserInputForwardVelocity,
-                                        CBT.UserInputRightVelocity,
-                                        CBT.UserInputUpVelocity,
-                                        CBT.UserInputRollVelocity,
-                                        CBT.UserInputPitchVelocity,
-                                        CBT.UserInputYawVelocity));
-                                } else { CBT.AddToLogQueue($"Roll value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "YAW":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
-                                    CBT.UserInputYawVelocity = predicateAsFloat * 3.14f;
-                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
-                                        CBT.UserInputForwardVelocity,
-                                        CBT.UserInputRightVelocity,
-                                        CBT.UserInputUpVelocity,
-                                        CBT.UserInputRollVelocity,
-                                        CBT.UserInputPitchVelocity,
-                                        CBT.UserInputYawVelocity));
-                                } else { CBT.AddToLogQueue($"Yaw value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "ALTITUDE":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                if (predicateAsFloat >= 25) {
-                                    CBT.AddToLogQueue($"Setting cruising altitude to {predicateAsFloat}m", STULogType.INFO);
-                                    CBT.SetCruisingAltitude(predicateAsFloat);
-                                } else { CBT.AddToLogQueue($"Cruising altitude cannot be set lower than 25. Skipping...", STULogType.WARNING); }
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
-                        case "SPEED":
-                            if (float.TryParse(predicate, out predicateAsFloat)) {
-                                if (predicateAsFloat > 0) {
-                                    CBT.AddToLogQueue($"Setting cruising speed to {predicateAsFloat}m/s", STULogType.INFO);
-                                    ManeuverQueue.Enqueue(new CBT.CruisingSpeedManeuver(predicateAsFloat));
-                                } else { CBT.AddToLogQueue("Cruising speed must be a positive number. Skipping...", STULogType.WARNING); }
-                            } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
-                            }
-                            break;
-
+                        #region Actuator Groups
                         case "GANGWAY":
-                            switch (predicate) {
+                            switch (predicate)
+                            {
                                 case "EXTEND":
                                     CBT.Gangway.ToggleGangway(1);
                                     break;
@@ -417,88 +370,9 @@ namespace IngameScript {
                                     break;
                             }
                             break;
-
-                        case "AIRLOCK":
-                            switch (predicate) {
-                                case "ENABLE":
-                                    CBT.ACM.EnableAutomaticControl();
-                                    break;
-                                case "DISABLE":
-                                    CBT.ACM.DisableAuomaticControl();
-                                    break;
-                                default:
-                                    CBT.AddToLogQueue($"Airlock command '{predicate}' is not valid. Try ENABLE or DISABLE. Skipping...", STULogType.WARNING);
-                                    break;
-                            }
-                            break;
-
-                        case "CLOSEOUT": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                            CBT.AddToLogQueue($"Cancelling maneuver '{CurrentManeuver.Name}'...", STULogType.INFO);
-                            if (CurrentManeuver != null) {
-                                CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Closeout;
-                            }
-                            break;
-
-                        case "HALT": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                            CBT.AddToLogQueue("Queueing a Hover maneuver", STULogType.INFO);
-                            ManeuverQueue.Enqueue(new CBT.HoverManeuver());
-                            break;
-
-                        case "STOP": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                            CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
-                            ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
-                            break;
-
-                        case "AP":
-                            switch (predicate) {
-                                case "RESET":
-                                    CBT.AddToLogQueue("Resetting autopilot...", STULogType.INFO);
-                                    ResetAutopilot();
-                                    break;
-                                default:
-                                    CBT.AddToLogQueue($"Autopilot command '{predicate}' is not valid. Try RESET or DISABLE. Skipping...", STULogType.WARNING);
-                                    break;
-                            }
-                            break;
-
-                        case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                            CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
-                            CBT.CreateBroadcast("PING", false, STULogType.INFO);
-                            break;
-
-                        case "POSITION": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                            CBT.AddToLogQueue($"Current position:", STULogType.INFO);
-                            CBT.AddToLogQueue($"X: {CBT.FlightController.CurrentPosition.X}", STULogType.INFO);
-                            CBT.AddToLogQueue($"Y: {CBT.FlightController.CurrentPosition.Y}", STULogType.INFO);
-                            CBT.AddToLogQueue($"Z: {CBT.FlightController.CurrentPosition.Z}", STULogType.INFO);
-                            break;
-
-                        case "DOCK":
-                            switch (predicate) {
-                                case "REQUEST":
-                                    CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
-                                    CBT.DockingModule.SendDockRequestFlag = true;
-                                    break;
-                                case "CONTINUE":
-                                    CBT.DockingModule.PilotConfirmation = true;
-                                    break;
-                                case "CANCEL":
-                                    if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot) {
-                                        CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
-                                        CBT.CreateBroadcast("CANCEL");
-                                        CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
-                                    } else {
-                                        CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
-                                    }
-                                    break;
-                                default:
-                                    CBT.AddToLogQueue($"Docking command '{predicate}' is not valid. Try REQUEST, CONFIRM or CANCEL. Skipping...", STULogType.WARNING);
-                                    break;
-                            }
-                            break;
-
                         case "STINGER":
-                            switch (predicate) {
+                            switch (predicate)
+                            {
                                 case "RESET":
                                     CBT.UserInputRearDockPosition = 1;
                                     break;
@@ -519,38 +393,261 @@ namespace IngameScript {
                                     break;
                             }
                             break;
+                        #endregion
 
-                        case "POWER":
-                            int powerLevel;
-                            if (int.TryParse(predicate, out powerLevel)) {
-                                if (0 <= powerLevel && powerLevel <= 7) {
-                                    CBT.PowerLevel = powerLevel;
-                                    break;
-                                } else {
-                                    CBT.AddToLogQueue($"Power level {powerLevel} is out of range. Must be between 0 and 7 (inclusive).");
-                                    break;
-                                }
+                        #region Simple Locomotion
+                        case "FORWARD":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputForwardVelocity = predicateAsFloat;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
                             } else {
-                                CBT.AddToLogQueue($"Failed to parse noun {predicate} on verb {subject}. Skipping...");
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
                             }
                             break;
 
-                        case "HELP":
-                            switch (predicate) {
-                                case "":
-                                    CBT.AddToLogQueue("Enter a page number [1 - 3] to view detailed help. Commands are organized alphabetically.", STULogType.OK);
-                                    CBT.AddToLogQueue("CLOSEOUT {NOW} - Immediately goes to the 'closeout' state of the current maneuver.", STULogType.OK);
-                                    CBT.AddToLogQueue("HALT {NOW} - Executes a hover maneuver.", STULogType.OK);
-                                    CBT.AddToLogQueue("STOP {NOW} - Same as HALT, but changes the ship's orientation before firing thrusters to best counterract the current trajectory.", STULogType.OK);
-                                    CBT.AddToLogQueue("AP RESET - Resets the autopilot 'manually' (outisde of the maneuver queue) and clears the maneuver queue.", STULogType.OK);
-                                    CBT.AddToLogQueue("TEST - Executes hard-coded maneuver parameters. FOR TESTING PURPOSES ONLY.", STULogType.OK);
+                        case "BACKWARD":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputForwardVelocity = Math.Abs(predicateAsFloat) * -1;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "UP":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputUpVelocity = predicateAsFloat;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "DOWN":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputUpVelocity = (predicateAsFloat) * -1;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "RIGHT":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputRightVelocity = predicateAsFloat;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "LEFT":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                CBT.UserInputRightVelocity = (predicateAsFloat) * -1;
+                                ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                    CBT.UserInputForwardVelocity,
+                                    CBT.UserInputRightVelocity,
+                                    CBT.UserInputUpVelocity,
+                                    CBT.UserInputRollVelocity,
+                                    CBT.UserInputPitchVelocity,
+                                    CBT.UserInputYawVelocity));
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "PITCH":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
+                                    CBT.UserInputPitchVelocity = predicateAsFloat * 3.14f;
+                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                        CBT.UserInputForwardVelocity,
+                                        CBT.UserInputRightVelocity,
+                                        CBT.UserInputUpVelocity,
+                                        CBT.UserInputRollVelocity,
+                                        CBT.UserInputPitchVelocity,
+                                        CBT.UserInputYawVelocity));
+                                } else { CBT.AddToLogQueue($"Pitch value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "ROLL":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
+                                    CBT.UserInputRollVelocity = predicateAsFloat * 3.14f;
+                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                        CBT.UserInputForwardVelocity,
+                                        CBT.UserInputRightVelocity,
+                                        CBT.UserInputUpVelocity,
+                                        CBT.UserInputRollVelocity,
+                                        CBT.UserInputPitchVelocity,
+                                        CBT.UserInputYawVelocity));
+                                } else { CBT.AddToLogQueue($"Roll value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "YAW":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                if (-1 <= predicateAsFloat && predicateAsFloat <= 1) {
+                                    CBT.UserInputYawVelocity = predicateAsFloat * 3.14f;
+                                    ManeuverQueue.Enqueue(new CBT.GenericManeuver(
+                                        CBT.UserInputForwardVelocity,
+                                        CBT.UserInputRightVelocity,
+                                        CBT.UserInputUpVelocity,
+                                        CBT.UserInputRollVelocity,
+                                        CBT.UserInputPitchVelocity,
+                                        CBT.UserInputYawVelocity));
+                                } else { CBT.AddToLogQueue($"Yaw value '{predicateAsFloat}' is out of range. Must be between -1 and +1. Skipping...", STULogType.WARNING); }
+                            } else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+                        #endregion
+
+                        #region Complex Locomotion
+                        case "AP":
+                            switch (predicate)
+                            {
+                                case "RESET":
+                                    CBT.AddToLogQueue("Resetting autopilot...", STULogType.INFO);
+                                    ResetAutopilot();
+                                    break;
+                                case "THRUSTERS":
+                                    CBT.AddToLogQueue($"Toggling thruster control {BoolConverter(!CBT.FlightController.HasThrusterControl)}");
+                                    CBT.SetAutopilotControl(!CBT.FlightController.HasThrusterControl, CBT.FlightController.HasGyroControl, CBT.RemoteControl.DampenersOverride);
+                                    break;
+                                case "GYROS":
+                                    CBT.AddToLogQueue($"Toggling gyro control {BoolConverter(!CBT.FlightController.HasGyroControl)}");
+                                    CBT.SetAutopilotControl(CBT.FlightController.HasThrusterControl, !CBT.FlightController.HasGyroControl, CBT.RemoteControl.DampenersOverride);
+                                        break;
+                                case "DAMPENERS":
+                                    CBT.AddToLogQueue($"Toggling dampener control {BoolConverter(!CBT.RemoteControl.DampenersOverride)}");
+                                    CBT.SetAutopilotControl(CBT.FlightController.HasThrusterControl, CBT.FlightController.HasGyroControl, !CBT.RemoteControl.DampenersOverride);
                                     break;
                                 default:
-                                    CBT.AddToLogQueue("Page number out of range (probably not implemented yet).");
+                                    CBT.AddToLogQueue($"Autopilot command '{predicate}' is not valid. Try RESET or DISABLE. Skipping...", STULogType.WARNING);
                                     break;
                             }
                             break;
+                        case "ALTITUDE":
+                            if (float.TryParse(predicate, out predicateAsFloat)) {
+                                if (predicateAsFloat >= 50) {
+                                    CBT.AddToLogQueue($"Setting cruising altitude to {predicateAsFloat}m", STULogType.INFO);
+                                    CBT.SetCruisingAltitude(predicateAsFloat);
+                                } else { CBT.AddToLogQueue($"Cruising altitude cannot be set lower than 50 for safety. Skipping...", STULogType.WARNING); }
+                            }
+                            else if (predicate == "CANCEL")
+                            {
+                                CBT.AltitudeControlActivated = false;
+                            }
+                            else {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
 
+                        case "CRUISE":
+                            if (float.TryParse(predicate, out predicateAsFloat))
+                            {
+                                if (predicateAsFloat > 0)
+                                {
+                                    CBT.AddToLogQueue($"Setting cruising speed to {predicateAsFloat}m/s", STULogType.INFO);
+                                    CBT.CruiseControlActivated = true;
+                                    CBT.CruiseControlSpeed = predicateAsFloat;
+                                }
+                                else { CBT.AddToLogQueue("Cruising speed must be a positive number. Skipping...", STULogType.WARNING); }
+                            }
+                            else if (predicate == "CANCEL")
+                            {
+                                CBT.CruiseControlActivated = false;
+                            }
+                            else
+                            {
+                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                            }
+                            break;
+
+                        case "HALT": // queues a hover maneuver
+                            CBT.AddToLogQueue("Queueing a Hover maneuver", STULogType.INFO);
+                            CBT.CruiseControlActivated= false;
+                            CBT.AltitudeControlActivated= false;
+                            ManeuverQueue.Enqueue(new CBT.HoverManeuver());
+                            break;
+
+                        case "STOP": // queues a fast stop maneuver
+                            CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
+                            CBT.CruiseControlActivated = false;
+                            CBT.AltitudeControlActivated = false;
+                            ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
+                            break;
+                        #endregion
+
+                        #region Networking
+                        case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
+                            CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
+                            CBT.CreateBroadcast("PING", false, STULogType.INFO);
+                            break;
+                        case "DOCK":
+                            switch (predicate)
+                            {
+                                case "REQUEST":
+                                    CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
+                                    CBT.DockingModule.SendDockRequestFlag = true;
+                                    break;
+                                case "CONTINUE":
+                                    CBT.DockingModule.PilotConfirmation = true;
+                                    break;
+                                case "CANCEL":
+                                    if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot)
+                                    {
+                                        CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
+                                        CBT.CreateBroadcast("CANCEL");
+                                        CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
+                                    }
+                                    else
+                                    {
+                                        CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
+                                    }
+                                    break;
+                                default:
+                                    CBT.AddToLogQueue($"Docking command '{predicate}' is not valid. Try REQUEST, CONFIRM or CANCEL. Skipping...", STULogType.WARNING);
+                                    break;
+                            }
+                            break;
+                        #endregion
 
                         default:
                             CBT.AddToLogQueue($"Unrecognized subject '{subject}'. Skipping...", STULogType.WARNING);
@@ -562,6 +659,11 @@ namespace IngameScript {
                 CBT.AddToLogQueue($"damn this shit broken fr fr", STULogType.ERROR);
                 return false;
             }
+        }
+
+        public string BoolConverter(bool value) {
+            if (value) { return "ON"; }
+            else { return "OFF"; }
         }
     }
 }

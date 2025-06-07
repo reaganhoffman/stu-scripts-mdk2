@@ -88,6 +88,7 @@ namespace IngameScript {
                 { p + "/Package", "Package" },
                 { co + "/Powerkit", "Powerkit" },
                 { po + "/SpaceCredit", "Space Credit" },
+                { am + "/PaintGunMag", "Paint Gun Magazine" },
 
 
                 // Ammo
