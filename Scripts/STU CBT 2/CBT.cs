@@ -128,7 +128,7 @@ namespace IngameScript {
 
             public static Dictionary<int, List<IMyFunctionalBlock>> PowerClasses = new Dictionary<int, List<IMyFunctionalBlock>>()
             {
-                { 0, new List<IMyFunctionalBlock> { } },
+                // { 0, new List<IMyFunctionalBlock> { } },
                 { 1, new List<IMyFunctionalBlock> { } },
                 { 2, new List<IMyFunctionalBlock> { } },
                 { 3, new List<IMyFunctionalBlock> { } },
@@ -147,6 +147,7 @@ namespace IngameScript {
                 CBTGrid = grid;
                 echo = Echo;
 
+                AddToLogQueue("INITIALIZING...");
                 // overhead
                 AddLogSubscribers(grid);
                 AddAutopilotIndicatorSubscribers(grid);
@@ -172,13 +173,16 @@ namespace IngameScript {
                 LoadLandingGear(grid);
                 LoadDoors(grid);
                 LoadHangarMagPlates(grid);
+                AddToLogQueue("FLIGHT-CRITICAL COMPONENTS ... DONE");
 
                 // power level 1
                 LoadGatlingGuns(grid);
+                AddToLogQueue("POWER LEVEL 1 ... DONE");
 
                 // power level 2
                 LoadRearDockArm(grid);
                 LoadGangwayActuators(grid);
+                AddToLogQueue("POWER LEVEL 2 ... DONE");
 
                 // power level 3
                 LoadInteriorLights(grid);
@@ -186,24 +190,29 @@ namespace IngameScript {
                 LoadGravityGenerators(grid);
                 LoadMedicalRoom(grid);
                 LoadCamera(grid);
+                AddToLogQueue("POWER LEVEL 3 ... DONE");
 
                 // power level 4
                 LoadAntenna(grid);
                 LoadH2O2Generators(grid);
                 LoadAirVents(grid);
+                AddToLogQueue("POWER LEVEL 4 ... DONE");
 
                 // power level 5
                 LoadAssaultCannonTurrets(grid);
                 LoadLowerDeckControlSeats(grid);
                 LoadRailguns(grid);
+                AddToLogQueue("POWER LEVEL 5 ... DONE");
 
                 // power level 6
                 LoadRefinery(grid);
                 LoadAssembler(grid);
+                AddToLogQueue("POWER LEVEL 6 ... DONE");
 
                 // power level 7
                 LoadSensors(grid);
                 LoadOreDetector(grid);
+                AddToLogQueue("POWER LEVEL 7 ... DONE");
 
                 AssignPowerClasses(grid);
 
@@ -213,7 +222,7 @@ namespace IngameScript {
                 ACM = new AirlockControlModule();
                 ACM.LoadAirlocks(grid, me, runtime);
 
-                AddToLogQueue("CBT initialized", STULogType.OK);
+                AddToLogQueue("INITIALIZED", STULogType.OK);
             }
 
             #region High-Level Software Control Methods
@@ -494,7 +503,6 @@ namespace IngameScript {
                     return;
                 }
                 RemoteControl = remoteControlBlocks[0] as IMyRemoteControl;
-                AddToLogQueue("Remote control ... loaded", STULogType.INFO);
             }
             // load ALL thrusters of ALL types
             // in later versions, fix this to have a list of ALL thrusters, plus subdivided groups of JUST ions and JUST hydros. 
@@ -514,7 +522,6 @@ namespace IngameScript {
                 }
 
                 Thrusters = allThrusters;
-                AddToLogQueue("Thrusters ... loaded", STULogType.INFO);
             }
             private static void LoadGyros(IMyGridTerminalSystem grid) {
                 List<IMyTerminalBlock> gyroBlocks = new List<IMyTerminalBlock>();
@@ -530,7 +537,6 @@ namespace IngameScript {
                 }
 
                 Gyros = gyros;
-                AddToLogQueue("Gyros ... loaded", STULogType.INFO);
             }
             private static void LoadFlightSeat(IMyGridTerminalSystem grid)
             {
@@ -540,7 +546,6 @@ namespace IngameScript {
                     AddToLogQueue("Could not locate \"CBT Flight Seat\"; ensure flight seat is named appropriately", STULogType.ERROR);
                     return;
                 }
-                AddToLogQueue("Main flight seat ... loaded", STULogType.INFO);
             }
             private static void LoadConnector(IMyGridTerminalSystem grid)
             {
@@ -554,7 +559,6 @@ namespace IngameScript {
                 Connector.Enabled = true;
                 Connector.IsParkingEnabled = false;
                 Connector.PullStrength = 0;
-                AddToLogQueue("Connector ... loaded", STULogType.INFO);
             }
             private static void LoadCryoPods(IMyGridTerminalSystem grid)
             {
@@ -566,8 +570,6 @@ namespace IngameScript {
                 {
                     cryoPods[i] = cryoPodBlocks[i] as IMyCryoChamber;
                 }
-
-                AddToLogQueue("Cryo Pods ... loaded", STULogType.INFO);
             }
             private static void LoadLandingGear(IMyGridTerminalSystem grid)
             {
@@ -586,7 +588,6 @@ namespace IngameScript {
                 }
 
                 LandingGear = landingGear;
-                AddToLogQueue("Landing gear ... loaded", STULogType.INFO);
             }
             private static void LoadDoors(IMyGridTerminalSystem grid)
             {
@@ -598,7 +599,6 @@ namespace IngameScript {
                     doors[i] = doorBlocks[i] as IMyDoor;
                 }
                 Doors = doors;
-                AddToLogQueue("Doors ... loaded", STULogType.INFO);
             }
             private static void LoadHangarMagPlates(IMyGridTerminalSystem grid)
             {
@@ -606,7 +606,6 @@ namespace IngameScript {
                 grid.GetBlocksOfType<IMyShipConnector>(magPlateBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("Connector"));
 
                 HangarMagPlates = magPlateBlocks.ToArray();
-                AddToLogQueue("Hangar Mag Plates ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -619,7 +618,6 @@ namespace IngameScript {
                 if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found on the CBT", STULogType.ERROR); return; }
 
                 GatlingTurrets = gatlingGunBlocks.ToArray();
-                AddToLogQueue("Gatling guns ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -640,8 +638,6 @@ namespace IngameScript {
                 RearPiston = piston as IMyPistonBase;
 
                 RearDock = new CBTRearDock(RearPiston, RearHinge1, RearHinge2, Connector);
-
-                AddToLogQueue("Stinger arm actuator assembly ... loaded", STULogType.INFO);
             }
             private static void LoadGangwayActuators(IMyGridTerminalSystem grid)
             {
@@ -659,8 +655,6 @@ namespace IngameScript {
                 GangwayHinge2.TargetVelocityRPM = 0;
 
                 Gangway = new CBTGangway(GangwayHinge1, GangwayHinge2);
-
-                AddToLogQueue("Gangway actuator assembly ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -671,8 +665,6 @@ namespace IngameScript {
                 grid.GetBlocksOfType<IMyInteriorLight>(lightBlocks, block => block.CubeGrid == Me.CubeGrid);
 
                 InteriorLights = lightBlocks.ToArray();
-
-                AddToLogQueue("Interior Lights ... loaded", STULogType.INFO);
             }
             private static void LoadSpotlights(IMyGridTerminalSystem grid)
             {
@@ -680,8 +672,6 @@ namespace IngameScript {
                 grid.GetBlocksOfType<IMyReflectorLight>(spotlightBlocks, block => block.CubeGrid == Me.CubeGrid);
                 
                 Spotlights = spotlightBlocks.ToArray();
-
-                AddToLogQueue("Spotlights ... loaded", STULogType.INFO);
             }
             private static void LoadGravityGenerators(IMyGridTerminalSystem grid)
             {
@@ -694,7 +684,6 @@ namespace IngameScript {
                 }
 
                 GravityGenerators = gravityGeneratorBlocks.ToArray();
-                AddToLogQueue("Gravity generators ... loaded", STULogType.INFO);
             }
             private static void LoadMedicalRoom(IMyGridTerminalSystem grid)
             {
@@ -704,7 +693,6 @@ namespace IngameScript {
                     AddToLogQueue("Could not locate \"CBT Medical Room\"; ensure medical room is named appropriately", STULogType.ERROR);
                     return;
                 }
-                AddToLogQueue("Medical Room ... loaded", STULogType.INFO);
             }
             private static void LoadCamera(IMyGridTerminalSystem grid)
             {
@@ -720,7 +708,6 @@ namespace IngameScript {
                 CameraRotor = rotor as IMyMotorStator;
                 CameraHinge = hinge as IMyMotorStator;
                 Camera = camera as IMyCameraBlock;
-                AddToLogQueue("Camera and actuator assembly ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -736,7 +723,6 @@ namespace IngameScript {
                     AddToLogQueue("Error trying to find \"CBT Antenna\". Not loaded.", STULogType.WARNING);
                     return;
                 }
-                AddToLogQueue("Antenna ... loaded", STULogType.INFO);
             }
             private static void LoadH2O2Generators(IMyGridTerminalSystem grid)
             {
@@ -755,7 +741,6 @@ namespace IngameScript {
                 }
 
                 H2O2Generators = generators;
-                AddToLogQueue("H2O2 generators ... loaded", STULogType.INFO);
             }
             private static void LoadAirVents(IMyGridTerminalSystem grid)
             {
@@ -768,7 +753,6 @@ namespace IngameScript {
                 }
                 
                 AirVents = airVentBlocks.ToArray();
-                AddToLogQueue("Air vents ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -785,7 +769,6 @@ namespace IngameScript {
                 }
                 
                 AssaultCannons = assaultCannonBlocks.ToArray();
-                AddToLogQueue("Assault cannons ... loaded", STULogType.INFO);
             }
             private static void LoadLowerDeckControlSeats(IMyGridTerminalSystem grid)
             {
@@ -799,7 +782,6 @@ namespace IngameScript {
                     return;
                 }
                 LowerDeckControlSeats = controlSeatBlocks.ToArray();
-                AddToLogQueue("Lower deck control seats ... loaded", STULogType.INFO);
             }
             private static void LoadRailguns(IMyGridTerminalSystem grid)
             {
@@ -813,7 +795,6 @@ namespace IngameScript {
                 }
 
                 Railguns = railgunBlocks.ToArray();
-                AddToLogQueue("Railguns ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -829,7 +810,6 @@ namespace IngameScript {
                     AddToLogQueue("Error finding \"CBT Assembler\". Not loaded", STULogType.WARNING);
                     return;
                 }
-                AddToLogQueue("Assembler ... loaded", STULogType.INFO);
             }
             private static void LoadRefinery(IMyGridTerminalSystem grid)
             {
@@ -842,7 +822,6 @@ namespace IngameScript {
                     AddToLogQueue("Error finding \"CBT Refinery\". Not loaded", STULogType.WARNING);
                     return;
                 }
-                AddToLogQueue("Refinery ... loaded", STULogType.INFO);
             }
             #endregion
 
@@ -853,7 +832,6 @@ namespace IngameScript {
                 grid.GetBlocksOfType<IMySensorBlock>(sensorBlocks, block => block.CubeGrid == Me.CubeGrid);
                 
                 Sensors = sensorBlocks.ToArray();
-                AddToLogQueue("Sensors ... loaded", STULogType.INFO);
             }
             private static void LoadOreDetector(IMyGridTerminalSystem grid)
             {
@@ -866,14 +844,13 @@ namespace IngameScript {
                     AddToLogQueue("Error finding \"CBT Ore Detector\". Not loaded.", STULogType.WARNING);
                     return;
                 }
-                AddToLogQueue("Ore Detector ... loaded");
             }
             #endregion
 
             public static void AssignPowerClasses(IMyGridTerminalSystem grid) {
                 try
                 {
-                    CBT.AddToLogQueue("Initializing power classes...", STULogType.INFO);
+                    CBT.AddToLogQueue("Instantiating power classes...", STULogType.INFO);
                     /// level 1 power class:
                     /// Gatling guns
                     List<IMyFunctionalBlock> level1blocks = new List<IMyFunctionalBlock>();
@@ -1010,40 +987,40 @@ namespace IngameScript {
                 RemoteControl.DampenersOverride = dampeners;
             }
 
-            public static void SetAutopilotControl(int state) {
-                bool thrusters = false;
-                bool gyros = false;
-                bool dampeners = true;
-                switch (state) {
-                    case 1:
-                        thrusters = true;
-                        break;
-                    case 2:
-                        gyros = true;
-                        break;
-                    case 3:
-                        thrusters = true;
-                        gyros = true;
-                        break;
-                    case 4:
-                        dampeners = false;
-                        break;
-                    case 5:
-                        thrusters = true;
-                        dampeners = false;
-                        break;
-                    case 6:
-                        gyros = true;
-                        dampeners = false;
-                        break;
-                    case 7:
-                        thrusters = true;
-                        gyros = true;
-                        dampeners = false;
-                        break;
-                }
-                SetAutopilotControl(thrusters, gyros, dampeners);
-            }
+            //public static void SetAutopilotControl(int state) {
+            //    bool thrusters = false;
+            //    bool gyros = false;
+            //    bool dampeners = true;
+            //    switch (state) {
+            //        case 1:
+            //            thrusters = true;
+            //            break;
+            //        case 2:
+            //            gyros = true;
+            //            break;
+            //        case 3:
+            //            thrusters = true;
+            //            gyros = true;
+            //            break;
+            //        case 4:
+            //            dampeners = false;
+            //            break;
+            //        case 5:
+            //            thrusters = true;
+            //            dampeners = false;
+            //            break;
+            //        case 6:
+            //            gyros = true;
+            //            dampeners = false;
+            //            break;
+            //        case 7:
+            //            thrusters = true;
+            //            gyros = true;
+            //            dampeners = false;
+            //            break;
+            //    }
+            //    SetAutopilotControl(thrusters, gyros, dampeners);
+            //}
 
             
 

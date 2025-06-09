@@ -31,11 +31,6 @@ namespace IngameScript
             public const double PLANETARY_DETECTION_BUFFER = 2000;
             //public const string PRIVATE_KEY = "";
             //public const string PUBLIC_KEY = "";
-
-            public static class COMMANDS
-            {
-                public const string Stop = "Stop";
-            }
         }
     }
 }

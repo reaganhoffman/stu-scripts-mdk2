@@ -56,7 +56,7 @@ namespace IngameScript {
                     Type = SpriteType.TEXT,
                     Data = "GAT",
                     Position = TopLeft + new Vector2(ScreenWidth / 6 - GetTextSpriteWidth("GAT") / 2, 1),
-                    Color = new Color(255, 255, 255),
+                    Color = GatlingStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
@@ -64,7 +64,7 @@ namespace IngameScript {
                     Type = SpriteType.TEXT,
                     Data = GatlingAmmo.ToString(),
                     Position = TopLeft + new Vector2(ScreenWidth / 6 - GetTextSpriteWidth(GatlingAmmo.ToString()) / 2, ScreenHeight / 4 + 1),
-                    Color = new Color(255, 255, 255),
+                    Color = GatlingStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
@@ -72,7 +72,7 @@ namespace IngameScript {
                     Type = SpriteType.TEXT,
                     Data = "AT",
                     Position = TopLeft + new Vector2(ScreenWidth / 2 - GetTextSpriteWidth("AT") / 2, 1),
-                    Color = new Color(255, 255, 255),
+                    Color = AssaultCannonStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
@@ -80,7 +80,7 @@ namespace IngameScript {
                     Type = SpriteType.TEXT,
                     Data = AssaultAmmo.ToString(),
                     Position = TopLeft + new Vector2(ScreenWidth / 2 - GetTextSpriteWidth(AssaultAmmo.ToString()) / 2, ScreenHeight / 4 + 1),
-                    Color = new Color(255, 255, 255),
+                    Color = AssaultCannonStatus(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
@@ -119,8 +119,14 @@ namespace IngameScript {
             public static Color RailgunStatus()
             {
                 int runningTotal = 0;
-                runningTotal += CBT.Railguns[0].IsWorking ? 1 : 0;
-                runningTotal += CBT.Railguns[1].IsWorking ? 1 : 0;
+                foreach (var rg in CBT.Railguns) 
+                { 
+                    runningTotal += rg.IsWorking ? 1 : 0; 
+                    if (rg.Enabled == false)
+                    {
+                        return new Color(0, 0, 255);
+                    }
+                }
                 switch (runningTotal)
                 {
                     case 0: return new Color(255, 0, 0);
@@ -128,6 +134,34 @@ namespace IngameScript {
                     case 2: return new Color(0, 255, 0);
                     default: return new Color(255, 255, 255);
                 }
+            }
+
+            public static Color AssaultCannonStatus()
+            {
+                int runningTotal = 0;
+                foreach (var ac in CBT.AssaultCannons) 
+                { 
+                    runningTotal += ac.IsWorking ? 1 : 0; 
+                    if (ac.Enabled == false) { return new Color(0, 0, 255); }
+                }
+                if (runningTotal == 0) return new Color(255, 0, 0);
+                else if (runningTotal > 0 && runningTotal < CBT.AssaultCannons.Length) return new Color(0, 255, 255);
+                else if (runningTotal == CBT.AssaultCannons.Length) return new Color(0, 255, 0);
+                else return new Color(255, 255, 255);
+            }
+
+            public static Color GatlingStatus()
+            {
+                int runningTotal = 0;
+                foreach (var gg in CBT.GatlingTurrets) 
+                { 
+                    runningTotal += gg.IsWorking ? 1 : 0;
+                    if (gg.Enabled == false) { return new Color(0, 0, 255); }
+                }
+                if (runningTotal == 0) return new Color (255, 0, 0);
+                else if (runningTotal > 0 && runningTotal < CBT.GatlingTurrets.Length) return new Color(0, 255, 255);
+                else if (runningTotal == CBT.GatlingTurrets.Length) return new Color(0, 255, 0);
+                else return new Color(255, 255, 255);
             }
         }
     }
