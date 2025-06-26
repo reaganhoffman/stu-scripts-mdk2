@@ -121,6 +121,18 @@ namespace IngameScript
             {
                 Enabled = true;
             }
+
+            public void ChangeDuration(double timeBufferMS = 750)
+            {
+                foreach (Airlock airlock in Airlocks)
+                {
+                    airlock.StateMachine.TimeBufferMS = timeBufferMS;
+                }
+                foreach (SoloAirlock soloAirlock in SoloAirlocks)
+                {
+                    soloAirlock.StateMachine.TimeBufferMS = timeBufferMS;
+                }
+            }
         }
     }
 }

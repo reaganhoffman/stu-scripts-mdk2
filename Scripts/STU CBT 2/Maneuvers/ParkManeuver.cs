@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Sandbox.Game.Replication;
+using System;
+using System.Collections.Generic;
 using VRageMath;
 
 namespace IngameScript {
@@ -6,39 +8,97 @@ namespace IngameScript {
         public partial class CBT {
             public class ParkManeuver : STUStateMachine {
                 public override string Name => "Park";
-                Queue<STUStateMachine> ManeuverQueue;
-                Vector3D CRMergeBlock_position;
-                Vector3D CRMergeBlock_orientation;
-                Vector3D StagingPosition;
-                public ParkManeuver(Queue<STUStateMachine> thisManeuverQueue, Vector3D _CRMergeBlock_position, Vector3D _CRMergeBlock_orientation) {
+                Queue<STUStateMachine> ManeuverQueue { get; set; }
+                CBTGangway CBTGangway { get; set; }
+                public enum LandingPhases
+                {
+                    InitialDescent,
+                    FinalApproach,
+                    Touchdown
+                }
+                public LandingPhases InternalState { get; set; }
+                public bool Landed { get; private set; } = false;
+                private bool _pilotConfirmation = false;
+                public bool PilotConfirmation 
+                {
+                    get { return _pilotConfirmation; }
+                    set
+                    {
+                        if (value == true)
+                        {
+                            if (Landed)
+                            {
+                                _pilotConfirmation = true;
+                            }
+                            else
+                            {
+                                AddToLogQueue("Not landed, cannot park yet.", STULogType.WARNING);
+                            }
+                        }
+                        else
+                        {
+                            _pilotConfirmation = false;
+                        }
+                    } 
+                }
+                
+                public ParkManeuver(Queue<STUStateMachine> thisManeuverQueue, CBTGangway cBTGangway) {
                     ManeuverQueue = thisManeuverQueue;
-                    CRMergeBlock_position = _CRMergeBlock_position;
-                    CRMergeBlock_orientation = _CRMergeBlock_orientation;
+                    CBTGangway = cBTGangway;
                 }
 
                 public override bool Init() {
                     // ensure we have access to the thrusters, gyros, and dampeners are on
                     SetAutopilotControl(true, true, true);
                     ResetUserInputVelocities();
-                    StagingPosition = CalculateStagingPosition(CRMergeBlock_position);
-                    return true;
+                    CancelCruiseControl();
+                    LevelToHorizon();
+                    foreach (var spotlight in CBT.Spotlights)
+                    {
+                        spotlight.Enabled = true;
+                    }
+                    if (!CBTGangway.ToggleGangway(1))
+                    {
+                        CBT.UserInputGangwayState = CBTGangway.GangwayStates.Resetting;
+                    }
+                    return Math.Abs(FlightController.VelocityMagnitude) < 0.1;
                 }
 
                 public override bool Run() {
-                    ManeuverQueue.Enqueue(new STUFlightController.GotoAndStop(FlightController, StagingPosition, 5));
-                    ManeuverQueue.Enqueue(new STUFlightController.PointAtTarget(FlightController, CRMergeBlock_orientation));
-                    ManeuverQueue.Enqueue(new ExtendGangwayManeuver());
-                    ManeuverQueue.Enqueue(new STUFlightController.GotoAndStop(FlightController, CRMergeBlock_position, 5));
-                    return true;
+                    switch (InternalState)
+                    {
+                        case LandingPhases.InitialDescent:
+                            double descendVelocity = Math.Max(CBT.FlightController.GetCurrentSurfaceAltitude() / 10, 4);
+                            
+                            if (FlightController.MaintainSurfaceAltitude(30, 10, descendVelocity) && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended) { InternalState = LandingPhases.FinalApproach; }
+                            break;
+                        case LandingPhases.FinalApproach:
+                            CBT.CancelAttitudeControl();
+                            foreach (var light in CBT.InteriorLights) { light.Enabled = true; }
+                            if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) { InternalState = LandingPhases.Touchdown; }
+                            break;
+                        case LandingPhases.Touchdown:
+                            Landed = true;
+                            AddToLogQueue("Landing sequence touched down. Ready to park.", STULogType.OK);
+                            return true;
+                    }
+                    return false;
                 }
 
                 public override bool Closeout() {
-                    return true;
-                }
-
-                public Vector3D CalculateStagingPosition(Vector3D mergeBlockPosition) {
-                    Vector3D stagingPosition = mergeBlockPosition;
-                    return stagingPosition;
+                    FlightController.MaintainSurfaceAltitude(1, 1, 1);
+                    if (PilotConfirmation)
+                    {
+                        CBT.SetLandingGear(true);
+                        CBT.CancelAttitudeControl();
+                        CBT.SetAutopilotControl(false, false, true);
+                        foreach (var thruster in CBT.Thrusters) { thruster.Enabled = false; }
+                        foreach (var spotlight in CBT.Spotlights) { spotlight.Enabled = false; }
+                        return true;
+                        
+                    }
+                    return false;
+                    
                 }
             }
         }

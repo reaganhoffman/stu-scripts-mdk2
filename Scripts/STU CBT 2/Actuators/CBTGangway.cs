@@ -48,7 +48,6 @@ namespace IngameScript {
             public void UpdateGangway(GangwayStates desiredState) {
                 if (desiredState != CurrentGangwayState && desiredState != LastUserInputGangwayState) {
                     if (CanGoToRequestedState(desiredState)) {
-                        CBT.AddToLogQueue($"Changing internal gangway state to user input: {desiredState}", STULogType.INFO);
                         CurrentGangwayState = desiredState;
                         LastUserInputGangwayState = desiredState;
                     } else {
@@ -101,7 +100,7 @@ namespace IngameScript {
             }
 
             // methods
-            private GangwayStates TryDetermineState() {
+            public GangwayStates TryDetermineState() {
                 if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) {
                     return GangwayStates.Extended;
                 } else if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) {
@@ -162,8 +161,6 @@ namespace IngameScript {
                 GangwayHinge1.Torque = HINGE_TORQUE;
                 if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE) // if it's close to 0 degrees, stop it and set limits
                 {
-                    CBT.AddToLogQueue($"Hinge 1 is close to 0 degrees", STULogType.INFO);
-                    // GangwayHinge1.TargetVelocityRPM = 0;
                     GangwayHinge1.UpperLimitDeg = 0;
                     GangwayHinge1.LowerLimitDeg = -90;
                     GangwayHinge1.BrakingTorque = HINGE_TORQUE;
@@ -178,14 +175,12 @@ namespace IngameScript {
                 } else { return false; }
             }
 
-            private bool ResetHinge2() // this one is actually ran first
+            private bool ResetHinge2() // this one runs first
             {
                 GangwayHinge2.RotorLock = false;
                 GangwayHinge2.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM;
                 GangwayHinge2.Torque = HINGE_TORQUE;
                 if (Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) {
-                    CBT.AddToLogQueue($"Hinge 2 is close to 90 degrees", STULogType.INFO);
-                    // GangwayHinge2.TargetVelocityRPM = 0;
                     GangwayHinge2.UpperLimitDeg = 90;
                     GangwayHinge2.LowerLimitDeg = -90;
                     GangwayHinge2.BrakingTorque = HINGE_TORQUE;
@@ -194,8 +189,8 @@ namespace IngameScript {
             }
 
             private bool ExtendGangway() {
-                GangwayHinge1.TargetVelocityRPM = 1;
-                GangwayHinge2.TargetVelocityRPM = 1;
+                GangwayHinge1.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM;
+                GangwayHinge2.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM * 2;
                 if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) // is hinge1 close enough to 0, and hinge2 close enough to +90?
                 {
                     CBT.AddToLogQueue("Gangway Extended.", STULogType.OK);
@@ -205,7 +200,7 @@ namespace IngameScript {
 
             private bool RetractGangway() {
                 GangwayHinge1.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
-                GangwayHinge2.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
+                GangwayHinge2.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM * 2;
                 if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) // are both hinges close enough to -90, expressed in radians?
                 {
                     CBT.AddToLogQueue("Gangway Retracted.", STULogType.OK);
@@ -213,12 +208,11 @@ namespace IngameScript {
                 } else { return false; }
             }
 
-            public void ToggleGangway(float desiredState = float.NaN) {
+            public bool ToggleGangway(float desiredState = float.NaN) {
                 if (CurrentGangwayState == GangwayStates.Unknown) {
                     CBT.AddToLogQueue($"Gangway state unknown; to automatically reset, enter 'gangwayreset' in the prompt.", STULogType.WARNING);
+                    return false;
                 }
-
-                CBT.AddToLogQueue($"desired state: {desiredState}", STULogType.INFO);
 
                 if (desiredState == 1 && CanGoToRequestedState(GangwayStates.Extending)) {
                     CurrentGangwayState = GangwayStates.Extending;
@@ -230,6 +224,7 @@ namespace IngameScript {
                     else if (CurrentGangwayState == GangwayStates.Extended || CurrentGangwayState == GangwayStates.Extending)
                         CurrentGangwayState = GangwayStates.Retracting;
                 }
+                return true;
             }
         }
     }

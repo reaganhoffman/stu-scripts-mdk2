@@ -99,18 +99,18 @@ namespace IngameScript {
                 Color dampenersBGColor;
 
                 if (thrustersOn) {
-                    thrustersState = "Thrusters ON";
+                    thrustersState = "Thrusters AUTO";
                     thrustersBGColor = new Color(0, 255, 0, 255);
                 } else {
-                    thrustersState = "Thrusters OFF";
+                    thrustersState = "Thrusters MANU";
                     thrustersBGColor = new Color(255, 0, 0, 255);
                 }
 
                 if (gyroOn) {
-                    gyroState = "Gyros ON";
+                    gyroState = "Gyros AUTO";
                     gyroBGColor = new Color(0, 255, 0, 255);
                 } else {
-                    gyroState = "Gyros OFF";
+                    gyroState = "Gyros MANU";
                     gyroBGColor = new Color(255, 0, 0, 255);
                 }
 
