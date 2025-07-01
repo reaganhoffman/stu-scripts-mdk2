@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RHTestScript", "RHTestScript.csproj", "{FB3A1844-9327-44E1-B212-A51B39823BD7}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Log", "..\..\Mixins\Logging\STU Log\STU Log.shproj", "{6EE22094-1878-45BC-805C-D32278F9C704}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Master Log Broadcaster", "..\..\Mixins\Logging\STU Master Log Broadcaster\STU Master Log Broadcaster.shproj", "{4CAC373A-9512-4083-B2F8-27AB57997CC4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Draw Mapper", "..\..\Mixins\Displays\STU Display Draw Mapper\STU Display Draw Mapper.shproj", "{23E2D3A8-97CD-4E45-889C-1798F06F4240}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Type", "..\..\Mixins\Displays\STU Display Type\STU Display Type.shproj", "{A2C2A7B0-3894-43F4-8EB5-71BFC87BE730}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Image", "..\..\Mixins\Displays\STU Image\STU Image.shproj", "{7D53F862-DF1C-4FC4-92F8-49568E15C32B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB3A1844-9327-44E1-B212-A51B39823BD7}.Debug|x64.ActiveCfg = Debug|x64
+		{FB3A1844-9327-44E1-B212-A51B39823BD7}.Debug|x64.Build.0 = Debug|x64
+		{FB3A1844-9327-44E1-B212-A51B39823BD7}.Release|x64.ActiveCfg = Release|x64
+		{FB3A1844-9327-44E1-B212-A51B39823BD7}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2CCED6CE-96DE-4F6A-8FDB-DBEBAF6F1845}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{23e2d3a8-97cd-4e45-889c-1798f06f4240}*SharedItemsImports = 13
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
+		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{6ee22094-1878-45bc-805c-d32278f9c704}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{7d53f862-df1c-4fc4-92f8-49568e15c32b}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{a2c2a7b0-3894-43f4-8eb5-71bfc87be730}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{fb3a1844-9327-44e1-b212-a51b39823bd7}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

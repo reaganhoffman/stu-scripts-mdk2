@@ -1,7 +1,10 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using EmptyKeys.UserInterface.Generated.WorkshopBrowserView_Bindings;
+using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
+using System.Text.RegularExpressions;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
 
@@ -9,15 +12,12 @@ namespace IngameScript {
     partial class Program {
         public partial class CBT {
 
-            public static string LastErrorMessage = "";
-
             public static Action<string> echo;
 
             public const float TimeStep = 1.0f / 6.0f;
-            public static float Timestamp = 0;
-            public static Phase CurrentPhase = Phase.Idle;
+            public static Phase CurrentPhase { get; set; } = Phase.Idle;
 
-            private static int _powerLevel;
+            private static int _powerLevel { get; set; }
             public static int PowerLevel {
                 get { return _powerLevel; }
                 set {
@@ -52,12 +52,13 @@ namespace IngameScript {
             // does not exist in this namespace. Therefore, we are creating a new GridTerminalSystem object here to use in this class.
             // I could have named it whatever, e.g. "CBTGrid" but I don't want to have too many different names for the same thing.
             // just understand that when I reference the GridTerminalSystem property of the CBT class, I am referring to this object and NOT the one in Program.cs
-            public static IMyGridTerminalSystem CBTGrid;
-            public static List<IMyTerminalBlock> AllTerminalBlocks = new List<IMyTerminalBlock>();
-            public static List<CBTLogLCD> LogChannel = new List<CBTLogLCD>();
-            public static List<CBTAutopilotLCD> AutopilotStatusChannel = new List<CBTAutopilotLCD>();
-            public static List<CBTManeuverQueueLCD> ManeuverQueueChannel = new List<CBTManeuverQueueLCD>();
-            public static List<CBTAmmoLCD> AmmoChannel = new List<CBTAmmoLCD>();
+            public static IMyGridTerminalSystem CBTGrid { get; set; }
+            public static List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
+            public static List<CBTLogLCD> LogChannel { get; set; } = new List<CBTLogLCD>();
+            public static List<CBTAutopilotLCD> AutopilotStatusChannel { get; set; } = new List<CBTAutopilotLCD>();
+            public static List<CBTManeuverQueueLCD> ManeuverQueueChannel { get; set; } = new List<CBTManeuverQueueLCD>();
+            public static List<CBTAmmoLCD> AmmoChannel { get; set; } = new List<CBTAmmoLCD>();
+            public static List<CBTStatusLCD> StatusChannel { get; set; } = new List<CBTStatusLCD>();
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
@@ -66,42 +67,48 @@ namespace IngameScript {
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
             public static STUInventoryEnumerator InventoryEnumerator { get; set; }
+            #region Hardware
+            // power level 0:
+            public static IMyBatteryBlock[] Batteries { get; set; } = LoadAllBlocksOfType<IMyBatteryBlock>();
+            public static IMyButtonPanel[] ButtonPanels { get; set; } = LoadAllBlocksOfType<IMyButtonPanel>();
+            public static IMyPowerProducer[] HydrogenEngines { get; set; } = LoadAllBlocksOfType<IMyPowerProducer>();
+            public static IMyShipMergeBlock MergeBlock { get; set; } = LoadBlockByName<IMyShipMergeBlock>("CBT Merge Block");
+            public static IMyGasTank[] HydrogenTanks { get; set; } = LoadAllBlocksOfType<IMyGasTank>("Hydrogen");
+            public static IMyGasTank[] OxygenTanks { get; set; } = LoadAllBlocksOfType<IMyGasTank>("Oxygen");
+            // power level 1:
+            public static IMyRemoteControl RemoteControl { get; set; } = LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
+            public static IMyThrust[] Thrusters { get; set; } = LoadAllBlocksOfType<IMyThrust>();
             public static IMyShipConnector Connector { get; set; } // fix this later, Ethan said something about the LIGMA code assuming exactly one connector
             public static IMyMotorStator RearHinge1 { get; set; }
             public static IMyMotorStator RearHinge2 { get; set; }
             public static IMyPistonBase RearPiston { get; set; }
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }
+            public static IMyMotorStator HangarRotor { get; set; }
             public static IMyMotorStator CameraRotor { get; set; }
             public static IMyMotorStator CameraHinge { get; set; }
             public static IMyCameraBlock Camera { get; set; }
-            public static IMyRemoteControl RemoteControl { get; set; }
+            
             public static IMyTerminalBlock FlightSeat { get; set; }
-            public static STUDisplay FlightSeatFarLeftScreen { get; set; }
-            public static STUDisplay FlightSeatLeftScreen { get; set; }
-            public static STUDisplay PBMainScreen { get; set; }
+
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
 
-            public static IMyThrust[] Thrusters { get; set; }
+            
             public static IMyGyro[] Gyros { get; set; }
-            public static IMyBatteryBlock[] Batteries { get; set; }
-            public static IMyGasTank[] HydrogenTanks { get; set; }
+
             public static IMyLandingGear[] LandingGear { get; set; }
-            public static IMyGasTank[] OxygenTanks { get; set; }
             public static IMyCryoChamber[] CryoPods { get; set; }
-            public static IMyCargoContainer[] CargoContainers { get; set; }
-            public static IMyShipMergeBlock MergeBlock { get; set; }
+            //public static IMyCargoContainer[] CargoContainers { get; set; }
             public static IMyMedicalRoom MedicalRoom { get; set; }
             public static IMyGasGenerator[] H2O2Generators { get; set; }
-            public static IMyPowerProducer[] HydrogenEngines { get; set; }
-            public static IMyGravityGenerator[] GravityGenerators { get; set; }
+            public static IMyGravityGenerator GravityGenerator { get; set; }
             public static IMySensorBlock[] Sensors { get; set; }
             public static IMyInteriorLight[] InteriorLights { get; set; }
             public static IMyUserControllableGun[] GatlingTurrets { get; set; }
             public static IMyUserControllableGun[] AssaultCannons { get; set; }
             public static IMyUserControllableGun[] Railguns { get; set; }
             public static IMySmallMissileLauncher[] ArtilleryCannons { get; set; }
-            public static IMyButtonPanel[] ButtonPanels { get; set; }
+            
             public static IMyShipConnector[] HangarMagPlates { get; set; }
             public static IMyDoor[] Doors { get; set; }
             public static IMyRadioAntenna Antenna { get; set; }
@@ -111,11 +118,7 @@ namespace IngameScript {
             public static IMyReflectorLight[] Spotlights { get; set; }
             public static IMyOreDetector OreDetector { get; set; }
             public static IMyAirVent[] AirVents { get; set; }
-
-            public static double CurrentFuel { get; set; }
-            public static double CurrentPower { get; set; }
-            public static double FuelCapacity { get; set; }
-            public static double PowerCapacity { get; set; }
+            #endregion
 
             public static bool LandingGearState { get; set; }
 
@@ -140,10 +143,10 @@ namespace IngameScript {
             };
 
             // CBT object constructor
-            public CBT(Action<string> Echo, STUMasterLogBroadcaster broadcaster, STUInventoryEnumerator inventoryEnumerator, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
+            public CBT(Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
                 Me = me;
-                Broadcaster = broadcaster;
                 InventoryEnumerator = inventoryEnumerator;
+                Broadcaster = broadcaster;
                 Runtime = runtime;
                 CBTGrid = grid;
                 echo = Echo;
@@ -154,18 +157,19 @@ namespace IngameScript {
                 AddAutopilotIndicatorSubscribers(grid);
                 AddManeuverQueueSubscribers(grid);
                 AddAmmoScreens(grid);
+                AddStatusScreens(grid);
 
                 // zero power draw
-                LoadBatteries(grid);
-                LoadButtonPanels(grid);
-                LoadHydrogenEngines(grid);
-                LoadMergeBlock(grid);
-                LoadCargoContainers(grid);
-                LoadOxygenTanks(grid);
-                LoadHydrogenTanks(grid);
+                //LoadBatteries(grid);
+                //LoadButtonPanels(grid);
+                //LoadHydrogenEngines(grid);
+                //LoadMergeBlock(grid);
+                //LoadCargoContainers(grid);
+                //LoadOxygenTanks(grid);
+                //LoadHydrogenTanks(grid);
 
                 // flight critical ("power level 0" / negligible or intermittent power draw)
-                LoadRemoteController(grid);
+                //LoadRemoteController(grid);
                 LoadThrusters(grid);
                 LoadGyros(grid);
                 LoadFlightSeat(grid);
@@ -183,12 +187,13 @@ namespace IngameScript {
                 // power level 2
                 LoadRearDockArm(grid);
                 LoadGangwayActuators(grid);
+                LoadHangarRotor(grid);
                 AddToLogQueue("POWER LEVEL 2 ... DONE");
 
                 // power level 3
                 LoadInteriorLights(grid);
                 LoadSpotlights(grid);
-                LoadGravityGenerators(grid);
+                LoadGravityGenerator(grid);
                 LoadMedicalRoom(grid);
                 LoadCamera(grid);
                 AddToLogQueue("POWER LEVEL 3 ... DONE");
@@ -228,9 +233,9 @@ namespace IngameScript {
             }
 
             #region High-Level Software Control Methods
-            public static void EchoPassthru(string text) {
-                echo(text);
-            }
+            //public static void EchoPassthru(string text) {
+            //    echo(text);
+            //}
 
             // define the broadcaster method so that display messages can be sent throughout the world
             // (currently not implemented, just keeping this code here for future use)
@@ -260,7 +265,7 @@ namespace IngameScript {
                     });
                 }
             }
-            
+
             private static void SetPowerLevel(int powerLevel) {
                 for (int i = 0; i < PowerClasses.Count; i++) {
                     foreach (var item in PowerClasses[i]) {
@@ -317,10 +322,22 @@ namespace IngameScript {
                     screen.EndAndPaintFrame();
                 }
             }
+
+            public static void UpdateStatusScreens()
+            {
+                // logic here getting status updates of other systems
+
+                foreach (var screen in StatusChannel)
+                {
+                    screen.StartFrame();
+                    screen.BuildScreen(screen.CurrentFrame, screen.Center);
+                    screen.EndAndPaintFrame();
+                }
+            }
             #endregion
 
             #region Hardware Initialization
-            #region Overhead
+            #region Overhead ()
             private static void AddLogSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
@@ -353,7 +370,7 @@ namespace IngameScript {
                     string CustomDataRawText = block.CustomData;
                     string[] CustomDataLines = CustomDataRawText.Split('\n');
                     foreach (var line in CustomDataLines) {
-                        if (line.Contains("CBT_AUTOPILOT_STATUS")) {
+                        if (line.Contains("CBT_AUTOPILOT")) {
                             string[] kvp = line.Split(':');
                             CBTAutopilotLCD screen = new CBTAutopilotLCD(echo, block, int.Parse(kvp[1]));
                             AutopilotStatusChannel.Add(screen);
@@ -389,120 +406,190 @@ namespace IngameScript {
                     }
                 }
             }
+            private static void AddStatusScreens(IMyGridTerminalSystem grid)
+            {
+                grid.GetBlocks(AllTerminalBlocks);
+                foreach (var block in AllTerminalBlocks)
+                {
+                    string CustomDataRawText = block.CustomData;
+                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    foreach (var line in CustomDataLines)
+                    {
+                        if (line.Contains("CBT_STATUS"))
+                        {
+                            string[] kvp = line.Split(':');
+                            float fontSize;
+                            try
+                            {
+                                fontSize = float.Parse(kvp[2]);
+                                if (fontSize < 0.1f || fontSize > 10f)
+                                {
+                                    throw new Exception("Invalid font size");
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                echo("caught exception in CBT.AddStatusScreens():");
+                                echo(e.Message);
+                                fontSize = 0.5f;
+                            }
+                            CBTStatusLCD screen = new CBTStatusLCD(echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
+                            StatusChannel.Add(screen);
+                        }
+                    }
+                }
+            }
             #endregion
 
+            private static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
+            {
+                var intermediateList = new List<T>();
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid);
+
+                if (intermediateList.Count == 0)
+                {
+                    AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid.", STULogType.ERROR);
+                }
+
+                return intermediateList.ToArray();
+            }
+            private static T[] LoadAllBlocksOfType<T>(string detailedInfo) where T : class, IMyTerminalBlock
+            {
+                var intermediateList = new List<T>();
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains(detailedInfo));
+
+                if (intermediateList.Count == 0)
+                {
+                    AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid.", STULogType.ERROR);
+                }
+
+                return intermediateList.ToArray();
+            }
+            private static T LoadBlockByName<T>(string name) where T : class, IMyTerminalBlock
+            {
+                var block = CBTGrid.GetBlockWithName(name);
+                if (block == null)
+                {
+                    AddToLogQueue($"Could not find block with name '{name}'. It it named correctly?", STULogType.ERROR);
+                    return null;
+                }
+                else { return block as T; }
+            }
+
+
+
             #region Zero Power Draw
-            private static void LoadBatteries(IMyGridTerminalSystem grid)
-            {
-                List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
-                grid.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (batteryBlocks.Count == 0)
-                {
-                    AddToLogQueue("No batteries found on the CBT", STULogType.ERROR);
-                    return;
-                }
+            //private static void LoadBatteries(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyBatteryBlock> batteryBlocks = new List<IMyBatteryBlock>();
+            //    grid.GetBlocksOfType<IMyBatteryBlock>(batteryBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (batteryBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No batteries found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
 
-                Batteries = batteryBlocks.ToArray();
-            }
-            private static void LoadButtonPanels(IMyGridTerminalSystem grid)
-            {
-                List<IMyButtonPanel> buttonPanelBlocks = new List<IMyButtonPanel>();
-                grid.GetBlocksOfType<IMyButtonPanel>(buttonPanelBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (buttonPanelBlocks.Count == 0)
-                {
-                    AddToLogQueue("No button panels found on the CBT", STULogType.ERROR);
-                    return;
-                }
-                ButtonPanels = buttonPanelBlocks.ToArray();
-            }
-            private static void LoadHydrogenEngines(IMyGridTerminalSystem grid)
-            {
-                List<IMyPowerProducer> hydrogenEngineBlocks = new List<IMyPowerProducer>();
-                grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (hydrogenEngineBlocks.Count == 0)
-                {
-                    AddToLogQueue("No hydrogen engines found on the CBT", STULogType.ERROR);
-                    return;
-                }
+            //    Batteries = batteryBlocks.ToArray();
+            //}
+            //private static void LoadButtonPanels(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyButtonPanel> buttonPanelBlocks = new List<IMyButtonPanel>();
+            //    grid.GetBlocksOfType<IMyButtonPanel>(buttonPanelBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (buttonPanelBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No button panels found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
+            //    ButtonPanels = buttonPanelBlocks.ToArray();
+            //}
+            //private static void LoadHydrogenEngines(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyPowerProducer> hydrogenEngineBlocks = new List<IMyPowerProducer>();
+            //    grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (hydrogenEngineBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No hydrogen engines found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
 
-                HydrogenEngines = hydrogenEngineBlocks.ToArray();
-            }
-            private static void LoadMergeBlock(IMyGridTerminalSystem grid)
-            {
-                var mergeBlock = grid.GetBlockWithName("CBT Merge Block");
-                if (mergeBlock == null)
-                {
-                    AddToLogQueue("Could not locate \"CBT Merge Block\"; ensure merge block is named appropriately", STULogType.ERROR);
-                    return;
-                }
-                MergeBlock = mergeBlock as IMyShipMergeBlock;
-            }
-            private static void LoadCargoContainers(IMyGridTerminalSystem grid)
-            {
-                List<IMyCargoContainer> cargoContainerBlocks = new List<IMyCargoContainer>();
-                grid.GetBlocksOfType<IMyCargoContainer>(cargoContainerBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (cargoContainerBlocks.Count == 0)
-                {
-                    AddToLogQueue("No cargo containers found on the CBT", STULogType.ERROR);
-                    return;
-                }
+            //    HydrogenEngines = hydrogenEngineBlocks.ToArray();
+            //}
+            //private static void LoadMergeBlock(IMyGridTerminalSystem grid)
+            //{
+            //    var mergeBlock = grid.GetBlockWithName("CBT Merge Block");
+            //    if (mergeBlock == null)
+            //    {
+            //        AddToLogQueue("Could not locate \"CBT Merge Block\"; ensure merge block is named appropriately", STULogType.ERROR);
+            //        return;
+            //    }
+            //    MergeBlock = mergeBlock as IMyShipMergeBlock;
+            //}
+            //private static void LoadCargoContainers(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyCargoContainer> cargoContainerBlocks = new List<IMyCargoContainer>();
+            //    grid.GetBlocksOfType<IMyCargoContainer>(cargoContainerBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (cargoContainerBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No cargo containers found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
 
-                CargoContainers = cargoContainerBlocks.ToArray();
-            }
-            private static void LoadOxygenTanks(IMyGridTerminalSystem grid)
-            {
-                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
-                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Oxygen"));
-                if (gasTankBlocks.Count == 0)
-                {
-                    AddToLogQueue("No oxygen tanks found on the CBT", STULogType.ERROR);
-                    return;
-                }
+            //    CargoContainers = cargoContainerBlocks.ToArray();
+            //}
+            //private static void LoadOxygenTanks(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
+            //    grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Oxygen"));
+            //    if (gasTankBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No oxygen tanks found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
 
-                OxygenTanks = gasTankBlocks.ToArray();
-            }
-            private static void LoadHydrogenTanks(IMyGridTerminalSystem grid)
-            {
-                List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
-                grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Hydrogen"));
-                if (gasTankBlocks.Count == 0)
-                {
-                    AddToLogQueue("No hydrogen tanks found on the CBT", STULogType.ERROR);
-                    return;
-                }
-                HydrogenTanks = gasTankBlocks.ToArray();
-            }
+            //    OxygenTanks = gasTankBlocks.ToArray();
+            //}
+            //private static void LoadHydrogenTanks(IMyGridTerminalSystem grid)
+            //{
+            //    List<IMyGasTank> gasTankBlocks = new List<IMyGasTank>();
+            //    grid.GetBlocksOfType<IMyGasTank>(gasTankBlocks, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains("Hydrogen"));
+            //    if (gasTankBlocks.Count == 0)
+            //    {
+            //        AddToLogQueue("No hydrogen tanks found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
+            //    HydrogenTanks = gasTankBlocks.ToArray();
+            //}
             #endregion
 
             #region Flight Critical (Power Level 0)
-            private static void LoadRemoteController(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> remoteControlBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyRemoteControl>(remoteControlBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (remoteControlBlocks.Count == 0) {
-                    AddToLogQueue("No remote control blocks found on the CBT", STULogType.ERROR);
-                    return;
-                }
-                RemoteControl = remoteControlBlocks[0] as IMyRemoteControl;
-            }
+            //private static void LoadRemoteController(IMyGridTerminalSystem grid) {
+            //    List<IMyTerminalBlock> remoteControlBlocks = new List<IMyTerminalBlock>();
+            //    grid.GetBlocksOfType<IMyRemoteControl>(remoteControlBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (remoteControlBlocks.Count == 0) {
+            //        AddToLogQueue("No remote control blocks found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
+            //    RemoteControl = remoteControlBlocks[0] as IMyRemoteControl;
+            //}
             // load ALL thrusters of ALL types
             // in later versions, fix this to have a list of ALL thrusters, plus subdivided groups of JUST ions and JUST hydros. 
             // even more generalized version of a ship's class should allow for atmo, but the CBT doesn't have atmo.
-            private static void LoadThrusters(IMyGridTerminalSystem grid) {
-                List<IMyTerminalBlock> thrusterBlocks = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyThrust>(thrusterBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (thrusterBlocks.Count == 0) {
-                    AddToLogQueue("No thrusters found on the CBT", STULogType.ERROR);
-                    return;
-                }
+            //private static void LoadThrusters(IMyGridTerminalSystem grid) {
+            //    List<IMyTerminalBlock> thrusterBlocks = new List<IMyTerminalBlock>();
+            //    grid.GetBlocksOfType<IMyThrust>(thrusterBlocks, block => block.CubeGrid == Me.CubeGrid);
+            //    if (thrusterBlocks.Count == 0) {
+            //        AddToLogQueue("No thrusters found on the CBT", STULogType.ERROR);
+            //        return;
+            //    }
 
-                IMyThrust[] allThrusters = new IMyThrust[thrusterBlocks.Count];
+            //    IMyThrust[] allThrusters = new IMyThrust[thrusterBlocks.Count];
 
-                for (int i = 0; i < thrusterBlocks.Count; i++) {
-                    allThrusters[i] = thrusterBlocks[i] as IMyThrust;
-                }
+            //    for (int i = 0; i < thrusterBlocks.Count; i++) {
+            //        allThrusters[i] = thrusterBlocks[i] as IMyThrust;
+            //    }
 
-                Thrusters = allThrusters;
-            }
+            //    Thrusters = allThrusters;
+            //}
             private static void LoadGyros(IMyGridTerminalSystem grid) {
                 List<IMyTerminalBlock> gyroBlocks = new List<IMyTerminalBlock>();
                 grid.GetBlocksOfType<IMyGyro>(gyroBlocks, block => block.CubeGrid == Me.CubeGrid);
@@ -639,6 +726,16 @@ namespace IngameScript {
 
                 Gangway = new CBTGangway(GangwayHinge1, GangwayHinge2);
             }
+            private static void LoadHangarRotor(IMyGridTerminalSystem grid)
+            {
+                var rotor = grid.GetBlockWithName("CBT Ramp Rotor");
+                if (rotor == null)
+                {
+                    AddToLogQueue("Could not locate 'CBT Ramp Rotor' on the grid; ensure it exists and is named properly.", STULogType.ERROR);
+                    return;
+                }
+                HangarRotor = rotor as IMyMotorStator;
+            }
             #endregion
 
             #region Power Level 3
@@ -656,17 +753,16 @@ namespace IngameScript {
                 
                 Spotlights = spotlightBlocks.ToArray();
             }
-            private static void LoadGravityGenerators(IMyGridTerminalSystem grid)
+            private static void LoadGravityGenerator(IMyGridTerminalSystem grid)
             {
-                List<IMyGravityGenerator> gravityGeneratorBlocks = new List<IMyGravityGenerator>();
-                grid.GetBlocksOfType<IMyGravityGenerator>(gravityGeneratorBlocks, block => block.CubeGrid == Me.CubeGrid);
-                if (gravityGeneratorBlocks.Count == 0)
+                var gravityGenerator = grid.GetBlockWithName("CBT Gravity Generator");
+                if (gravityGenerator == null)
                 {
-                    AddToLogQueue("No gravity generators found on the CBT", STULogType.ERROR);
+                    AddToLogQueue("No gravity generator found on the CBT", STULogType.ERROR);
                     return;
                 }
 
-                GravityGenerators = gravityGeneratorBlocks.ToArray();
+                GravityGenerator = gravityGenerator as IMyGravityGenerator;
             }
             private static void LoadMedicalRoom(IMyGridTerminalSystem grid)
             {
@@ -884,10 +980,7 @@ namespace IngameScript {
                     {
                         level3blocks.Add(item);
                     }
-                    foreach (var item in GravityGenerators)
-                    {
-                        level3blocks.Add(item);
-                    }
+                    level3blocks.Add(GravityGenerator);
                     level3blocks.Add(MedicalRoom);
                     level3blocks.Add(Camera);
                     List<IMyTerminalBlock> allLCDs = new List<IMyTerminalBlock>();
@@ -960,6 +1053,51 @@ namespace IngameScript {
             }
             #endregion Hardware Initialization
 
+            #region Inventory reports
+            public static int GetHydrogenPercentFilled()
+            {
+                var inventory = InventoryEnumerator.GetItemTotals();
+                float h2RawAmount = inventory.ContainsKey("Hydrogen") ? (float)inventory["Hydrogen"] : 0;
+                try
+                {
+                    return (int)(h2RawAmount / CBT.InventoryEnumerator.HydrogenCapacity) * 100;
+                }
+                catch
+                {
+                    return 0; // save for potentially dividing by zero
+                }
+            }
+            public static int GetOxygenPercentFilled()
+            {
+                var inventory = InventoryEnumerator.GetItemTotals();
+                float o2RawAmount = inventory.ContainsKey("Oxygen") ? (float)inventory["Oxygen"] : 0;
+                try
+                {
+                    return (int)(o2RawAmount / CBT.InventoryEnumerator.OxygenCapacity) * 100;
+                }
+                catch
+                {
+                    return 0; // save from potentially dividing by zero
+                }
+            }
+            public static int GetPowerPercent()
+            {
+                var inventory = InventoryEnumerator.GetItemTotals();
+                float kWrunningTotal = 0;
+                foreach (var battery in Batteries)
+                {
+                    kWrunningTotal += battery.CurrentStoredPower;
+                }
+                try
+                {
+                    return (int)(kWrunningTotal / InventoryEnumerator.PowerCapacity) * 100;
+                }
+                catch
+                {
+                    return 0; // save from potentially dividing by zero
+                }
+            }
+            #endregion
 
             #region CBT Helper Functions
             #region Autopilot
@@ -1043,64 +1181,34 @@ namespace IngameScript {
             }
 
             #region Weapons
-            public static float RailgunStatus()
+            public static float GetRailgunRechargeTimeLeft(IMyUserControllableGun railgun)
             {
-                if (Railguns.Length == 0) return 0.0f;
-
-                var inventory = InventoryEnumerator.GetItemTotals();
-                if (!inventory.ContainsKey("Large Railgun Sabot")) { return 0; }
-
-                float combinedRechargeLevel = 0f;
-                foreach (var railgun in Railguns)
-                {
-                    string details = railgun.DetailedInfo;
-                    string[] lines = details.Split('\n');
-                    combinedRechargeLevel += GetRailgunRechargeLevel(lines);
-                }
-                return combinedRechargeLevel;
-            }
-
-            private static float GetRailgunRechargeLevel(string[] detailedInfo)
-            {
+                string details = railgun.DetailedInfo;
+                string[] lines = details.Split('\n');
                 float chargeLevel = 0;
-                foreach (var line in detailedInfo)
+                foreach (var line in lines)
                 {
-                    if (line.StartsWith("Charge:", StringComparison.OrdinalIgnoreCase))
+                    if (line.StartsWith("Fully recharged in:", StringComparison.OrdinalIgnoreCase))
                     {
-                        string percent = line.Substring("Charge:".Length).Trim().TrimEnd('%');
-                        
-                        if (float.TryParse(percent, out chargeLevel))
+                        Match match = Regex.Match(line, @"\d+(\.\d+)?");
+                        if (match.Success)
                         {
-                            return chargeLevel;
+                            chargeLevel = float.Parse(match.Value);
                         }
                         else { return 0; }
                     }
                     else { continue; }
                 }
+                AddToLogQueue($"Railgun recharge level: {chargeLevel}");
                 return chargeLevel;
             }
 
-            public static float ArtilleryStatus()
+            public static float GetArtilleryReloadStatus(IMyUserControllableGun artilleryGun)
             {
-                if (ArtilleryCannons.Length == 0) return 0;
-
-                var inventory = InventoryEnumerator.GetItemTotals();
-                if (!inventory.ContainsKey("Artillery Shell")) { return 0; }
-
-                float combinedReloadLevel = 0f;
-                foreach (var artilleryCannon in ArtilleryCannons)
-                {
-                    string details = artilleryCannon.DetailedInfo;
-                    string[] lines = details.Split('\n');
-                    combinedReloadLevel += GetArtilleryReloadStatus(lines);
-                }
-                return combinedReloadLevel;
-            }
-
-            private static float GetArtilleryReloadStatus(string[] detailedInfo)
-            {
+                string details = artilleryGun.DetailedInfo;
+                string[] lines = details.Split('\n');
                 float reloadLevel = 0;
-                foreach (var line in detailedInfo)
+                foreach (var line in lines)
                 {
                     if (line.StartsWith("Reloading:", StringComparison.OrdinalIgnoreCase))
                     {
@@ -1111,11 +1219,32 @@ namespace IngameScript {
                         }
                     }
                 }
+                AddToLogQueue($"Artillery reload level: {reloadLevel}");
                 return reloadLevel;
             }
 
             #endregion Weapons
             #endregion
+
+            public static bool AngleCloseEnoughDegrees(float angle, float target, float tolerance = 0.01f)
+            {
+                return Math.Abs(angle - target) <= tolerance;
+            }
+
+            public static bool AngleRangeCloseEnoughDegrees(float angle, float lowerBound, float upperBound, float tolerance = 0.01f)
+            {
+                return (angle >= Math.Abs(angle - lowerBound) && angle <= Math.Abs(angle - upperBound));
+            }
+
+            public static float DegToRad(float angle)
+            {
+                return (angle / 180 * (float)Math.PI);
+            }
+
+            public static float RadToDeg(float angle)
+            {
+                return (angle / (float)Math.PI * 180);
+            }
 
         }
     }

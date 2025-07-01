@@ -1,6 +1,7 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
 
@@ -8,6 +9,27 @@ namespace IngameScript {
     partial class Program {
         public partial class CBTAmmoLCD : STUDisplay {
             public static Action<string> echo;
+            public enum TurretStatus
+            {
+                Off,
+                Ready,
+                Engaged,
+                NoAmmo,
+                Destroyed
+            }
+            public TurretStatus GatlingOverallStatus { get; set; }
+            public TurretStatus AssaultCannonOverallStatus { get; set; }
+
+            public enum FixedGunStatus
+            {
+                Off,
+                Ready,
+                Reloading,
+                NoAmmo,
+                Destroyed
+            }
+            public FixedGunStatus RailgunOverallStatus { get; set; }
+            public FixedGunStatus ArtilleryOverallStatus { get; set; }
 
             public CBTAmmoLCD(Action<string> Echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
                 echo = Echo;
@@ -169,64 +191,79 @@ namespace IngameScript {
 
             public static Color RailgunColor()
             {
-                int runningTotal = 0;
-                foreach (var rg in CBT.Railguns)
+                try // if weapons get destroyed, the reference to them will become null
                 {
-                    runningTotal += rg.IsWorking ? 1 : 0;
-                    if (rg.Enabled == false)
+                    foreach (var rg in CBT.Railguns)
                     {
-                        return new Color(0, 0, 255);
+                        if (!rg.Enabled) return new Color(64, 64, 64);
+                        else if (CBT.GetRailgunRechargeTimeLeft(rg) > 0) return Color.Blue;
+                        continue;
                     }
                 }
-                if (CBT.RailgunStatus() == 0) { return new Color(255, 0, 0); }
-                else if (CBT.RailgunStatus() > 0 && CBT.RailgunStatus() < CBT.Railguns.Length) { return new Color(0, 255, 255); }
-                else if (CBT.RailgunStatus() == CBT.Railguns.Length) { return new Color(0, 0, 255); }
-                else { return new Color(255, 255, 255); }
+                catch
+                {
+                    return Color.Red;
+                }
+                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                if (!inventory.ContainsKey("Large Railgun Sabot")) { return Color.Yellow; }
+                else return Color.White;
             }
 
             public static Color ArtilleryColor()
             {
-                int runningTotal = 0;
-                foreach (var ar in CBT.ArtilleryCannons)
+                try // if weapons get destroyed, the reference to them will become null
                 {
-                    runningTotal += ar.IsWorking ? 1 : 0;
-                    if (ar.Enabled == false)
+                    foreach (var artilleryCanon in CBT.ArtilleryCannons)
                     {
-                        return new Color(64, 64, 64);
+                        if (!artilleryCanon.Enabled) return new Color(64, 64, 64);
+                        else if (CBT.GetArtilleryReloadStatus(artilleryCanon) < 100) return Color.Blue;
+                        continue;
                     }
                 }
-                if (CBT.ArtilleryStatus() == 0) { return new Color(255, 0, 0);}
-                else if (CBT.ArtilleryStatus() > 0 && CBT.ArtilleryStatus() < CBT.ArtilleryCannons.Length) { return new Color(0, 255, 255); }
-                else if (CBT.ArtilleryStatus() == CBT.ArtilleryCannons.Length) { return new Color(0, 0, 255); }
-                else { return new Color(255, 255, 255); }
+                catch
+                {
+                    return Color.Red;
+                }
+                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                if (!inventory.ContainsKey("Artillery Shell")) { return Color.Yellow; }
+                else return Color.White;
             }
 
             public static Color AssaultCannonColor()
             {
-                int runningTotal = 0;
-                foreach (var ac in CBT.AssaultCannons)
+                try
                 {
-                    runningTotal += ac.IsWorking ? 1 : 0;
-                    if (ac.Enabled == false) { return new Color(64,64,64); }
+                    foreach (var assaultCannon in CBT.AssaultCannons)
+                    {
+                        if (!assaultCannon.Enabled) return new Color(64, 64, 64);
+                        else if (assaultCannon.IsShooting) return Color.Green;
+                        continue;
+                    }
                 }
-                if (runningTotal == 0) return new Color(255, 0, 0);
-                else if (runningTotal > 0 && runningTotal < CBT.AssaultCannons.Length) return new Color(0, 255, 255);
-                else if (runningTotal == CBT.AssaultCannons.Length) return new Color(0, 255, 0);
-                else return new Color(255, 255, 255);
+                catch
+                {
+                    return Color.Red;
+                }
+                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                if (!inventory.ContainsKey("Assault Cannon Shell")) return Color.Yellow;
+                else return Color.White;
             }
 
             public static Color GatlingColor()
             {
-                int runningTotal = 0;
-                foreach (var gg in CBT.GatlingTurrets)
+                try
                 {
-                    runningTotal += gg.IsWorking ? 1 : 0;
-                    if (gg.Enabled == false) { return new Color(64,64,64); }
+                    foreach (var gatlingTurret in CBT.GatlingTurrets)
+                    {
+                        if (!gatlingTurret.Enabled) return new Color(64, 64, 64);
+                        else if (gatlingTurret.IsShooting) return Color.Green;
+                        continue;
+                    }
                 }
-                if (runningTotal == 0) return new Color(255, 0, 0);
-                else if (runningTotal > 0 && runningTotal < CBT.GatlingTurrets.Length) return new Color(0, 255, 255);
-                else if (runningTotal == CBT.GatlingTurrets.Length) return new Color(0, 255, 0);
-                else return new Color(255, 255, 255);
+                catch {  return Color.Red; }
+                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                if (!inventory.ContainsKey("Gatling Ammo Box")) return Color.Yellow;
+                else return Color.White;
             }
 
             public static Color CruiseControlColor()

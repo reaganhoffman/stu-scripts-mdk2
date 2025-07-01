@@ -125,14 +125,19 @@ namespace IngameScript {
                 return standardViewport;
             }
 
-            private IEnumerator<bool> RunDrawCustomImageCoroutine(STUImage image, uint width, uint height, double minDistance, double maxDistance, Action<string> echo) {
+#if STUImage
+            private IEnumerator<bool> RunDrawCustomImageCoroutine(STUImage image, uint width, uint height, double minDistance, double maxDistance, Action<string> echo)
+            {
                 StartFrame();
                 float pixelSideLength = ScreenWidth / width;
-                for (int i = 0; i < height; i++) {
-                    for (int j = 0; j < width; j++) {
+                for (int i = 0; i < height; i++)
+                {
+                    for (int j = 0; j < width; j++)
+                    {
                         float distanceData = image.PixelArray[i][j].distanceVal;
                         Color pixelColor = GetPixelColorFromDistance(distanceData, minDistance, maxDistance);
-                        MySprite pixel = new MySprite() {
+                        MySprite pixel = new MySprite()
+                        {
                             Type = SpriteType.TEXTURE,
                             Data = "SquareSimple",
                             // Remember that the middle-left side of a sprite is where the position is anchored, so we shift the position by half the pixel side length
@@ -143,7 +148,8 @@ namespace IngameScript {
                         };
                         CurrentFrame.Add(pixel);
                         // Yield every 512 pixels; arbitrary but conservative to prevent script complexity timeout
-                        if ((i * height + j) % 512 == 0) {
+                        if ((i * height + j) % 512 == 0)
+                        {
                             yield return true;
                         }
                     }
@@ -151,13 +157,17 @@ namespace IngameScript {
                 EndAndPaintFrame();
             }
 
-            private Color GetPixelColorFromDistance(float distance, double minDistance, double maxDistance) {
+            private Color GetPixelColorFromDistance(float distance, double minDistance, double maxDistance)
+            {
                 double redIntensity;
                 double blueIntensity;
-                if (distance == -1) {
+                if (distance == -1)
+                {
                     redIntensity = 0;
                     blueIntensity = 0;
-                } else {
+                }
+                else
+                {
                     double normalizedDistance = (distance - minDistance) / (maxDistance - minDistance);
                     normalizedDistance = Math.Max(0, Math.Min(1, normalizedDistance));
                     redIntensity = 1 - normalizedDistance;
@@ -168,19 +178,25 @@ namespace IngameScript {
                 return new Color(redValue, 0, blueValue);
             }
 
-            public void DrawCustomImageOverTime(STUImage image, uint width, uint height, double minDistance, double maxDistance, Action<string> echo) {
-                if (ImageDrawerStateMachine != null && !FinishedDrawingCustomImage) {
+            public void DrawCustomImageOverTime(STUImage image, uint width, uint height, double minDistance, double maxDistance, Action<string> echo)
+            {
+                if (ImageDrawerStateMachine != null && !FinishedDrawingCustomImage)
+                {
                     bool hasMoreSteps = ImageDrawerStateMachine.MoveNext();
-                    if (!hasMoreSteps) {
+                    if (!hasMoreSteps)
+                    {
                         echo("disposing of drawer state machine");
                         ImageDrawerStateMachine.Dispose();
                         ImageDrawerStateMachine = null;
                         FinishedDrawingCustomImage = true;
                     }
-                } else {
+                }
+                else
+                {
                     ImageDrawerStateMachine = RunDrawCustomImageCoroutine(image, width, height, minDistance, maxDistance, echo);
                 }
             }
+#endif
 
             private float GetTextSpriteWidth(MySprite sprite) {
                 StringBuilder builder = new StringBuilder();

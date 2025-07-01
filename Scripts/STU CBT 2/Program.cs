@@ -1,9 +1,11 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.Game;
+using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 // using static VRage.Game.VisualScripting.ScriptBuilder.MyVSAssemblyProvider;
@@ -15,6 +17,9 @@ namespace IngameScript {
         STUMasterLogBroadcaster Broadcaster { get; set; }
         IMyBroadcastListener Listener { get; set; }
         STUInventoryEnumerator InventoryEnumerator { get; set; }
+        List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
+        List<IMyGasTank> AllTanks { get; set; } = new List<IMyGasTank>();
+        List<IMyBatteryBlock> AllBatteries { get; set; } = new List<IMyBatteryBlock>();
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
         MyCommandLine WirelessMessageParser { get; set; } = new MyCommandLine();
         Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
@@ -35,8 +40,11 @@ namespace IngameScript {
             // instantiate the actual CBT at the Program level so that all the methods in here will be directed towards a specific CBT object (the one that I fly around in game)
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
-            InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            CBTShip = new CBT(Echo, Broadcaster, InventoryEnumerator, GridTerminalSystem, Me, Runtime);
+            GridTerminalSystem.GetBlocks(AllTerminalBlocks);
+            GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
+            GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(AllBatteries);
+            InventoryEnumerator = new STUInventoryEnumerator(AllTerminalBlocks, AllTanks, AllBatteries, Me);
+            CBTShip = new CBT(Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
             ResetAutopilot();
@@ -114,6 +122,7 @@ namespace IngameScript {
                 CBT.UpdateLogScreens();
                 CBT.UpdateManeuverQueueScreens(GatherManeuverQueueData());
                 CBT.UpdateAmmoScreens();
+                CBT.UpdateStatusScreens();
                 CBT.ACM.UpdateAirlocks();
                 CBT.DockingModule.UpdateDockingModule();
                 if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.QueueManeuvers) {
@@ -346,7 +355,7 @@ namespace IngameScript {
                             }
                             else
                             {
-                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                                ParseError(subject, predicate);
                             }
                             break;
 
@@ -374,7 +383,7 @@ namespace IngameScript {
                                         else { CBT.ACM.EnableAutomaticControl(); CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.INFO); }
                                         break;
                                     default:
-                                        CBT.AddToLogQueue($"{subject} command '{predicate}' is not valid. Try ENABLE or DISABLE. Skipping...", STULogType.WARNING);
+                                        ParseError(subject, predicate);
                                         break;
                                 }
                             }
@@ -390,7 +399,7 @@ namespace IngameScript {
                                     CBT.SetLandingGear(false);
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"{subject} command '{predicate}' is not valid. Try LOCK or UNLOCK. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -405,7 +414,7 @@ namespace IngameScript {
                                     foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = false; }
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"{subject} command '{predicate}' is not valid. Try ON or OFF. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -424,7 +433,7 @@ namespace IngameScript {
                                     foreach(var door in CBT.Doors) { door.OpenDoor(); }
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"{subject} command '{predicate}' is not valid. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -452,7 +461,7 @@ namespace IngameScript {
                                     CBTGangway.GangwayHinge2.Torque = 0;
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"Gangway command '{predicate}' is not valid. Try EXTEND, RETRACT, TOGGLE, or RESET. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -481,7 +490,7 @@ namespace IngameScript {
                                     CBTRearDock.RearDockPiston.Velocity = 0;
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"Stinger command '{predicate}' is not valid. Try RESET, STOW, LHQ, HEROBRINE, or CLAM. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -508,7 +517,7 @@ namespace IngameScript {
                                     CBT.SetAutopilotControl(CBT.FlightController.HasThrusterControl, CBT.FlightController.HasGyroControl, !CBT.RemoteControl.DampenersOverride);
                                     break;
                                 default:
-                                    CBT.AddToLogQueue($"Autopilot command '{predicate}' is not valid. Skipping...", STULogType.WARNING);
+                                    ParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -524,7 +533,7 @@ namespace IngameScript {
                                 CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
                             }
                             else {
-                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                                ParseError(subject, predicate);
                             }
                             break;
 
@@ -586,7 +595,7 @@ namespace IngameScript {
                             }
                             else
                             {
-                                CBT.AddToLogQueue($"Failed to parse predicate {predicate} on subject {subject}. Skipping...");
+                                ParseError(subject, predicate);
                             }
                             break;
 
@@ -609,7 +618,6 @@ namespace IngameScript {
                                 }
                                 catch (InvalidOperationException ex)
                                 {
-                                    CBT.AddToLogQueue("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message, STULogType.ERROR);
                                     Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
 
                                 }
@@ -663,7 +671,7 @@ namespace IngameScript {
                                             }
                                             break;
                                         default:
-                                            CBT.AddToLogQueue($"Docking command '{predicate}' is not valid. Try REQUEST, CONFIRM or CANCEL. Skipping...", STULogType.WARNING);
+                                            ParseError(subject,predicate);
                                             break;
                                     }
                                     break;
@@ -701,15 +709,9 @@ namespace IngameScript {
             return (float)Math.Pow(index, 3);
         }
 
-        public int NextHighestMultipleOfFifty(double value)
+        public void ParseError(string subject, string predicate)
         {
-            return 50 * (int)Math.Ceiling((value + 5.0) / 50.0);
+            CBT.AddToLogQueue($"Could not parse predicate {predicate} on subject {subject}.", STULogType.WARNING);
         }
-
-        public int NextLowestMultipleOfFifty(double value)
-        {
-            return 50 * (int)Math.Floor((value - 5.0) / 50.0);
-        }
-
     }
 }
