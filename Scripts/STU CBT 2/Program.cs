@@ -12,7 +12,7 @@ using VRageMath;
 
 namespace IngameScript {
     partial class Program : MyGridProgram {
-
+        
         CBT CBTShip { get; set; }
         STUMasterLogBroadcaster Broadcaster { get; set; }
         IMyBroadcastListener Listener { get; set; }
@@ -522,12 +522,12 @@ namespace IngameScript {
                             }
                             break;
                         case "ATT":
-                            if (predicate == "CANCEL")
+                            if (predicate == "OFF")
                             {
                                 CBT.CancelAttitudeControl();
                                 CBT.AddToLogQueue("Attitude Control canceled.", STULogType.OK);
                             }
-                            else if (predicate == "ENABLE")
+                            else if (predicate == "ON")
                             {
                                 CBT.LevelToHorizon();
                                 CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);

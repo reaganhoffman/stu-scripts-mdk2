@@ -1,5 +1,7 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Permissions;
 using VRage.Game.GUI.TextPanel;
@@ -100,15 +102,15 @@ namespace IngameScript {
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
-                MySprite ASS_text = new MySprite() {
+                MySprite AST_text = new MySprite() {
                     Type = SpriteType.TEXT,
-                    Data = "ASS",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 - GetTextSpriteWidth("ASS") / 2, 1),
+                    Data = "AST",
+                    Position = TopLeft + new Vector2(ScreenWidth / 2 - GetTextSpriteWidth("AST") / 2, 1),
                     Color = AssaultCannonColor(),
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };
-                MySprite ASS_ammo_amount = new MySprite() {
+                MySprite AST_ammo_amount = new MySprite() {
                     Type = SpriteType.TEXT,
                     Data = AssaultAmmo.ToString(),
                     Position = TopLeft + new Vector2(ScreenWidth / 2 - GetTextSpriteWidth(AssaultAmmo.ToString()) / 2, ScreenHeight / 4 + 1),
@@ -178,8 +180,8 @@ namespace IngameScript {
                 frame.Add(vertical_line_3);
                 frame.Add(GAT_text);
                 frame.Add(GAT_ammo_amount);
-                frame.Add(ASS_text);
-                frame.Add(ASS_ammo_amount);
+                frame.Add(AST_text);
+                frame.Add(AST_ammo_amount);
                 frame.Add(RG_text);
                 frame.Add(RG_ammo_amount);
                 frame.Add(ART_text);
@@ -193,12 +195,20 @@ namespace IngameScript {
             {
                 try // if weapons get destroyed, the reference to them will become null
                 {
+                    List<int> enabled = new List<int>();
+                    List<float> rechargeTimes = new List<float>();
                     foreach (var rg in CBT.Railguns)
                     {
-                        if (!rg.Enabled) return new Color(64, 64, 64);
-                        else if (CBT.GetRailgunRechargeTimeLeft(rg) > 0) return Color.Blue;
-                        continue;
+                        switch (rg.Enabled)
+                        {
+                            case true: enabled.Add(1); break;
+                            case false: enabled.Add(0); break;
+                        }
+                        rechargeTimes.Add(CBT.GetRailgunRechargeTimeLeft(rg));
                     }
+
+                    if (enabled.Sum() == 0) { return new Color(64, 64, 64); }
+                    if (rechargeTimes.Min() != 0) { return Color.Blue; }
                 }
                 catch
                 {
@@ -213,12 +223,16 @@ namespace IngameScript {
             {
                 try // if weapons get destroyed, the reference to them will become null
                 {
+                    List<int> enabled = new List<int>();
                     foreach (var artilleryCanon in CBT.ArtilleryCannons)
                     {
-                        if (!artilleryCanon.Enabled) return new Color(64, 64, 64);
-                        else if (CBT.GetArtilleryReloadStatus(artilleryCanon) < 100) return Color.Blue;
-                        continue;
+                        switch(artilleryCanon.Enabled)
+                        {
+                            case true: enabled.Add(1); break;
+                            case false: enabled.Add(0); break;
+                        }
                     }
+                    if(enabled.Sum() == 0) { return new Color(64, 64, 64); }
                 }
                 catch
                 {

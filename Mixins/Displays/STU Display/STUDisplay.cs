@@ -125,7 +125,6 @@ namespace IngameScript {
                 return standardViewport;
             }
 
-#if STUImage
             private IEnumerator<bool> RunDrawCustomImageCoroutine(STUImage image, uint width, uint height, double minDistance, double maxDistance, Action<string> echo)
             {
                 StartFrame();
@@ -196,7 +195,6 @@ namespace IngameScript {
                     ImageDrawerStateMachine = RunDrawCustomImageCoroutine(image, width, height, minDistance, maxDistance, echo);
                 }
             }
-#endif
 
             private float GetTextSpriteWidth(MySprite sprite) {
                 StringBuilder builder = new StringBuilder();
