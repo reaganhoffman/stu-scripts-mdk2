@@ -510,7 +510,7 @@ namespace IngameScript {
             private static void LoadHydrogenEngines(IMyGridTerminalSystem grid)
             {
                 List<IMyPowerProducer> hydrogenEngineBlocks = new List<IMyPowerProducer>();
-                grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid);
+                grid.GetBlocksOfType<IMyPowerProducer>(hydrogenEngineBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId.Contains("HydrogenEngine"));
                 if (hydrogenEngineBlocks.Count == 0)
                 {
                     AddToLogQueue("No hydrogen engines found on the CBT", STULogType.ERROR);
@@ -1253,19 +1253,19 @@ namespace IngameScript {
                 return Math.Abs(angle - target) <= tolerance;
             }
 
-            public static bool AngleRangeCloseEnoughDegrees(float angle, float lowerBound, float upperBound, float tolerance = 0.01f)
+            public static bool AngleRangeCloseEnoughDegrees(float angle, float lowerBound, float upperBound, float tolerance = 0.5f)
             {
-                return (angle >= Math.Abs(angle - lowerBound) && angle <= Math.Abs(angle - upperBound));
+                return (angle >= lowerBound - tolerance && angle <= upperBound + tolerance);
             }
 
             public static float DegToRad(float angle)
             {
-                return (angle / 180 * (float)Math.PI);
+                return (angle * (float)Math.PI / 180);
             }
 
             public static float RadToDeg(float angle)
             {
-                return (angle / (float)Math.PI * 180);
+                return (angle * (180/(float)Math.PI));
             }
 
         }

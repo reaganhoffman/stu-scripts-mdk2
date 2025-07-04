@@ -69,9 +69,9 @@ namespace IngameScript {
                 {
                     case CBTGangway.GangwayStates.Unknown: return Color.Red;
                     case CBTGangway.GangwayStates.Frozen: return Color.Red;
-                    case CBTGangway.GangwayStates.Resetting: return Color.Orange;
+                    case CBTGangway.GangwayStates.Resetting: return Color.Cyan;
                     case CBTGangway.GangwayStates.Extended: return Color.Green;
-                    case CBTGangway.GangwayStates.Retracted: return new Color(64, 64, 64);
+                    case CBTGangway.GangwayStates.Retracted: return new Color(64, 64, 64) ;
                     case CBTGangway.GangwayStates.Extending: return Color.Yellow;
                     case CBTGangway.GangwayStates.Retracting: return Color.Yellow;
                     default: return Color.Black;
@@ -83,9 +83,9 @@ namespace IngameScript {
                 {
                     case CBTGangway.GangwayStates.Unknown: return "U";
                     case CBTGangway.GangwayStates.Frozen: return "F";
-                    case CBTGangway.GangwayStates.Resetting: return "M";
-                    case CBTGangway.GangwayStates.Extended: return "E";
-                    case CBTGangway.GangwayStates.Retracted: return "R";
+                    case CBTGangway.GangwayStates.Resetting: return "R";
+                    case CBTGangway.GangwayStates.Extended: return "O";
+                    case CBTGangway.GangwayStates.Retracted: return "C";
                     case CBTGangway.GangwayStates.Extending: return "M";
                     case CBTGangway.GangwayStates.Retracting: return "M";
                     default: return "X";
@@ -94,10 +94,11 @@ namespace IngameScript {
 
             public Color GetRampStatusColor()
             {
-                float angle = CBT.HangarRotor.Angle;
+                float angle = CBT.RadToDeg(CBT.HangarRotor.Angle);
 
-                if (CBT.AngleCloseEnoughDegrees(angle, 0) || CBT.AngleRangeCloseEnoughDegrees(angle,90,110)) return Color.Green;
-                else if (CBT.AngleRangeCloseEnoughDegrees(angle,0,90)) return Color.Yellow;
+                if (CBT.AngleCloseEnoughDegrees(angle, 0)) return new Color(64, 64, 64) ;
+                else if (CBT.AngleRangeCloseEnoughDegrees(angle, 90, 110)) return Color.Green;
+                else if (CBT.AngleRangeCloseEnoughDegrees(angle, 0, 89)) return Color.Yellow;
                 else return Color.Red;
             }
             public string GetRampStatusString()
@@ -148,17 +149,17 @@ namespace IngameScript {
                 for (int i = 0; i < CBT.AirVents.Length; i++)
                 {
                     if (!CBT.AirVents[i].IsWorking) return new Color(64, 64, 64);
-                    if (CBT.AirVents[i].Status == VentStatus.Pressurized) { ventStatus = VentStatus.Pressurized; continue; }
+                    if (CBT.AirVents[i].Status == VentStatus.Pressurized || CBT.AirVents[i].GetOxygenLevel() > 0.99) { ventStatus = VentStatus.Pressurized; continue; }
                     else if (CBT.AirVents[i].Status == VentStatus.Pressurizing) { ventStatus = VentStatus.Pressurizing; continue; }
                     else if (CBT.AirVents[i].Status == VentStatus.Depressurizing) { ventStatus = VentStatus.Depressurizing; continue; }
+                    else if (CBT.AirVents[i].Status == VentStatus.Depressurized) { ventStatus = VentStatus.Depressurized; continue; }
                 }
-                if (CBT.GetOxygenPercentFilled() == 0) { return Color.Red; }
                 switch (ventStatus)
                 {
                     case VentStatus.Pressurized: return Color.Green;
                     case VentStatus.Pressurizing: return Color.Yellow;
-                    case VentStatus.Depressurized: return Color.Cyan;
-                    case VentStatus.Depressurizing: return Color.Cyan;
+                    case VentStatus.Depressurized: return Color.Red;
+                    case VentStatus.Depressurizing: return Color.Blue;
                     default: return Color.Black;
                 }
             }
@@ -182,7 +183,7 @@ namespace IngameScript {
             {
                 for (int i = 0; i < CBT.HydrogenEngines.Length; i++)
                 {
-                    if (CBT.HydrogenEngines[i].IsWorking) { return Color.Green; }
+                    if (CBT.HydrogenEngines[i].Enabled == true) { return Color.Green; }
                 }
                 return new Color(64, 64, 64);
             }

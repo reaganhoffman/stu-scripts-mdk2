@@ -266,8 +266,7 @@ namespace IngameScript {
                     float predicateAsFloat;
                     switch (subject) {
                         case "TEST":
-                            CBT.AddToLogQueue($"FlightController.GetSurfaceAltitude(): {CBT.FlightController.GetCurrentSurfaceAltitude()}");
-                            CBT.AddToLogQueue($"AltitudeControlHeight = {CBT.AltitudeControlHeight}");
+                            foreach (var engine in CBT.HydrogenEngines) { CBT.AddToLogQueue($"Hydrogen engine {i} enabled: {engine.Enabled}"); }
                             break;
                         case "HELP": // prints a help message to the screen
                             switch (predicate)
@@ -437,6 +436,23 @@ namespace IngameScript {
                                     break;
                             }
                             break;
+
+                        case "ATMO":
+                            switch (predicate)
+                            {
+                                case "HOSPITABLE":
+                                    CBT.ACM.DisableAuomaticControl();
+                                    foreach (var door in CBT.Doors) { door.OpenDoor(); }
+                                    foreach (var vent in CBT.AirVents) { vent.Depressurize = true; }
+                                    break;
+                                case "INHOSPITABLE":
+                                    CBT.ACM.EnableAutomaticControl();
+                                    foreach (var door in CBT.Doors) { door.CloseDoor(); }
+                                    foreach (var vent in CBT.AirVents) { vent.Depressurize = false; }
+                                    break;
+                            }
+                            break;
+
                         #endregion
 
                         #region Actuator Groups
