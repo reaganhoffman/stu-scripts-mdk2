@@ -7,7 +7,7 @@ namespace IngameScript {
     partial class Program {
         public partial class CBT {
             public class ParkManeuver : STUStateMachine {
-                public override string Name => "Park";
+                public override string Name => "Landing";
                 Queue<STUStateMachine> ManeuverQueue { get; set; }
                 CBTGangway CBTGangway { get; set; }
                 public enum LandingPhases
@@ -18,6 +18,7 @@ namespace IngameScript {
                 }
                 public LandingPhases InternalState { get; set; }
                 public bool Landed { get; private set; } = false;
+                private bool AskedForConfirmationAlready = false;
                 private bool _pilotConfirmation = false;
                 public bool PilotConfirmation 
                 {
@@ -26,7 +27,7 @@ namespace IngameScript {
                     {
                         if (value == true)
                         {
-                            if (Landed)
+                            if (Landed || CurrentInternalState == InternalStates.Init)
                             {
                                 _pilotConfirmation = true;
                             }
@@ -48,52 +49,63 @@ namespace IngameScript {
                 }
 
                 public override bool Init() {
-                    // ensure we have access to the thrusters, gyros, and dampeners are on
-                    SetAutopilotControl(true, true, true);
-                    ResetUserInputVelocities();
-                    CancelCruiseControl();
-                    LevelToHorizon();
-                    foreach (var spotlight in CBT.Spotlights)
+                    if (!AskedForConfirmationAlready) AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
+                    AskedForConfirmationAlready = true;
+                    if (Math.Abs(FlightController.VelocityMagnitude) < 0.1 && PilotConfirmation)
                     {
-                        spotlight.Enabled = true;
+                        // ensure we have access to the thrusters, gyros, and dampeners are on
+                        SetAutopilotControl(true, true, true);
+                        ResetUserInputVelocities();
+                        CancelCruiseControl();
+                        LevelToHorizon();
+                        foreach (var spotlight in Spotlights)
+                        {
+                            spotlight.Enabled = true;
+                        }
+                        if (!CBTGangway.ToggleGangway(1))
+                        {
+                            UserInputGangwayState = CBTGangway.GangwayStates.Resetting;
+                        }
+                        PilotConfirmation = false;
+                        return true;
                     }
-                    if (!CBTGangway.ToggleGangway(1))
-                    {
-                        CBT.UserInputGangwayState = CBTGangway.GangwayStates.Resetting;
-                    }
-                    return Math.Abs(FlightController.VelocityMagnitude) < 0.1;
+                    else return false;
                 }
 
                 public override bool Run() {
                     switch (InternalState)
                     {
                         case LandingPhases.InitialDescent:
-                            double descendVelocity = Math.Max(CBT.FlightController.GetCurrentSurfaceAltitude() / 10, 4);
+                            double descendVelocity = Math.Max(FlightController.GetCurrentSurfaceAltitude() / 10, 4);
                             
                             if (FlightController.MaintainSurfaceAltitude(30, 10, descendVelocity) && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended) { InternalState = LandingPhases.FinalApproach; }
                             break;
                         case LandingPhases.FinalApproach:
-                            CBT.CancelAttitudeControl();
-                            foreach (var light in CBT.InteriorLights) { light.Enabled = true; }
+                            CancelAttitudeControl();
+                            foreach (var light in InteriorLights) { light.Enabled = true; }
                             if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) { InternalState = LandingPhases.Touchdown; }
                             break;
                         case LandingPhases.Touchdown:
-                            Landed = true;
-                            AddToLogQueue("Landing sequence touched down. Ready to park.", STULogType.OK);
-                            return true;
+                            FlightController.MaintainSurfaceAltitude(1, 1, 1);
+                            if (FlightController.VelocityMagnitude < 0.1)
+                            {
+                                Landed = true;
+                                AddToLogQueue("Landing sequence complete. Ready to park.", STULogType.OK);
+                                return true;
+                            }
+                            break;
                     }
                     return false;
                 }
 
                 public override bool Closeout() {
-                    FlightController.MaintainSurfaceAltitude(1, 1, 1);
                     if (PilotConfirmation)
                     {
-                        CBT.SetLandingGear(true);
-                        CBT.CancelAttitudeControl();
-                        CBT.SetAutopilotControl(false, false, true);
-                        foreach (var thruster in CBT.Thrusters) { thruster.Enabled = false; }
-                        foreach (var spotlight in CBT.Spotlights) { spotlight.Enabled = false; }
+                        SetLandingGear(true);
+                        CancelAttitudeControl();
+                        SetAutopilotControl(false, false, true);
+                        foreach (var thruster in Thrusters) { thruster.Enabled = false; }
+                        foreach (var spotlight in Spotlights) { spotlight.Enabled = false; }
                         return true;
                         
                     }

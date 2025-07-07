@@ -66,12 +66,13 @@ namespace IngameScript
                 while (allDoors.Count > 0)
                 {
                     IMyDoor door = (IMyDoor)allDoors[0];
-                    // get its custom data.
-                    string customData = door.CustomData;
+                    // get the first line of its custom data.
+                    string[] customDataRaw = door.CustomData.Split('\n');
+                    string listedPartner = customDataRaw[0];
                     // if it has a partner, add both doors to a new Airlock struct and add that to the Airlocks list
-                    if (customData != "")
+                    if (listedPartner != "")
                     {
-                        IMyDoor partner = (IMyDoor)grid.GetBlockWithName(customData);
+                        IMyDoor partner = (IMyDoor)grid.GetBlockWithName(listedPartner);
                         if (partner != null)
                         {
                             Airlock airlock = new Airlock();
@@ -83,7 +84,7 @@ namespace IngameScript
                     }
                     // remove both doors from the temp list
                     allDoors.Remove(door);
-                    allDoors.Remove((IMyTerminalBlock)grid.GetBlockWithName(customData));
+                    allDoors.Remove((IMyTerminalBlock)grid.GetBlockWithName(listedPartner));
                 }
             }
 

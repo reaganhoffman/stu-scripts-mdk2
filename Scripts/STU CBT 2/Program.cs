@@ -343,7 +343,7 @@ namespace IngameScript {
                             {
                                 if (0 <= powerLevel && powerLevel <= 7)
                                 {
-                                    CBT.PowerLevel = powerLevel;
+                                    CBT.SetPowerLevel(powerLevel);
                                     break;
                                 }
                                 else
@@ -624,7 +624,7 @@ namespace IngameScript {
                             ManeuverQueue.Enqueue(new CBT.ParkManeuver(ManeuverQueue, CBT.Gangway));
                             break;
 
-                        case "PARK":
+                        case "CONFIRM":
                             if (CurrentManeuver is CBT.ParkManeuver)
                             {
                                 var _currentManeuver = (CBT.ParkManeuver)CurrentManeuver;
@@ -635,11 +635,32 @@ namespace IngameScript {
                                 catch (InvalidOperationException ex)
                                 {
                                     Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
-
+                                }
+                                break;
+                            }
+                            else if (CurrentManeuver is CBT.TakeoffManeuver)
+                            {
+                                var _currentManeuver = (CBT.TakeoffManeuver)CurrentManeuver;
+                                try
+                                {
+                                    _currentManeuver.PilotConfirmation = true;
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
                                 }
                                 break;
                             }
                             else break;
+
+                        case "TAKEOFF":
+                            if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0,0,0) || CBT.FlightController.GetCurrentSurfaceAltitude() > 20)
+                            {
+                                CBT.AddToLogQueue("Not in gravity or current altitude too high. Aborting takeoff sequence.", STULogType.WARNING);
+                                break;
+                            }
+                            ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(ManeuverQueue, CBT.Gangway));
+                            break;
 
                         case "HOVER": // queues a hover maneuver
                                     CBT.AddToLogQueue("Queueing a Hover maneuver", STULogType.INFO);

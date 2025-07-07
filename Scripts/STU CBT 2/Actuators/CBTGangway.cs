@@ -5,7 +5,7 @@ namespace IngameScript {
     partial class Program {
         public partial class CBTGangway {
             private const float HINGE_ANGLE_TOLERANCE = 0.0071f;
-            private const float HINGE_TARGET_VELOCITY_RPM = 1.5f;
+            private const float HINGE_TARGET_VELOCITY_RPM = 3f;
             private const float HINGE_TORQUE = 7000000;
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }

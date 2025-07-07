@@ -4,6 +4,7 @@ using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Messaging;
 using System.Text.RegularExpressions;
 using VRage.Game.ModAPI.Ingame;
@@ -18,14 +19,7 @@ namespace IngameScript {
             public const float TimeStep = 1.0f / 6.0f;
             public static Phase CurrentPhase { get; set; } = Phase.Idle;
 
-            private static int _powerLevel { get; set; }
-            public static int PowerLevel {
-                get { return _powerLevel; }
-                set {
-                    _powerLevel = value;
-                    SetPowerLevel(value);
-                }
-            }
+            public static int PowerLevel { get; private set; }
 
             public static float UserInputForwardVelocity = 0;
             public static float UserInputRightVelocity = 0;
@@ -113,7 +107,7 @@ namespace IngameScript {
             
             public static IMyShipConnector[] HangarMagPlates { get; set; }
             public static IMyRadioAntenna Antenna { get; set; }
-            public static IMyCockpit[] FOControlSeats { get; set; }
+            public static IMyCockpit[] OfficerControlSeats { get; set; }
             public static IMyAssembler Assembler { get; set; }
             public static IMyRefinery Refinery { get; set; }
             public static IMyReflectorLight[] Spotlights { get; set; }
@@ -179,17 +173,15 @@ namespace IngameScript {
                 LoadLandingGear(grid);
                 LoadDoors(grid);
                 LoadHangarMagPlates(grid);
-                AddToLogQueue("FLIGHT-CRITICAL COMPONENTS ... DONE");
 
                 // power level 1
                 LoadGatlingGuns(grid);
-                AddToLogQueue("POWER LEVEL 1 ... DONE");
+                LoadOfficerControlSeats(grid);
 
                 // power level 2
                 LoadRearDockArm(grid);
                 LoadGangwayActuators(grid);
                 LoadHangarRotor(grid);
-                AddToLogQueue("POWER LEVEL 2 ... DONE");
 
                 // power level 3
                 LoadInteriorLights(grid);
@@ -197,32 +189,26 @@ namespace IngameScript {
                 LoadGravityGenerator(grid);
                 LoadMedicalRoom(grid);
                 LoadCamera(grid);
-                AddToLogQueue("POWER LEVEL 3 ... DONE");
 
                 // power level 4
                 LoadAntenna(grid);
                 LoadH2O2Generators(grid);
                 LoadAirVents(grid);
-                AddToLogQueue("POWER LEVEL 4 ... DONE");
 
                 // power level 5
                 LoadAssaultCannonTurrets(grid);
-                LoadFOControlSeat(grid);
                 LoadRailguns(grid);
                 LoadArtilleryCannons(grid);
-                AddToLogQueue("POWER LEVEL 5 ... DONE");
 
                 // power level 6
                 LoadRefinery(grid);
                 LoadAssembler(grid);
-                AddToLogQueue("POWER LEVEL 6 ... DONE");
 
                 // power level 7
                 LoadSensors(grid);
                 LoadOreDetector(grid);
-                AddToLogQueue("POWER LEVEL 7 ... DONE");
 
-                AssignPowerClasses(grid);
+                SetPowerLevel(7);
 
                 FlightController = new STUFlightController(grid, RemoteControl, me);
 
@@ -255,8 +241,6 @@ namespace IngameScript {
                     Type = type,
                 }
                     );
-
-                AddToLogQueue($"just now finished Create Broadcast with message: {message}, key: {key}");
             }
 
             // define the method to send CBT log messages to the queue of all the screens on the CBT that are subscribed to such messages
@@ -271,12 +255,45 @@ namespace IngameScript {
                 }
             }
 
-            private static void SetPowerLevel(int powerLevel) {
-                for (int i = 0; i < PowerClasses.Count; i++) {
-                    foreach (var item in PowerClasses[i]) {
-                        if (i <= powerLevel) { item.Enabled = true; } else { item.Enabled = false; }
+            public static void SetPowerLevel(int powerLevel) {
+                AddToLogQueue($"Setting Power Level to PL{powerLevel}");
+                PowerLevel = powerLevel;
+                List<IMyFunctionalBlock> allFunctionalBlocks = new List<IMyFunctionalBlock>();
+                CBTGrid.GetBlocksOfType<IMyFunctionalBlock>(allFunctionalBlocks);
+                foreach (var block in allFunctionalBlocks)
+                {
+                    int powerClassOfBlock = GetPowerClassOfBlock(block);
+                    if (powerClassOfBlock < 0 ) continue; // don't interact at all with blocks that don't have a defined power class
+                    else if (powerClassOfBlock <= powerLevel) 
+                    {
+                        block.Enabled = true; 
+                    }
+                    else 
+                    { 
+                        if (powerLevel < 1 && (FlightController.HasGyroControl || FlightController.HasThrusterControl))
+                        {
+                            AddToLogQueue("FLIGHT CONTROLLER IS ACTIVE! Refusing to go below power level 1.", STULogType.WARNING);
+                            return;
+                        }
+                        block.Enabled = false; 
                     }
                 }
+            }
+
+            public static int GetPowerClassOfBlock(IMyTerminalBlock block)
+            {
+                int powerLevel;
+                string[] customDataRawLines = block.CustomData.Split('\n');
+                foreach (var line in customDataRawLines)
+                {
+                    if (line.Equals("")) { continue; }
+                    else if (line.Contains("PL"))
+                    {
+                        if (int.TryParse(line.Substring(2), out powerLevel)) { return powerLevel; }
+                        else continue;
+                    }
+                }
+                return -1;
             }
             #endregion
 
@@ -702,6 +719,27 @@ namespace IngameScript {
 
                 GatlingTurrets = gatlingGunBlocks.ToArray();
             }
+            private static void LoadOfficerControlSeats(IMyGridTerminalSystem grid)
+            {
+                List<IMyCockpit> controlSeatBlocks = new List<IMyCockpit>();
+                grid.GetBlocksOfType<IMyCockpit>(controlSeatBlocks, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeName.Contains("Module"));
+
+                if (controlSeatBlocks.Count == 0)
+                {
+                    AddToLogQueue("No control seats found on the CBT", STULogType.ERROR);
+                    echo("No control seats found on the CBT");
+                    return;
+                }
+                else
+                {
+                    echo("Control seat blocks found on the grid:");
+                    foreach (var item in  controlSeatBlocks)
+                    {
+                        echo($"{item.CustomName}");
+                    }
+                }
+                    OfficerControlSeats = controlSeatBlocks.ToArray();
+            }
             #endregion
 
             #region Power Level 2
@@ -862,19 +900,7 @@ namespace IngameScript {
                 
                 AssaultCannons = assaultCannonBlocks.ToArray();
             }
-            private static void LoadFOControlSeat(IMyGridTerminalSystem grid)
-            {
-                List<IMyCockpit> controlSeatBlocks = new List<IMyCockpit>();
-                grid.GetBlocksOfType<IMyCockpit>(controlSeatBlocks, block => block.CubeGrid == Me.CubeGrid && !block.BlockDefinition.SubtypeName.Contains("LargeBlockCockpit"));
-
-                if (controlSeatBlocks.Count == 0)
-                {
-                    AddToLogQueue("No control seats found on the CBT", STULogType.ERROR);
-                    echo("No control seats found on the CBT");
-                    return;
-                }
-                FOControlSeats = controlSeatBlocks.ToArray();
-            }
+            
 
             private static void LoadArtilleryCannons(IMyGridTerminalSystem grid)
             {
@@ -954,116 +980,6 @@ namespace IngameScript {
             }
             #endregion
 
-            public static void AssignPowerClasses(IMyGridTerminalSystem grid) {
-                try
-                {
-                    CBT.AddToLogQueue("Instantiating power classes...", STULogType.INFO);
-                    /// level 1 power class:
-                    /// Gatling guns
-                    List<IMyFunctionalBlock> level1blocks = new List<IMyFunctionalBlock>();
-                    foreach (var item in GatlingTurrets)
-                    {
-                        level1blocks.Add(item);
-                    }
-                    PowerClasses[1] = level1blocks;
-
-                    /// level 2 power class:
-                    /// rear dock arm assembly
-                    /// gangway assembly
-                    List<IMyFunctionalBlock> level2blocks = new List<IMyFunctionalBlock>();
-                    level2blocks.Add(RearHinge1);
-                    level2blocks.Add(RearHinge2);
-                    level2blocks.Add(RearPiston);
-                    level2blocks.Add(GangwayHinge1);
-                    level2blocks.Add(GangwayHinge2);
-                    PowerClasses[2] = level2blocks;
-
-                    /// level 3 power class:
-                    /// interior lights
-                    /// exterior lights (spotlights)
-                    /// gravity generator
-                    /// med bay
-                    /// camera
-                    List<IMyFunctionalBlock> level3blocks = new List<IMyFunctionalBlock>();
-                    foreach (var item in InteriorLights)
-                    {
-                        level3blocks.Add(item);
-                    }
-                    foreach (var item in Spotlights)
-                    {
-                        level3blocks.Add(item);
-                    }
-                    level3blocks.Add(GravityGenerator);
-                    level3blocks.Add(MedicalRoom);
-                    level3blocks.Add(Camera);
-                    List<IMyTerminalBlock> allLCDs = new List<IMyTerminalBlock>();
-                    grid.GetBlocksOfType<IMyTextPanel>(allLCDs, block => block.CubeGrid == Me.CubeGrid);
-                    foreach (var item in allLCDs)
-                    {
-                        level3blocks.Add(item as IMyFunctionalBlock);
-                    }
-                    PowerClasses[3] = level3blocks;
-
-                    /// level 4 power class:
-                    /// Antenna
-                    /// h2/o2 generators
-                    /// Air vents
-                    List<IMyFunctionalBlock> level4blocks = new List<IMyFunctionalBlock>();
-                    level4blocks.Add(Antenna);
-                    foreach (var item in H2O2Generators)
-                    {
-                        level4blocks.Add(item);
-                    }
-                    foreach (var item in AirVents)
-                    {
-                        level4blocks.Add(item);
-                    }
-                    PowerClasses[4] = level4blocks;
-
-                    /// level 5 power class:
-                    /// Assault Cannons
-                    /// Lower deck control seats
-                    /// railguns
-                    List<IMyFunctionalBlock> level5blocks = new List<IMyFunctionalBlock>();
-                    foreach (var item in AssaultCannons)
-                    {
-                        level5blocks.Add(item);
-                    }
-                    foreach (var item in FOControlSeats)
-                    {
-                        level5blocks.Add(item as IMyFunctionalBlock);
-                    }
-                    foreach (var item in Railguns)
-                    {
-                        level5blocks.Add(item);
-                    }
-                    PowerClasses[5] = level5blocks;
-
-                    /// level 6 power class:
-                    /// Assembler
-                    /// Refinery
-                    List<IMyFunctionalBlock> level6blocks = new List<IMyFunctionalBlock>();
-                    level6blocks.Add(Assembler);
-                    level6blocks.Add(Refinery);
-                    PowerClasses[6] = level6blocks;
-
-                    /// level 7 power class:
-                    /// sensors
-                    /// ore detector
-                    List<IMyFunctionalBlock> level7blocks = new List<IMyFunctionalBlock>();
-                    foreach (var item in Sensors)
-                    {
-                        level7blocks.Add(item);
-                    }
-                    level7blocks.Add(OreDetector);
-                    PowerClasses[7] = level7blocks;
-                }
-                catch (Exception ex)
-                {
-                    echo($"Something failed in CBT.AssignPowerClasses().\n{ex.Message}");
-                    AddToLogQueue($"Something failed in CBT.AssignPowerClasses().\n{ex.Message}");
-                }
-            }
             #endregion Hardware Initialization
 
             #region Inventory reports
@@ -1185,6 +1101,7 @@ namespace IngameScript {
             {
                 foreach (var gear in LandingGear)
                 {
+                    gear.Enabled = true; // ensure gears are 'on' for interacting with them
                     if (@lock)
                         gear.Lock();
                     else
