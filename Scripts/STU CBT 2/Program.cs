@@ -152,8 +152,8 @@ namespace IngameScript {
                     }
                 }
             } catch (Exception e) {
-                Echo($"Program.cs: Caught exception: {e} | source: {e.Source} | stacktrace: {e.StackTrace}");
-                CBT.AddToLogQueue($"Program.cs: Caught exception: {e} | source: {e.Source} | stacktrace: {e.StackTrace}", STULogType.WARNING);
+                Echo($"Program.cs: Caught exception: {e}");
+                CBT.AddToLogQueue($"Program.cs: Caught exception: {e}", STULogType.WARNING);
                 CBT.AddToLogQueue("");
                 CBT.AddToLogQueue("");
                 CBT.AddToLogQueue("HALTING PROGRAM EXECUTION!", STULogType.ERROR);
