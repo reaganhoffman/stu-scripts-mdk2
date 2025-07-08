@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
+using VRageRender.Messages;
 // using static VRage.Game.VisualScripting.ScriptBuilder.MyVSAssemblyProvider;
 
 namespace IngameScript {
@@ -334,6 +335,27 @@ namespace IngameScript {
                                 CBT.AddToLogQueue("");
                             }
                             break;
+
+                        case "REPORT":
+                            switch (predicate)
+                            {
+                                case "NEXT":
+                                    CBT.FlushLogChannelMessageBuffer();
+                                    break;
+                                case "CLEAR":
+                                    CBT.LogChannelMessageBuffer.Clear();
+                                    CBT.AddToLogQueue("Report Message Buffer cleared.", STULogType.INFO);
+                                    break;
+                                case "POWERLEVELS":
+                                    CBT.PopulatePowerLevelReport();
+                                    CBT.AddToLogQueue("Finished gathering power level data. Run 'REPORT NEXT' to view output.", STULogType.OK);
+                                    break;
+                                default:
+                                    PrintParseError(subject, predicate);
+                                    break;
+                            }
+                            break;
+
                         #endregion
 
                         #region CBT Hardware Commands
@@ -354,7 +376,7 @@ namespace IngameScript {
                             }
                             else
                             {
-                                ParseError(subject, predicate);
+                                PrintParseError(subject, predicate);
                             }
                             break;
 
@@ -382,7 +404,7 @@ namespace IngameScript {
                                         else { CBT.ACM.EnableAutomaticControl(); CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.INFO); }
                                         break;
                                     default:
-                                        ParseError(subject, predicate);
+                                        PrintParseError(subject, predicate);
                                         break;
                                 }
                             }
@@ -398,7 +420,7 @@ namespace IngameScript {
                                     CBT.SetLandingGear(false);
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -413,7 +435,7 @@ namespace IngameScript {
                                     foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = false; }
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -432,7 +454,7 @@ namespace IngameScript {
                                     foreach(var door in CBT.Doors) { door.OpenDoor(); }
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -477,7 +499,7 @@ namespace IngameScript {
                                     CBTGangway.GangwayHinge2.Torque = 0;
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -506,7 +528,7 @@ namespace IngameScript {
                                     CBTRearDock.RearDockPiston.Velocity = 0;
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -533,7 +555,7 @@ namespace IngameScript {
                                     CBT.SetAutopilotControl(CBT.FlightController.HasThrusterControl, CBT.FlightController.HasGyroControl, !CBT.RemoteControl.DampenersOverride);
                                     break;
                                 default:
-                                    ParseError(subject, predicate);
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -549,7 +571,7 @@ namespace IngameScript {
                                 CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
                             }
                             else {
-                                ParseError(subject, predicate);
+                                PrintParseError(subject, predicate);
                             }
                             break;
 
@@ -611,7 +633,7 @@ namespace IngameScript {
                             }
                             else
                             {
-                                ParseError(subject, predicate);
+                                PrintParseError(subject, predicate);
                             }
                             break;
 
@@ -677,47 +699,47 @@ namespace IngameScript {
                                     break;
                                 #endregion
 
-                                #region Weapons
+                        #region Weapons
 
-                                #endregion
-                                #region Networking
-                                case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                                    CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
-                                    CBT.CreateBroadcast("PING", false, STULogType.INFO);
+                        #endregion
+                        #region Networking
+                        case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
+                            CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
+                            CBT.CreateBroadcast("PING", false, STULogType.INFO);
+                            break;
+                        case "DOCK":
+                            switch (predicate)
+                            {
+                                case "REQUEST":
+                                    CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
+                                    CBT.DockingModule.SendDockRequestFlag = true;
                                     break;
-                                case "DOCK":
-                                    switch (predicate)
+                                case "CONTINUE":
+                                    CBT.DockingModule.PilotConfirmation = true;
+                                    break;
+                                case "CANCEL":
+                                    if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot)
                                     {
-                                        case "REQUEST":
-                                            CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
-                                            CBT.DockingModule.SendDockRequestFlag = true;
-                                            break;
-                                        case "CONTINUE":
-                                            CBT.DockingModule.PilotConfirmation = true;
-                                            break;
-                                        case "CANCEL":
-                                            if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot)
-                                            {
-                                                CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
-                                                CBT.CreateBroadcast("CANCEL");
-                                                CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
-                                            }
-                                            else
-                                            {
-                                                CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
-                                            }
-                                            break;
-                                        default:
-                                            ParseError(subject,predicate);
-                                            break;
+                                        CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
+                                        CBT.CreateBroadcast("CANCEL");
+                                        CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
+                                    }
+                                    else
+                                    {
+                                        CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
                                     }
                                     break;
-                                #endregion
-
                                 default:
-                                    CBT.AddToLogQueue($"Unrecognized subject '{subject}'. Skipping...", STULogType.WARNING);
+                                    PrintParseError(subject,predicate);
                                     break;
-                                }
+                            }
+                            break;
+                        #endregion
+
+                        default:
+                            CBT.AddToLogQueue($"Unrecognized subject '{subject}'. Skipping...", STULogType.WARNING);
+                            break;
+                    }
                 }
                 return true;
             } else {
@@ -746,7 +768,7 @@ namespace IngameScript {
             return (float)Math.Pow(index, 3);
         }
 
-        public void ParseError(string subject, string predicate)
+        public void PrintParseError(string subject, string predicate)
         {
             CBT.AddToLogQueue($"Could not parse predicate {predicate} on subject {subject}.", STULogType.WARNING);
         }

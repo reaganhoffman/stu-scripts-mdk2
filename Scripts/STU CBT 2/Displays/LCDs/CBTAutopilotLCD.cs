@@ -12,126 +12,137 @@ namespace IngameScript {
                 echo = Echo;
             }
 
-            public void DrawAutopilotEnabledSprite(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {
-                MySprite background_sprite = new MySprite() {
-                    Type = SpriteType.TEXTURE,
-                    Alignment = TextAlignment.CENTER,
-                    Data = "SquareSimple",
-                    Position = centerPos,
-                    Size = new Vector2(ScreenWidth, ScreenHeight),
-                    Color = new Color(0, 128, 0, 255),
-                    RotationOrScale = 0f
-                };
-                MySprite circle = new MySprite() {
-                    Type = SpriteType.TEXTURE,
-                    Alignment = TextAlignment.CENTER,
-                    Data = "CircleHollow",
-                    Position = new Vector2(0f, 0f) * scale + centerPos, // this line is irrelevant because of AlignCenterWithinParent
-                    Size = new Vector2(180f, 180f) * scale,
-                    Color = new Color(0, 255, 0, 255),
-                    RotationOrScale = 0f
-                };
-                MySprite letter_A = new MySprite() {
-                    Type = SpriteType.TEXT,
-                    Alignment = TextAlignment.LEFT,
-                    Data = CBT.GetAutopilotState().ToString(),
-                    Position = new Vector2(-54f, -102f) * scale + centerPos, // this line is irrelevant because of AlignCenterWithinParent
-                    Color = new Color(0, 255, 0, 255),
-                    FontId = "Debug",
-                    RotationOrScale = 6f * scale
-                };
-
-                AlignCenterWithinParent(background_sprite, ref circle);
-                AlignCenterWithinParent(background_sprite, ref letter_A);
-
-                frame.Add(background_sprite);
-                frame.Add(circle);
-                frame.Add(letter_A);
+            public Color GetThrustersStatusColorBG()
+            {
+                Color color = new Color();
+                switch (CBT.FlightController.HasThrusterControl)
+                {
+                    case true: color = Color.White; break;
+                    case false: color = Color.Black; break;
+                }
+                foreach (var thruster in CBT.Thrusters)
+                {
+                    if (!thruster.Enabled)
+                    {
+                        color = Color.Red; break;
+                    }
+                }
+                return color;
+            }
+            public Color GetThrustersStatusColorText()
+            {
+                Color color = new Color();
+                switch (CBT.FlightController.HasThrusterControl)
+                {
+                    case true: color = Color.Black; break;
+                    case false: color = Color.White; break;
+                }
+                foreach (var thruster in CBT.Thrusters)
+                {
+                    if (!thruster.Enabled)
+                    {
+                        color = Color.Black; break;
+                    }
+                }
+                return color;
             }
 
+            public string GetThrustersStatus()
+            {
+                string state = "";
+                switch (CBT.FlightController.HasThrusterControl)
+                {
+                    case true: state = "AUTO"; break;
+                    case false: state = "MANU"; break;
+                }
+                foreach (var thruster in CBT.Thrusters)
+                {
+                    if (!thruster.Enabled)
+                    {
+                        state = "OFF";
+                        break;
+                    }
+                }
+                return state;
+            }
+            public Color GetGyrosStatusColorText()
+            {
+                Color color = new Color();
+                switch (CBT.FlightController.HasGyroControl)
+                {
+                    case true: color = Color.Black; break;
+                    case false: color = Color.White; break;
+                }
+                foreach (var gyro in CBT.Gyros)
+                {
+                    if (!gyro.Enabled)
+                    {
+                        color = Color.Black;
+                        break;
+                    }
+                }
+                return color;
+            }
+            public Color GetGyrosStatusColorBG()
+            {
+                Color color = new Color();
+                switch(CBT.FlightController.HasGyroControl)
+                {
+                    case true: color = Color.White; break;
+                    case false: color = Color.Black; break;
+                }
+                foreach (var gyro in CBT.Gyros)
+                {
+                    if (!gyro.Enabled)
+                    {
+                        color = Color.Red; 
+                        break;
+                    }
+                }
+                return color;
+            }
+            public string GetGyrosStatus()
+            {
+                string state = "";
+                switch (CBT.FlightController.HasGyroControl)
+                {
+                    case true: state = "AUTO"; break;
+                    case false: state = "MANU"; break;
+                }
+                foreach (var gyro in CBT.Gyros)
+                {
+                    if (!gyro.Enabled)
+                    {
+                        state = "OFF";
+                        break;
+                    }
+                }
+                return state;
+            }
 
-            public void DrawAutopilotDisabledSprite(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {
-                MySprite background_sprite = new MySprite() {
-                    Type = SpriteType.TEXTURE,
-                    Alignment = TextAlignment.CENTER,
-                    Data = "SquareSimple",
-                    Position = centerPos,
-                    Size = new Vector2(ScreenWidth, ScreenHeight) * scale,
-                    Color = new Color(106, 0, 0, 255),
-                    RotationOrScale = 0f
-                };
-                MySprite circle = new MySprite() {
-                    Type = SpriteType.TEXTURE,
-                    Alignment = TextAlignment.CENTER,
-                    Data = "CircleHollow",
-                    Position = new Vector2(0f, 0f) * scale + centerPos, // this line is irrelevant because of AlignCenterWithinParent
-                    Size = new Vector2(180f, 180f) * scale,
-                    Color = new Color(255, 0, 0, 255),
-                    RotationOrScale = 0f
-                }; // circle
-                MySprite ap_state = new MySprite() {
-                    Type = SpriteType.TEXT,
-                    Alignment = TextAlignment.LEFT,
-                    Data = "0",
-                    Position = new Vector2(-57f, -84f) * scale + centerPos, // this line is irrelevant because of AlignCenterWithinParent
-                    Color = new Color(255, 0, 0, 255),
-                    FontId = "Debug",
-                    RotationOrScale = 5f * scale
-                }; // textM
+            public Color GetDampenersStatusColor()
+            {
+                if (CBT.FlightController.RemoteControl.DampenersOverride) return Color.Green;
+                else return Color.Red;
+            }
 
-                AlignCenterWithinParent(background_sprite, ref circle);
-                AlignCenterWithinParent(background_sprite, ref ap_state);
-
-                frame.Add(background_sprite);
-                frame.Add(circle);
-                frame.Add(ap_state);
+            public string GetDampenersStatus()
+            {
+                return BoolConverter(CBT.FlightController.RemoteControl.DampenersOverride);
             }
 
             public void DrawAutopilotStatus(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {
-                string thrustersState;
-                bool thrustersOn = CBT.FlightController.HasThrusterControl;
-                Color thrustersBGColor;
-                string gyroState;
-                bool gyroOn = CBT.FlightController.HasGyroControl;
-                Color gyroBGColor;
-                string dampenersState;
-                bool dampenersOn = CBT.FlightController.RemoteControl.DampenersOverride;
-                Color dampenersBGColor;
-
-                if (thrustersOn) {
-                    thrustersState = "Thrusters AUTO";
-                    thrustersBGColor = new Color(0, 255, 0, 255);
-                } else {
-                    thrustersState = "Thrusters MANU";
-                    thrustersBGColor = new Color(255, 0, 0, 255);
-                }
-
-                if (gyroOn) {
-                    gyroState = "Gyros AUTO";
-                    gyroBGColor = new Color(0, 255, 0, 255);
-                } else {
-                    gyroState = "Gyros MANU";
-                    gyroBGColor = new Color(255, 0, 0, 255);
-                }
-
-                if (dampenersOn) {
-                    dampenersState = "Dampeners ON";
-                    dampenersBGColor = new Color(0, 255, 0, 255);
-                } else {
-                    dampenersState = "Dampeners OFF";
-                    dampenersBGColor = new Color(255, 0, 0, 255);
-                }
-
+                
                 MySprite background_sprite = new MySprite() {
                     Type = SpriteType.TEXTURE,
                     Alignment = TextAlignment.CENTER,
                     Data = "SquareSimple",
                     Position = centerPos,
                     Size = new Vector2(ScreenWidth, ScreenHeight) * scale,
-                    Color = new Color(0, 0, 0, 255),
+                    Color = Color.Black,
                     RotationOrScale = 0f
                 };
-                MySprite title = new MySprite() {
+                MySprite AUTOPILOT = new MySprite() {
                     Type = SpriteType.TEXT,
                     Alignment = TextAlignment.CENTER,
                     Data = "AUTOPILOT",
@@ -140,12 +151,12 @@ namespace IngameScript {
                     FontId = "Debug",
                     RotationOrScale = scale
                 };
-                MySprite thrusters = new MySprite() {
+                MySprite THRUSTERS = new MySprite() {
                     Type = SpriteType.TEXT,
                     Alignment = TextAlignment.CENTER,
-                    Data = thrustersState,
+                    Data = $"Thrusters {GetThrustersStatus()}",
                     Position = new Vector2(0f, -51f) * scale + centerPos,
-                    Color = new Color(0, 0, 0, 255),
+                    Color = GetThrustersStatusColorText(),
                     FontId = "Debug",
                     RotationOrScale = scale
                 };
@@ -155,15 +166,15 @@ namespace IngameScript {
                     Data = "SquareSimple",
                     Position = new Vector2(0f, -36f) * scale + centerPos,
                     Size = new Vector2(ScreenWidth, 31f) * scale,
-                    Color = thrustersBGColor,
+                    Color = GetThrustersStatusColorBG(),
                     RotationOrScale = 0f
                 }; // Thrusters BG
-                MySprite gyro = new MySprite() {
+                MySprite GYROS = new MySprite() {
                     Type = SpriteType.TEXT,
                     Alignment = TextAlignment.CENTER,
-                    Data = gyroState,
+                    Data = $"Gyros {GetGyrosStatus()}",
                     Position = new Vector2(0f, -18f) * scale + centerPos,
-                    Color = new Color(0, 0, 0, 255),
+                    Color = GetGyrosStatusColorText(),
                     FontId = "Debug",
                     RotationOrScale = scale
                 };
@@ -173,15 +184,15 @@ namespace IngameScript {
                     Data = "SquareSimple",
                     Position = new Vector2(0f, 0f) * scale + centerPos,
                     Size = new Vector2(ScreenWidth, 31f) * scale,
-                    Color = gyroBGColor,
+                    Color = GetGyrosStatusColorBG(),
                     RotationOrScale = 0f
                 }; // Gyro BG
-                MySprite dampeners = new MySprite() {
+                MySprite DAMPENERS = new MySprite() {
                     Type = SpriteType.TEXT,
                     Alignment = TextAlignment.CENTER,
-                    Data = dampenersState,
+                    Data = $"Dampeners {GetDampenersStatus()}",
                     Position = new Vector2(0f, 18f) * scale + centerPos,
-                    Color = new Color(0, 0, 0, 255),
+                    Color = Color.Black,
                     FontId = "Debug",
                     RotationOrScale = scale
                 };
@@ -191,28 +202,18 @@ namespace IngameScript {
                     Data = "SquareSimple",
                     Position = new Vector2(0f, 36f) * scale + centerPos,
                     Size = new Vector2(ScreenWidth, 31f) * scale,
-                    Color = dampenersBGColor,
+                    Color = GetDampenersStatusColor(),
                     RotationOrScale = 0f
                 }; // Dampeners BG
-                MySprite CBTStateMachineStatus = new MySprite() {
-                    Type = SpriteType.TEXT,
-                    Alignment = TextAlignment.CENTER,
-                    Data = CBT.CurrentPhase.ToString(),
-                    Position = new Vector2(0f, 51f) * scale + centerPos,
-                    Color = new Color(255, 255, 255, 255),
-                    FontId = "Debug",
-                    RotationOrScale = scale
-                };
 
                 frame.Add(background_sprite);
-                frame.Add(title);
+                frame.Add(AUTOPILOT);
                 frame.Add(thrustersBG);
-                frame.Add(thrusters);
+                frame.Add(THRUSTERS);
                 frame.Add(gyroBG);
-                frame.Add(gyro);
+                frame.Add(GYROS);
                 frame.Add(dampenersBG);
-                frame.Add(dampeners);
-                frame.Add(CBTStateMachineStatus);
+                frame.Add(DAMPENERS);
             }
         }
     }

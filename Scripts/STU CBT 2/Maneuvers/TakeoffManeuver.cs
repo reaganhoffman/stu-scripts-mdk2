@@ -57,6 +57,9 @@ namespace IngameScript
 
                 public override bool Init()
                 {
+                    foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = true; }
+                    foreach (var light in LandingLights) { light.Enabled = true; }
+                    foreach (var spotlight in Headlights) { spotlight.Enabled = true; }
                     if (!AskedForConfirmationAlready) AddToLogQueue("Enter 'CONFIRM' to proceed with takeoff sequence.", STULogType.WARNING);
                     AskedForConfirmationAlready = true;
                     if (Math.Abs(FlightController.VelocityMagnitude) < 0.1 && PilotConfirmation) // only continue if we're stationary and pilot confirms takeoff
@@ -65,10 +68,7 @@ namespace IngameScript
                         SetAutopilotControl(true, true, true);
                         ResetUserInputVelocities();
                         CancelCruiseControl();
-                        foreach (var spotlight in Spotlights) // turn on spotlights
-                        {
-                            spotlight.Enabled = true;
-                        }
+                        
                         foreach (var mp in HangarMagPlates) { mp.Enabled = true; } // lock hangar mag plates
                         foreach (var bat in Batteries) { bat.ChargeMode = ChargeMode.Auto; } // set batteries to auto
                         foreach (var tank in HydrogenTanks) { tank.Stockpile = false; } // disable stockpiling for hydro tanks
@@ -94,7 +94,7 @@ namespace IngameScript
                             InternalState = TakeoffPhases.AscendToTakeoffHeight;
                             break;
                         case TakeoffPhases.AscendToTakeoffHeight:
-                            double ascendVelocity = Math.Min(10, FlightController.GetCurrentSurfaceAltitude());
+                            double ascendVelocity = Math.Min(10, Math.Max(2,FlightController.GetCurrentSurfaceAltitude()-20));
                             if (FlightController.MaintainSurfaceAltitude(50,ascendVelocity,1)) { InternalState = TakeoffPhases.HandoffToPilot; }
                             break;
                         case TakeoffPhases.HandoffToPilot:
@@ -117,6 +117,8 @@ namespace IngameScript
                     FlightController.MaintainSurfaceAltitude(50, 1, 1);
                     if (PilotConfirmation)
                     {
+                        foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
+                        foreach (var light in LandingLights) { light.Enabled = false; }
                         CBT.CancelAttitudeControl();
                         CBT.SetAutopilotControl(false, false, true);
                         return true;

@@ -49,6 +49,8 @@ namespace IngameScript {
                 }
 
                 public override bool Init() {
+                    foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = true; }
+                    foreach (var light in LandingLights) { light.Enabled = true; }
                     if (!AskedForConfirmationAlready) AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
                     AskedForConfirmationAlready = true;
                     if (Math.Abs(FlightController.VelocityMagnitude) < 0.1 && PilotConfirmation)
@@ -58,10 +60,7 @@ namespace IngameScript {
                         ResetUserInputVelocities();
                         CancelCruiseControl();
                         LevelToHorizon();
-                        foreach (var spotlight in Spotlights)
-                        {
-                            spotlight.Enabled = true;
-                        }
+                        
                         if (!CBTGangway.ToggleGangway(1))
                         {
                             UserInputGangwayState = CBTGangway.GangwayStates.Resetting;
@@ -82,7 +81,7 @@ namespace IngameScript {
                             break;
                         case LandingPhases.FinalApproach:
                             CancelAttitudeControl();
-                            foreach (var light in InteriorLights) { light.Enabled = true; }
+                            foreach (var light in LandingLights) { light.Enabled = true; }
                             if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) { InternalState = LandingPhases.Touchdown; }
                             break;
                         case LandingPhases.Touchdown:
@@ -105,7 +104,8 @@ namespace IngameScript {
                         CancelAttitudeControl();
                         SetAutopilotControl(false, false, true);
                         foreach (var thruster in Thrusters) { thruster.Enabled = false; }
-                        foreach (var spotlight in Spotlights) { spotlight.Enabled = false; }
+                        foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
+                        foreach (var spotlight in Headlights) { spotlight.Enabled = false; };
                         return true;
                         
                     }

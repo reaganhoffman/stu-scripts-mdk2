@@ -1,4 +1,5 @@
 ﻿using EmptyKeys.UserInterface.Generated.WorkshopBrowserView_Bindings;
+using Sandbox.Game.Screens;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
@@ -20,6 +21,15 @@ namespace IngameScript {
             public static Phase CurrentPhase { get; set; } = Phase.Idle;
 
             public static int PowerLevel { get; private set; }
+
+            public struct BlockInfo
+            {
+                public long Id;
+                public string Name;
+                public int PowerLevel;
+            }
+
+            public static List<BlockInfo> CBTBlocks { get; private set; } = new List<BlockInfo>();
 
             public static float UserInputForwardVelocity = 0;
             public static float UserInputRightVelocity = 0;
@@ -50,6 +60,7 @@ namespace IngameScript {
             public static IMyGridTerminalSystem CBTGrid { get; set; }
             public static List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
             public static List<CBTLogLCD> LogChannel { get; set; } = new List<CBTLogLCD>();
+            public static Queue<string> LogChannelMessageBuffer { get; set; } = new Queue<string>();
             public static List<CBTAutopilotLCD> AutopilotStatusChannel { get; set; } = new List<CBTAutopilotLCD>();
             public static List<CBTManeuverQueueLCD> ManeuverQueueChannel { get; set; } = new List<CBTManeuverQueueLCD>();
             public static List<CBTAmmoLCD> AmmoChannel { get; set; } = new List<CBTAmmoLCD>();
@@ -99,7 +110,7 @@ namespace IngameScript {
             public static IMyGasGenerator[] H2O2Generators { get; set; }
             public static IMyGravityGenerator GravityGenerator { get; set; }
             public static IMySensorBlock[] Sensors { get; set; }
-            public static IMyInteriorLight[] InteriorLights { get; set; }
+            public static IMyInteriorLight[] LandingLights { get; set; }
             public static IMyUserControllableGun[] GatlingTurrets { get; set; }
             public static IMyUserControllableGun[] AssaultCannons { get; set; }
             public static IMyUserControllableGun[] Railguns { get; set; }
@@ -110,7 +121,8 @@ namespace IngameScript {
             public static IMyCockpit[] OfficerControlSeats { get; set; }
             public static IMyAssembler Assembler { get; set; }
             public static IMyRefinery Refinery { get; set; }
-            public static IMyReflectorLight[] Spotlights { get; set; }
+            public static IMyReflectorLight[] DownwardSpotlights { get; set; }
+            public static IMyReflectorLight[] Headlights { get; set; }
             public static IMyOreDetector OreDetector { get; set; }
             public static IMyAirVent[] AirVents { get; set; }
             #endregion
@@ -194,8 +206,9 @@ namespace IngameScript {
                 HangarRotor = LoadBlockByName<IMyMotorStator>("CBT Ramp Rotor");
 
                 // power level 3
-                InteriorLights = LoadAllBlocksOfType<IMyInteriorLight>();
-                Spotlights = LoadAllBlocksOfType<IMyReflectorLight>();
+                LandingLights = LoadAllBlocksOfTypeWithCustomData<IMyInteriorLight>("LandingLight");
+                DownwardSpotlights = LoadAllBlocksOfTypeWithCustomData<IMyReflectorLight>("DownwardSpotlight");
+                Headlights = LoadAllBlocksOfTypeWithCustomData<IMyReflectorLight>("Headlight");
                 GravityGenerator = LoadBlockByName<IMyGravityGenerator>("CBT Gravity Generator");
                 MedicalRoom = LoadBlockByName<IMyMedicalRoom>("CBT Medical Room");
                 CameraRotor = LoadBlockByName<IMyMotorStator>("CBT Camera Rotor");
@@ -474,28 +487,35 @@ namespace IngameScript {
             #endregion
 
             #region Block Loading
-            private static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
+            public static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
                 CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid);
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
-            private static T[] LoadAllBlocksOfTypeWithDetailedInfo<T>(string detailedInfo) where T : class, IMyTerminalBlock
+            public static T[] LoadAllBlocksOfTypeWithCustomData<T>(string customData) where T : class, IMyTerminalBlock
+            {
+                var intermediateList = new List<T>();
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.CustomData.Contains(customData));
+                if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose custom data contains '{customData}'.", STULogType.ERROR); }
+                return intermediateList.ToArray();
+            }
+            public static T[] LoadAllBlocksOfTypeWithDetailedInfo<T>(string detailedInfo) where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
                 CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains(detailedInfo));
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose detailed info contains '{detailedInfo}'.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
-            private static T[] LoadAllBlocksOfTypeWithSubtypeId<T>(string subtype) where T : class, IMyTerminalBlock
+            public static T[] LoadAllBlocksOfTypeWithSubtypeId<T>(string subtype) where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
                 CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId.Contains(subtype));
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose subtype ID contains '{subtype}'.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
-            private static T LoadBlockByName<T>(string name) where T : class, IMyTerminalBlock
+            public static T LoadBlockByName<T>(string name) where T : class, IMyTerminalBlock
             {
                 var block = CBTGrid.GetBlockWithName(name);
                 if (block == null)
@@ -722,6 +742,54 @@ namespace IngameScript {
             public static float RadToDeg(float angle)
             {
                 return (angle * (180/(float)Math.PI));
+            }
+
+            public static void FlushLogChannelMessageBuffer()
+            {
+                if (LogChannelMessageBuffer.Count <= 0)
+                {
+                    AddToLogQueue("--END OF MESSAGE BUFFER--", STULogType.WARNING);
+                    return;
+                }
+                for (int i = 0; i < Math.Min(10, LogChannelMessageBuffer.Count); i++)
+                {
+                    AddToLogQueue(LogChannelMessageBuffer.Dequeue(), STULogType.INFO);
+                }
+                if (LogChannelMessageBuffer.Count > 0) { AddToLogQueue("REPORT CONTINUES...", STULogType.OK); }
+            }
+
+            public static void PopulatePowerLevelReport()
+            {
+                RefreshBlockInfo(CBTBlocks);
+                foreach (var item in CBTBlocks)
+                {
+                    if (item.PowerLevel > -1) // GetPowerClassOfBlock() returns -1 if it can't find a PL in the custom data, don't care about those blocks here.
+                    {
+                        LogChannelMessageBuffer.Enqueue($"PL{item.PowerLevel} | {item.Name}");
+                    }
+                }
+            }
+            public static void RefreshBlockInfo(List<BlockInfo> list)
+            {
+                var tmp = new List<IMyTerminalBlock>();
+                CBTGrid.GetBlocks(tmp);
+
+                if (list.Count > 0) list.Clear();
+                foreach (var block in tmp)
+                {
+                    list.Add(new BlockInfo
+                    {
+                        Id = block.EntityId,
+                        Name = block.CustomName,
+                        PowerLevel = GetPowerClassOfBlock(block),
+                    });
+                }
+
+                list.Sort((a, b) =>
+                {
+                    int cmp = a.PowerLevel.CompareTo(b.PowerLevel);
+                    return cmp != 0 ? cmp : a.Id.CompareTo(b.Id);
+                });
             }
 
         }

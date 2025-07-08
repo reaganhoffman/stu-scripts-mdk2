@@ -12,7 +12,9 @@ namespace IngameScript {
             // Maneuver classes
             public HardStop HardStopManeuver { get; private set; }
             public GotoAndStop GotoAndStopManeuver { get; set; }
+#if STUGalacticMap
             public NavigateOverPlanetSurface NavigateOverPlanetSurfaceManeuver { get; set; }
+#endif
 
             public static Queue<STULog> FlightLogs = new Queue<STULog>();
             private const string FLIGHT_CONTROLLER_LOG_NAME = "STU-FC";
@@ -43,7 +45,9 @@ namespace IngameScript {
             STUOrientationController _orientationController { get; set; }
             STUAltitudeController _altitudeController { get; set; }
             STUPointOrbitController _pointOrbitController { get; set; }
+#if STUGalacticMap
             STUPlanetOrbitController _planetOrbitController { get; set; }
+#endif
             /// <summary>
             /// Flight utility class that handles velocity control and orientation control. Requires exactly one Remote Control block to function.
             /// Be sure to orient the Remote Control block so that its forward direction is the direction you want to be considered the "forward" direction of your ship.
@@ -58,7 +62,9 @@ namespace IngameScript {
                 _orientationController = new STUOrientationController(RemoteControl, AllGyroscopes);
                 _altitudeController = new STUAltitudeController(this, RemoteControl);
                 _pointOrbitController = new STUPointOrbitController(this, RemoteControl);
+#if STUGalacticMap
                 _planetOrbitController = new STUPlanetOrbitController(this);
+#endif
                 HasGyroControl = true;
                 _standardOutputDisplays = FindStandardOutputDisplays(grid, me);
                 HardStopManeuver = new HardStop(this);
@@ -358,10 +364,11 @@ namespace IngameScript {
             public void OrbitPoint(Vector3D targetPos) {
                 _pointOrbitController.Run(targetPos);
             }
-
+#if STUGalacticMap
             public void OrbitPlanet() {
                 _planetOrbitController.Run();
             }
+#endif
 
             /// <summary>
             /// Sets the ship's altitude to the target altitude. Returns true if the ship's altitude is stable.
@@ -453,6 +460,7 @@ namespace IngameScript {
                 return output.ToArray();
             }
 
+#if STUGalacticMap
             public STUGalacticMap.Planet? GetPlanetOfPoint(Vector3D point) {
                 foreach (var kvp in STUGalacticMap.CelestialBodies) {
                     STUGalacticMap.Planet planet = kvp.Value;
@@ -464,6 +472,7 @@ namespace IngameScript {
                 }
                 return null;
             }
+#endif
 
             public static void CreateOkFlightLog(string message) {
                 CreateFlightLog(message, STULogType.OK);
