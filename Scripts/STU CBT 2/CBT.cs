@@ -631,7 +631,9 @@ namespace IngameScript {
                 
                 if (!AttitudeControlActivated) { SetAutopilotControl(FlightController.HasThrusterControl, true, RemoteControl.DampenersOverride); }
                 // point belly towards the ground...
-                FlightController.AlignShipToTarget(RemoteControl.GetNaturalGravity(), MergeBlock, "right");
+                Vector3 currentRemoteControlPosition = RemoteControl.GetPosition();
+                Vector3 targetPosition = currentRemoteControlPosition + 10000 * RemoteControl.GetNaturalGravity();
+                FlightController.AlignShipToTarget(targetPosition, MergeBlock, "right");
                 
                 AttitudeControlActivated = true;
             }

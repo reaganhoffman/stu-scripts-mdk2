@@ -267,7 +267,7 @@ namespace IngameScript {
                     float predicateAsFloat;
                     switch (subject) {
                         case "TEST":
-                            foreach (var engine in CBT.HydrogenEngines) { CBT.AddToLogQueue($"Hydrogen engine {i} enabled: {engine.Enabled}"); }
+                            CBT.AddToLogQueue($"{CBT.RemoteControl.GetNaturalGravity()}");
                             break;
                         case "HELP": // prints a help message to the screen
                             switch (predicate)
