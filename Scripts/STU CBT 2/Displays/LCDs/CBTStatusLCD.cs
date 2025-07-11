@@ -65,13 +65,15 @@ namespace IngameScript {
 
             public Color GetGangwayStatusColor()
             {
+                if (!CBT.GangwayHinge1.Enabled || !CBT.GangwayHinge2.Enabled) return new Color(64, 64, 64);
+
                 switch (CBT.Gangway.CurrentGangwayState)
                 {
                     case CBTGangway.GangwayStates.Unknown: return Color.Red;
                     case CBTGangway.GangwayStates.Frozen: return Color.Red;
                     case CBTGangway.GangwayStates.Resetting: return Color.Cyan;
                     case CBTGangway.GangwayStates.Extended: return Color.Green;
-                    case CBTGangway.GangwayStates.Retracted: return new Color(64, 64, 64) ;
+                    case CBTGangway.GangwayStates.Retracted: return Color.Green;
                     case CBTGangway.GangwayStates.Extending: return Color.Yellow;
                     case CBTGangway.GangwayStates.Retracting: return Color.Yellow;
                     default: return Color.Black;
@@ -121,8 +123,9 @@ namespace IngameScript {
                 }
             }
 
-            public Color GetMergeBlockStatusColor()
+            public Color GetStingerStatusColor()
             {
+                if (!CBT.RearHinge1.Enabled || !CBT.RearHinge2.Enabled || !CBT.RearPiston.Enabled) return Color.Red;
                 switch (CBT.MergeBlock.State)
                 {
                     case MergeState.None: return new Color(64, 64, 64);
@@ -286,9 +289,9 @@ namespace IngameScript {
                 MySprite MERGE = new MySprite
                 {
                     Type = SpriteType.TEXT,
-                    Data = "MERGE",
+                    Data = "STINGR",
                     Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 2),
-                    Color = GetMergeBlockStatusColor(),
+                    Color = GetStingerStatusColor(),
                     FontId = "Monospace",
                     RotationOrScale = FontSize
                 };

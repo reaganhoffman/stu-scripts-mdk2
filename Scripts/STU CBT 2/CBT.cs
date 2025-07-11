@@ -546,10 +546,10 @@ namespace IngameScript {
             public static int GetHydrogenPercentFilled()
             {
                 var inventory = InventoryEnumerator.GetItemTotals();
-                float h2RawAmount = inventory.ContainsKey("Hydrogen") ? (float)inventory["Hydrogen"] : 0;
+                double h2RawAmount = inventory.ContainsKey("Hydrogen") ? inventory["Hydrogen"] : 0;
                 try
                 {
-                    return (int)(h2RawAmount / CBT.InventoryEnumerator.HydrogenCapacity) * 100;
+                    return (int)((h2RawAmount / CBT.InventoryEnumerator.HydrogenCapacity) * 100);
                 }
                 catch
                 {
@@ -562,7 +562,7 @@ namespace IngameScript {
                 float o2RawAmount = inventory.ContainsKey("Oxygen") ? (float)inventory["Oxygen"] : 0;
                 try
                 {
-                    return (int)(o2RawAmount / CBT.InventoryEnumerator.OxygenCapacity) * 100;
+                    return (int)((o2RawAmount / CBT.InventoryEnumerator.OxygenCapacity) * 100);
                 }
                 catch
                 {
@@ -579,7 +579,7 @@ namespace IngameScript {
                 }
                 try
                 {
-                    return (int)(kWrunningTotal / InventoryEnumerator.PowerCapacity) * 100;
+                    return (int)((kWrunningTotal / InventoryEnumerator.PowerCapacity) * 100);
                 }
                 catch
                 {

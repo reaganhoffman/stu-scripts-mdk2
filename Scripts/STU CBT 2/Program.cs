@@ -267,7 +267,7 @@ namespace IngameScript {
                     float predicateAsFloat;
                     switch (subject) {
                         case "TEST":
-                            CBT.AddToLogQueue($"{CBT.RemoteControl.GetNaturalGravity()}");
+                            CBT.AddToLogQueue($"{CBT.ACM.GetAirlocks()}");
                             break;
                         case "HELP": // prints a help message to the screen
                             switch (predicate)
@@ -391,17 +391,18 @@ namespace IngameScript {
                                 switch (predicate)
                                 {
                                     case "ENABLE":
-                                        CBT.ACM.EnableAutomaticControl();
+                                        CBT.ACM.ChangeAutomaticControl(true, true);
+                                        CBT.ACM.CloseAirlocks();
+                                        CBT.ACM.CloseSoloDoors();
                                         CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.OK);
-                                        foreach (var door in CBT.Doors) { door.CloseDoor(); }
                                         break;
                                     case "DISABLE":
-                                        CBT.ACM.DisableAuomaticControl();
+                                        CBT.ACM.ChangeAutomaticControl(false, false);
                                         CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.WARNING);
                                         break;
                                     case "TOGGLE":
-                                        if (CBT.ACM.Enabled) { CBT.ACM.DisableAuomaticControl(); CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.INFO); }
-                                        else { CBT.ACM.EnableAutomaticControl(); CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.INFO); }
+                                        if (CBT.ACM.SoloEnabled || CBT.ACM.AirlockEnabled) { CBT.ACM.ChangeAutomaticControl(false, false); CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.INFO); }
+                                        else { CBT.ACM.ChangeAutomaticControl(true, true); CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.INFO); }
                                         break;
                                     default:
                                         PrintParseError(subject, predicate);
@@ -440,18 +441,16 @@ namespace IngameScript {
                             }
                             break;
 
-                        case "HEADLIGHTS":
-                            // need to fix in CBT constructor how it differentiates between the headlights and the landing spotlights
-                            break;
-
                         case "DOORS":
                             switch (predicate)
                             {
                                 case "CLOSE":
-                                    foreach (var door in CBT.Doors) { door.CloseDoor(); }
+                                    CBT.ACM.CloseAirlocks();
+                                    CBT.ACM.CloseSoloDoors();
                                     break;
                                 case "OPEN":
-                                    foreach(var door in CBT.Doors) { door.OpenDoor(); }
+                                    CBT.ACM.CloseAirlocks();
+                                    CBT.ACM.CloseSoloDoors();
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);
@@ -463,13 +462,14 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "HOSPITABLE":
-                                    CBT.ACM.DisableAuomaticControl();
-                                    foreach (var door in CBT.Doors) { door.OpenDoor(); }
-                                    foreach (var vent in CBT.AirVents) { vent.Depressurize = true; }
+                                    CBT.ACM.OpenAirlocks(true);
+                                    CBT.ACM.OpenSoloDoors(true);
+                                    CBT.ACM.ChangeAutomaticControl(false, false); // this order matters! fix later
                                     break;
                                 case "INHOSPITABLE":
-                                    CBT.ACM.EnableAutomaticControl();
-                                    foreach (var door in CBT.Doors) { door.CloseDoor(); }
+                                    CBT.ACM.ChangeAutomaticControl(true, true); // this order matters! fix later. ACM will refuse to open or close doors depending on whether they're enabled in memory or not.
+                                    CBT.ACM.CloseSoloDoors();
+                                    CBT.ACM.CloseAirlocks();
                                     foreach (var vent in CBT.AirVents) { vent.Depressurize = false; }
                                     break;
                             }
