@@ -238,7 +238,7 @@ namespace IngameScript {
 
 
         public bool ParseCommand(string arg) {
-            // commands MUST follow the structure "[SUBJECT] [PREDICATE]".
+            // commands MUST follow the structure "[SUBJECT] [PREDICATE]" OR be special, single-word commands.
             if (CommandLineParser.TryParse(arg)) {
                 if (CommandLineParser.ArgumentCount % 2 != 0 && CommandLineParser.ArgumentCount > 1) // check parity of argument count, but ignore single-word commands.
                 {
@@ -248,10 +248,6 @@ namespace IngameScript {
                 for (int i = 0; i < CommandLineParser.ArgumentCount; i = i + 2) {
                     string subject = CommandLineParser.Argument(i);
                     subject = subject.ToUpper();
-                    //if (subject.Length < 2) {
-                    //    CBT.AddToLogQueue($"Command '{subject}' is too short to be valid. Skipping...", STULogType.WARNING);
-                    //    continue;
-                    //}
 
                     string predicate;
                     try
@@ -691,13 +687,13 @@ namespace IngameScript {
                                     ManeuverQueue.Enqueue(new CBT.HoverManeuver());
                                     break;
 
-                                case "FASTSTOP": // queues a fast stop maneuver
-                                    CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
-                                    CBT.CancelCruiseControl();
-                                    CBT.CancelAttitudeControl();
-                                    ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
-                                    break;
-                                #endregion
+                        case "FASTSTOP": // queues a fast stop maneuver
+                            CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
+                            CBT.CancelCruiseControl();
+                            CBT.CancelAttitudeControl();
+                            ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
+                            break;
+                        #endregion
 
                         #region Weapons
 
@@ -751,6 +747,11 @@ namespace IngameScript {
         public static string BoolConverter(bool value) {
             if (value) { return "ON"; }
             else { return "OFF"; }
+        }
+
+        public void HelloWorld()
+        {
+            CBT.AddToLogQueue("hello world");
         }
 
         public float NextHighestCubicNumber(float value) {

@@ -620,13 +620,13 @@ namespace IngameScript {
                 UserInputPitchVelocity = 0;
                 UserInputYawVelocity = 0;
             }
-            public static void LevelToHorizon()
+            public static bool LevelToHorizon()
             {
                 if (RemoteControl.GetNaturalGravity() == null) 
                 { 
                     AddToLogQueue("No gravity detected, cannot set attitude control.", STULogType.WARNING);
                     CancelAttitudeControl();
-                    return; 
+                    return false; 
                 }
                 
                 if (!AttitudeControlActivated) { SetAutopilotControl(FlightController.HasThrusterControl, true, RemoteControl.DampenersOverride); }
@@ -634,8 +634,7 @@ namespace IngameScript {
                 Vector3 currentRemoteControlPosition = RemoteControl.GetPosition();
                 Vector3 targetPosition = currentRemoteControlPosition + 10000 * RemoteControl.GetNaturalGravity();
                 FlightController.AlignShipToTarget(targetPosition, MergeBlock, "right");
-                
-                AttitudeControlActivated = true;
+                AttitudeControlActivated = true; return true;
             }
 
             public static void CancelAttitudeControl()

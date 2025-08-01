@@ -1,4 +1,5 @@
 ﻿using Sandbox.Game.Replication;
+using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using VRageMath;
@@ -17,9 +18,10 @@ namespace IngameScript {
                     Touchdown
                 }
                 public LandingPhases InternalState { get; set; }
+                public double? InitialAltitudeOffset { get; set; }
                 public bool Landed { get; private set; } = false;
-                private bool AskedForConfirmationAlready = false;
-                private bool _pilotConfirmation = false;
+                private bool AskedForConfirmationAlready { get; set; } = false;
+                private bool _pilotConfirmation { get; set; } = false;
                 public bool PilotConfirmation 
                 {
                     get { return _pilotConfirmation; }
@@ -51,22 +53,37 @@ namespace IngameScript {
                 public override bool Init() {
                     foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = true; }
                     foreach (var light in LandingLights) { light.Enabled = true; }
-                    if (!AskedForConfirmationAlready) AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
-                    AskedForConfirmationAlready = true;
+                    
                     if (Math.Abs(FlightController.VelocityMagnitude) < 0.1 && PilotConfirmation)
                     {
                         // ensure we have access to the thrusters, gyros, and dampeners are on
                         SetAutopilotControl(true, true, true);
                         ResetUserInputVelocities();
                         CancelCruiseControl();
-                        LevelToHorizon();
+
+                        // get elevation offset by pointing camera downward and taking a raycast
+                        CameraHinge.TargetVelocityRPM = Math.Abs(CameraHinge.TargetVelocityRPM) * -1; // point camera downwards
+                        AddToLogQueue($"AskedForConfirmation: {AskedForConfirmationAlready}");
+                        AddToLogQueue($"Camera Angle: {CameraHinge.Angle}");
+                        AddToLogQueue($"Attitude control: {AttitudeControlActivated}");
+                        AddToLogQueue($"Camera.CanScan: {Camera.CanScan(500)}");
+                        if (!AskedForConfirmationAlready && AngleCloseEnoughDegrees(CameraHinge.Angle, 0) && LevelToHorizon() && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
+                        {
+                            MyDetectedEntityInfo raycast = Camera.Raycast(500,0,0); // limit detection to 500 meters
+                            Vector3D initialAltitudeOffsetVector3D = Camera.GetPosition() - raycast.HitPosition.Value;
+                            InitialAltitudeOffset = initialAltitudeOffsetVector3D.Length();
+
+                            AddToLogQueue($"Calculated altitude offset: {InitialAltitudeOffset}");
+                            AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
+                            AskedForConfirmationAlready = true;
+                        }
                         
                         if (!CBTGangway.ToggleGangway(1))
                         {
                             UserInputGangwayState = CBTGangway.GangwayStates.Resetting;
                         }
                         PilotConfirmation = false;
-                        return true;
+                        return InitialAltitudeOffset.HasValue; // only proceed once we have a value for InitialAltitudeOffset
                     }
                     else return false;
                 }
@@ -76,8 +93,7 @@ namespace IngameScript {
                     {
                         case LandingPhases.InitialDescent:
                             double descendVelocity = Math.Max(FlightController.GetCurrentSurfaceAltitude() / 10, 4);
-                            
-                            if (FlightController.MaintainSurfaceAltitude(30, 10, descendVelocity) && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended) { InternalState = LandingPhases.FinalApproach; }
+                            if (FlightController.MaintainSurfaceAltitude(30 + InitialAltitudeOffset ?? 0, 10, descendVelocity) && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended) { InternalState = LandingPhases.FinalApproach; }
                             break;
                         case LandingPhases.FinalApproach:
                             CancelAttitudeControl();
