@@ -47,6 +47,7 @@ namespace IngameScript {
             public static float CruiseControlSpeed { get; private set; } = 0f;
             public static bool AttitudeControlActivated { get; private set; } = false;
             public static float AltitudeControlHeight { get; private set; } = 0f;
+            public static bool ShipIsLevel { get; private set; } = false;
 
             //public static Vector3D NextWaypoint;
 
@@ -633,13 +634,14 @@ namespace IngameScript {
                 // point belly towards the ground...
                 Vector3 currentRemoteControlPosition = RemoteControl.GetPosition();
                 Vector3 targetPosition = currentRemoteControlPosition + 10000 * RemoteControl.GetNaturalGravity();
-                FlightController.AlignShipToTarget(targetPosition, MergeBlock, "right");
+                ShipIsLevel = FlightController.AlignShipToTarget(targetPosition, MergeBlock, "right");
                 AttitudeControlActivated = true; return true;
             }
 
             public static void CancelAttitudeControl()
             {
                 SetAutopilotControl(FlightController.HasThrusterControl, false, RemoteControl.DampenersOverride);
+                ShipIsLevel = false;
                 AttitudeControlActivated = false;
             }
 

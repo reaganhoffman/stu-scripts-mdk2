@@ -96,7 +96,7 @@ namespace IngameScript
                         case TakeoffPhases.AscendToTakeoffHeight:
                             double x = FlightController.GetCurrentSurfaceAltitude();
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
-                            if (FlightController.MaintainSurfaceAltitude(100,ascendVelocity,1)) { InternalState = TakeoffPhases.HandoffToPilot; }
+                            if (FlightController.MaintainSurfaceAltitude(x+100,ascendVelocity,1)) { InternalState = TakeoffPhases.HandoffToPilot; }
                             break;
                         case TakeoffPhases.HandoffToPilot:
                             LevelToHorizon();
