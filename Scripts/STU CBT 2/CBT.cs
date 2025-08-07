@@ -64,6 +64,7 @@ namespace IngameScript {
             public static Queue<string> LogChannelMessageBuffer { get; set; } = new Queue<string>();
             public static List<CBTAutopilotLCD> AutopilotStatusChannel { get; set; } = new List<CBTAutopilotLCD>();
             public static List<CBTManeuverQueueLCD> ManeuverQueueChannel { get; set; } = new List<CBTManeuverQueueLCD>();
+            public static Queue<STUStateMachine> ManeuverQueue { get; set; }
             public static List<CBTAmmoLCD> AmmoChannel { get; set; } = new List<CBTAmmoLCD>();
             public static List<CBTStatusLCD> StatusChannel { get; set; } = new List<CBTStatusLCD>();
             public static STUFlightController FlightController { get; set; }
@@ -100,6 +101,8 @@ namespace IngameScript {
             public static IMyMotorStator CameraRotor { get; set; }
             public static IMyMotorStator CameraHinge { get; set; }
             public static IMyCameraBlock Camera { get; set; }
+            public static IMyLandingGear StingerLock { get; set; }
+            public static IMyMotorStator StingerLockRotor { get; set; }
             
 
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
@@ -151,7 +154,8 @@ namespace IngameScript {
             };
 
             // CBT object constructor
-            public CBT(Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
+            public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
+                ManeuverQueue = thisManeuverQueue;
                 Me = me;
                 InventoryEnumerator = inventoryEnumerator;
                 Broadcaster = broadcaster;
@@ -167,44 +171,44 @@ namespace IngameScript {
                 AddAmmoScreens(grid);
                 AddStatusScreens(grid);
 
-                // zero power draw
+                // power level 0 (flight critical, negligible or intermittent power draw)
                 Batteries = LoadAllBlocksOfType<IMyBatteryBlock>();
-                ButtonPanels = LoadAllBlocksOfType<IMyButtonPanel>();
                 HydrogenEngines = LoadAllBlocksOfTypeWithSubtypeId<IMyPowerProducer>("HydrogenEngine");
                 MergeBlock = LoadBlockByName<IMyShipMergeBlock>("CBT Merge Block");
                 CargoContainers = LoadAllBlocksOfType<IMyCargoContainer>();
                 OxygenTanks = LoadAllBlocksOfTypeWithDetailedInfo<IMyGasTank>("Oxygen");
-                HydrogenTanks = LoadAllBlocksOfTypeWithDetailedInfo<IMyGasTank>("Hydrogen");
-
-                // flight critical ("power level 0" / negligible or intermittent power draw)
-                RemoteControl = LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
                 Thrusters = LoadAllBlocksOfType<IMyThrust>();
                 Gyros = LoadAllBlocksOfType<IMyGyro>();
-                FlightSeat = LoadBlockByName<IMyTerminalBlock>("CBT Flight Seat");
                 Connector = LoadBlockByName<IMyShipConnector>("CBT Rear Connector");
                     Connector.Enabled = true;
                     Connector.IsParkingEnabled = false;
                     Connector.PullStrength = 0;
                 CryoPods = LoadAllBlocksOfType<IMyCryoChamber>();
                 LandingGear = LoadAllBlocksOfType<IMyLandingGear>();
-                Doors = LoadAllBlocksOfType<IMyDoor>();
                 HangarMagPlates = LoadAllBlocksOfTypeWithSubtypeId<IMyLandingGear>("MagneticPlate");
+                StingerLockRotor = LoadBlockByName<IMyMotorStator>("Stinger Lock Rotor");
 
                 // power level 1
                 LoadGatlingGuns(grid); // keeping this one as is...
                 OfficerControlSeats = LoadAllBlocksOfTypeWithSubtypeId<IMyCockpit>("Module");
+                StingerLock = LoadBlockByName<IMyLandingGear>("Stinger Lock");
+                HydrogenTanks = LoadAllBlocksOfTypeWithDetailedInfo<IMyGasTank>("Hydrogen");
+                RemoteControl = LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
+                FlightSeat = LoadBlockByName<IMyTerminalBlock>("CBT Flight Seat");
+                ButtonPanels = LoadAllBlocksOfType<IMyButtonPanel>();
 
                 // power level 2
                 RearHinge1 = LoadBlockByName<IMyMotorStator>("CBT Rear Hinge 1");
                 RearHinge2 = LoadBlockByName<IMyMotorStator>("CBT Rear Hinge 2");
                 RearPiston = LoadBlockByName<IMyPistonBase>("CBT Rear Piston");
-                    RearDock = new CBTRearDock(RearPiston, RearHinge1, RearHinge2, Connector);
+                    RearDock = new CBTRearDock(ManeuverQueue, RearPiston, RearHinge1, RearHinge2, Connector);
                 GangwayHinge1 = LoadBlockByName<IMyMotorStator>("CBT Gangway Hinge 1");
                 GangwayHinge2 = LoadBlockByName<IMyMotorStator>("CBT Gangway Hinge 2");
                     GangwayHinge1.TargetVelocityRPM = 0;
                     GangwayHinge2.TargetVelocityRPM = 0;
                     Gangway = new CBTGangway(GangwayHinge1, GangwayHinge2);
                 HangarRotor = LoadBlockByName<IMyMotorStator>("CBT Ramp Rotor");
+                Doors = LoadAllBlocksOfType<IMyDoor>();
 
                 // power level 3
                 LandingLights = LoadAllBlocksOfTypeWithCustomData<IMyInteriorLight>("LandingLight");

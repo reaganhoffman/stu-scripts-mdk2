@@ -20,7 +20,7 @@ namespace IngameScript {
                 ResettingHinge2,
                 Frozen, // currently not used
             }
-            public GangwayStates CurrentGangwayState { get; set; }
+            public GangwayStates CurrentGangwayState { get; private set; }
             private GangwayStates LastUserInputGangwayState { get; set; }
 
             public CBTGangway(IMyMotorStator hinge1, IMyMotorStator hinge2) {
@@ -211,6 +211,11 @@ namespace IngameScript {
                     CBT.AddToLogQueue("Gangway Retracted.", STULogType.OK);
                     return true;
                 } else { return false; }
+            }
+
+            public void ResetGangway()
+            {
+                CurrentGangwayState = GangwayStates.Resetting;
             }
 
             public bool ToggleGangway(float desiredState = float.NaN) {

@@ -125,7 +125,8 @@ namespace IngameScript {
 
             public Color GetStingerStatusColor()
             {
-                if (!CBT.RearHinge1.Enabled || !CBT.RearHinge2.Enabled || !CBT.RearPiston.Enabled) return Color.Red;
+                if (!CBT.Connector.IsFunctional) return Color.Red;
+                if (CBT.StingerLock.IsLocked) return Color.Green;
                 switch (CBT.MergeBlock.State)
                 {
                     case MergeState.None: return new Color(64, 64, 64);

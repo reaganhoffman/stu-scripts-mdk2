@@ -108,6 +108,10 @@ namespace IngameScript
                 {
                     result += $"{airlock.SideA.CustomName} <-> {airlock.SideB.CustomName}\n";
                 }
+                foreach (SoloAirlock soloAirlock in SoloAirlocks)
+                {
+                    result += $"Solo: {soloAirlock.Door.CustomName}\n";
+                }
                 return result;
             }
 
@@ -136,9 +140,9 @@ namespace IngameScript
             /// <summary>
             /// Opens all airlocks (double-doors) that are currently held in memory. Only works if automatic control is disabled.
             /// </summary>
-            public void OpenAirlocks(bool force = false)
+            public void OpenAirlocks(bool overrideControl = false)
             {
-                if (!AirlockEnabled || force) return;
+                if (!overrideControl && !AirlockEnabled) return;
                 foreach (var a in Airlocks)
                 {
                     a.SideA.OpenDoor();
@@ -161,9 +165,9 @@ namespace IngameScript
             /// <summary>
             /// Opens all solo doors that are currently held in memory. Only works if automatic control is disabled.
             /// </summary>
-            public void OpenSoloDoors(bool force = false)
+            public void OpenSoloDoors(bool overrideControl = false)
             {
-                if (!SoloEnabled || force) return;
+                if (!overrideControl && !SoloEnabled) return;
                 foreach (var a in SoloAirlocks)
                 {
                     a.Door.OpenDoor();
@@ -186,7 +190,7 @@ namespace IngameScript
             /// </summary>
             /// <param name="solo"></param>
             /// <param name="airlock"></param>
-            public void ChangeAutomaticControl(bool solo = true, bool airlock = true)
+            public void ChangeAutomaticControl(bool solo, bool airlock)
             {
                 SoloEnabled = solo;
                 AirlockEnabled = airlock;

@@ -75,11 +75,7 @@ namespace IngameScript {
                         if (!AskedForConfirmationAlready && AngleCloseEnoughDegrees(CameraHinge.Angle, 0) && CBT.ShipIsLevel && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
                         {
                             Raycast = Camera.Raycast(500,0,0); // limit detection to 500 meters
-                            AddToLogQueue($"Camera.Position: {Camera.GetPosition()}");
-                            AddToLogQueue($"raycast.HitPosition: {Raycast.HitPosition}");
-                            AddToLogQueue($"raycast.HitPosition.Value: {Raycast.HitPosition.Value}");
                             InitialLandingZoneVector = Camera.GetPosition() - Raycast.HitPosition.Value;
-                            AddToLogQueue($"initialLandingZoneVector: {InitialLandingZoneVector}");
 
                             AltitudeAboveLZ = InitialLandingZoneVector.Length() + 10; // empirical testing requires this 10m offset be added to get what the in-game HUD (maybe)
                             LandingZonePlatformElevation = FlightController.GetCurrentSurfaceAltitude() - AltitudeAboveLZ;
@@ -92,7 +88,7 @@ namespace IngameScript {
                         if (PilotConfirmation)
                         {
                             PilotConfirmation = false;
-                            CBTGangway.ToggleGangway(1);
+                            CBTGangway.ToggleGangway(1); // extend gangway
                             return true;
                         }
                     }

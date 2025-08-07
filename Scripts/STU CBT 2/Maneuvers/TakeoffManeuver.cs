@@ -23,9 +23,10 @@ namespace IngameScript
                     HandoffToPilot
                 }
                 public TakeoffPhases InternalState { get; set; }
+                public double InitialAltitude { get; set; }
                 public bool ReadyForHandoff { get; private set; } = false;
-                private bool AskedForConfirmationAlready = false;
-                private bool _pilotConfirmation = false;
+                private bool AskedForConfirmationAlready { get; set; } = false;
+                private bool _pilotConfirmation { get; set; } = false;
                 public bool PilotConfirmation
                 {
                     get { return _pilotConfirmation; }
@@ -57,6 +58,7 @@ namespace IngameScript
 
                 public override bool Init()
                 {
+                    InitialAltitude = FlightController.GetCurrentSurfaceAltitude();
                     foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = true; }
                     foreach (var light in LandingLights) { light.Enabled = true; }
                     foreach (var spotlight in Headlights) { spotlight.Enabled = true; }
@@ -75,6 +77,7 @@ namespace IngameScript
                         foreach (var thruster in Thrusters) { thruster.Enabled = true; } // turn on thrusters
                         foreach (var gyro in Gyros) { gyro.Enabled = true; } // turn on gyros
                         Connector.Disconnect(); // disconnect rear connector
+                        Gangway.ResetGangway(); // retract gangway
                         PilotConfirmation = false;
                         return true;
                     }
@@ -87,21 +90,20 @@ namespace IngameScript
                     {
                         case TakeoffPhases.HardwareActuatorPrep:
                             SetLandingGear(false); // disengage landing gear
-                            if (!CBTGangway.ToggleGangway(0)) { UserInputGangwayState = CBTGangway.GangwayStates.Resetting; } // retract gangway
                             HangarRotor.TargetVelocityRPM = Math.Abs(HangarRotor.TargetVelocityRPM) * -1; // close hangar ramp, ensuring its velocity is negative
                             UserInputRearDockPosition = 0; // tell the stinger actuator state machine to stow the stinger
 
                             InternalState = TakeoffPhases.AscendToTakeoffHeight;
                             break;
                         case TakeoffPhases.AscendToTakeoffHeight:
-                            double x = FlightController.GetCurrentSurfaceAltitude();
+                            double x = FlightController.GetCurrentSurfaceAltitude() - InitialAltitude;
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
-                            if (FlightController.MaintainSurfaceAltitude(x+100,ascendVelocity,1)) { InternalState = TakeoffPhases.HandoffToPilot; }
+                            if (FlightController.MaintainSurfaceAltitude(InitialAltitude + 50, ascendVelocity, 1)) { InternalState = TakeoffPhases.HandoffToPilot; }
                             break;
                         case TakeoffPhases.HandoffToPilot:
                             LevelToHorizon();
-                            Connector.Connect();
-                            if (Connector.IsConnected) // now that the stinger should be stowed, connect the connector to its 'locked' position
+                            StingerLock.Lock(); // now that the stinger should be stowed, lock the stinger lock
+                            if (StingerLock.IsLocked) // hand off control once the stinger is actually locked
                             {
                                 ReadyForHandoff = true;
                                 AddToLogQueue("Takeoff sequence Complete. Ready to fly.", STULogType.OK);
@@ -115,17 +117,12 @@ namespace IngameScript
 
                 public override bool Closeout()
                 {
-                    FlightController.MaintainSurfaceAltitude(50, 1, 1);
-                    if (PilotConfirmation)
-                    {
-                        foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
-                        foreach (var light in LandingLights) { light.Enabled = false; }
-                        CBT.CancelAttitudeControl();
-                        CBT.SetAutopilotControl(false, false, true);
-                        return true;
-                    }
-                    return false;
-
+                    foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
+                    foreach (var light in LandingLights) { light.Enabled = false; }
+                    CBT.CancelAttitudeControl();
+                    CBT.SetAutopilotControl(false, false, true);
+                    ManeuverQueue.Enqueue(new CBT.HoverManeuver());
+                    return true;
                 }
             }
         }

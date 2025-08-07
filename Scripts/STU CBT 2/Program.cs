@@ -45,7 +45,7 @@ namespace IngameScript {
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
             GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(AllBatteries);
             InventoryEnumerator = new STUInventoryEnumerator(AllTerminalBlocks, AllTanks, AllBatteries, Me);
-            CBTShip = new CBT(Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
+            CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
             ResetAutopilot();
@@ -397,8 +397,9 @@ namespace IngameScript {
                                         CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.WARNING);
                                         break;
                                     case "TOGGLE":
-                                        if (CBT.ACM.SoloEnabled || CBT.ACM.AirlockEnabled) { CBT.ACM.ChangeAutomaticControl(false, false); CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.INFO); }
-                                        else { CBT.ACM.ChangeAutomaticControl(true, true); CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.INFO); }
+                                        CBT.ACM.ChangeAutomaticControl(!CBT.ACM.SoloEnabled, !CBT.ACM.AirlockEnabled);
+                                        CBT.AddToLogQueue($"Automatic Doors (solos) {BoolConverter(CBT.ACM.SoloEnabled)}");
+                                        CBT.AddToLogQueue($"Automatic Airlocks {BoolConverter(CBT.ACM.AirlockEnabled)}", STULogType.INFO);
                                         break;
                                     default:
                                         PrintParseError(subject, predicate);
@@ -458,14 +459,19 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "HOSPITABLE":
+                                    CBT.ACM.ChangeAutomaticControl(false, false);
+                                    CBT.AddToLogQueue($"airlock control: {CBT.ACM.AirlockEnabled}");
+                                    CBT.AddToLogQueue($"solo control: {CBT.ACM.SoloEnabled}");
                                     CBT.ACM.OpenAirlocks(true);
                                     CBT.ACM.OpenSoloDoors(true);
-                                    CBT.ACM.ChangeAutomaticControl(false, false); // this order matters! fix later
+                                    foreach (var vent in CBT.AirVents) { vent.Depressurize = true; }
                                     break;
                                 case "INHOSPITABLE":
-                                    CBT.ACM.ChangeAutomaticControl(true, true); // this order matters! fix later. ACM will refuse to open or close doors depending on whether they're enabled in memory or not.
                                     CBT.ACM.CloseSoloDoors();
                                     CBT.ACM.CloseAirlocks();
+                                    CBT.ACM.ChangeAutomaticControl(true, true);
+                                    CBT.AddToLogQueue($"airlock control: {CBT.ACM.AirlockEnabled}");
+                                    CBT.AddToLogQueue($"solo control: {CBT.ACM.SoloEnabled}");
                                     foreach (var vent in CBT.AirVents) { vent.Depressurize = false; }
                                     break;
                             }
@@ -672,9 +678,9 @@ namespace IngameScript {
                             else break;
 
                         case "TAKEOFF":
-                            if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0,0,0) || CBT.FlightController.GetCurrentSurfaceAltitude() > 20)
+                            if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0,0,0))
                             {
-                                CBT.AddToLogQueue("Not in gravity or current altitude too high. Aborting takeoff sequence.", STULogType.WARNING);
+                                CBT.AddToLogQueue("Not in gravity. Aborting takeoff sequence.", STULogType.WARNING);
                                 break;
                             }
                             ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(ManeuverQueue, CBT.Gangway));
