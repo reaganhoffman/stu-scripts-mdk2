@@ -9,6 +9,7 @@ namespace IngameScript {
     partial class Program {
         public class STUDisplay {
 
+            public IMyTextPanel DisplayBlock { get; private set; }
             public IMyTextSurface Surface { get; private set; }
             public RectangleF Viewport { get; private set; }
             public Vector2 TopLeft { get; private set; }
@@ -71,6 +72,7 @@ namespace IngameScript {
                 Lines = (int)(ScreenHeight / DefaultLineHeight);
                 NeedToCenterSprite = true;
                 FinishedDrawingCustomImage = false;
+                DisplayBlock = block as IMyTextPanel;
                 Clear();
             }
 

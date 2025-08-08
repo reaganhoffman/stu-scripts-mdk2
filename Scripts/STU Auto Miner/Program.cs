@@ -10,6 +10,8 @@ namespace IngameScript {
 
     partial class Program : MyGridProgram {
 
+        string _errorReason;
+
         bool ISSUED_PARACHUTE_WARNING = false;
         bool EXECUTED_EMERGENCY_LANDING = false;
 
@@ -76,6 +78,7 @@ namespace IngameScript {
         public Program() {
 
             try {
+                _errorReason = "";
                 ParseMinerConfiguration(Me.CustomData);
                 _minerId = Me.EntityId.ToString();
 
@@ -114,6 +117,7 @@ namespace IngameScript {
             } catch (Exception e) {
                 Echo(e.StackTrace);
                 MinerMainState = MinerState.ERROR;
+                _errorReason = $"Exception in constructor: {e.StackTrace}";
             } finally {
                 WriteAllLogs();
             }
@@ -153,6 +157,7 @@ namespace IngameScript {
                 // If we're damaged, we need to land immediately
                 if (_damageMonitor.DamagedBlocks.Count > 0 && !EXECUTED_EMERGENCY_LANDING) {
                     MinerMainState = MinerState.EMERGENCY_LANDING;
+                    _errorReason = "Damaged blocks detected";
                     EXECUTED_EMERGENCY_LANDING = true;
                 }
 
@@ -247,17 +252,17 @@ namespace IngameScript {
                         break;
 
                     case MinerState.DOCKING:
-                        _flightController.GotoAndStopManeuver.CruiseVelocity = Vector3D.Distance(_flightController.CurrentPosition, _homeBaseConnector.GetPosition()) < 75 ? 2 : Math.Abs(_descendVelocity);
+                        _flightController.GotoAndStopManeuver.CruiseVelocity = Vector3D.Distance(_flightController.CurrentPosition, _homeBaseConnector.GetPosition()) < 100 ? 1 : Math.Abs(_descendVelocity);
                         _flightController.GotoAndStopManeuver.ExecuteStateMachine();
                         _droneConnector.Connect();
-                        // Keep aligning until we're _cruiseAltitude / 2 meters from the home base connector
+                        // Keep aligning until we're _cruiseAltitude 20 meters above the home base connector
                         if (Vector3D.Distance(_droneConnector.GetPosition(), _homeBaseConnector.GetPosition()) > 20) {
                             _flightController.AlignShipToTarget(_homeBaseConnector.GetPosition(), _droneConnector);
                         }
                         if (_droneConnector.Status == MyShipConnectorStatus.Connected) {
                             MinerMainState = MinerState.REFUELING;
-                            // Start refueling
-                            ToggleCriticalFlightSystems(false, "A");
+                            _flightController.ToggleThrusters(false);
+                            _hydrogenTanks.ForEach(tank => tank.Stockpile = true);
                         }
                         break;
 
@@ -265,13 +270,25 @@ namespace IngameScript {
                         // Redundancy to ensure connector connects
                         _droneConnector.Connect();
                         bool refueled = _hydrogenTanks.TrueForAll(tank => tank.FilledRatio >= 0.98);
-                        bool recharged = _batteries.TrueForAll(battery =>
-                            (battery.MaxStoredPower - battery.CurrentStoredPower) <= (battery.MaxStoredPower * 0.001));
-
-                        if (refueled && recharged) {
-                            MinerMainState = MinerState.DEPOSIT_ORES;
+                        if (refueled) {
+                            MinerMainState = MinerState.RECHARGING;
+                            _batteries.ForEach(battery => battery.ChargeMode = ChargeMode.Recharge);
                         }
                         break;
+
+                    case MinerState.RECHARGING:
+                        // Redundancy to ensure connector connect
+                        _droneConnector.Connect();
+                        bool recharged = _batteries.TrueForAll(battery =>
+                            (battery.MaxStoredPower - battery.CurrentStoredPower) <= (battery.MaxStoredPower * 0.01));
+                        if (recharged) {
+                            MinerMainState = MinerState.DEPOSIT_ORES;
+                            _hydrogenTanks.ForEach(tank => tank.Stockpile = false);
+                            _flightController.ToggleThrusters(true);
+                            _batteries.ForEach(battery => battery.ChargeMode = ChargeMode.Auto);
+                        }
+                        break;
+
 
                     case MinerState.DEPOSIT_ORES:
                         // Deposit dronecargocontainer ores and drill ores to home base cargo containeres
@@ -285,11 +302,12 @@ namespace IngameScript {
                         bool depositedDrills = DepositOres(drillInventories, baseInventories);
                         if (!depositedCargo || !depositedDrills) {
                             // TODO: Come up with more graceful handling of full inventories
-                            throw new Exception("Could not deposit all material!");
+                            CreateFatalErrorBroadcast("Cannot deposit ores; inventories full! Please empty cargo containers before dispatching miner.");
                         }
-                        if (_drillRoutineStateMachine.FinishedLastJob) {
+                        if (_drillRoutineStateMachine != null && _drillRoutineStateMachine.FinishedLastJob) {
                             // Turn everything off; we're going into IDLE
                             ToggleCriticalFlightSystems(false, "B");
+                            _drillRoutineStateMachine = null;
                             MinerMainState = MinerState.IDLE;
                         } else {
                             // Turn everything on because we're going to fly back to the job site
@@ -300,6 +318,7 @@ namespace IngameScript {
                                 _cruiseVelocity,
                                 _ascendVelocity,
                                 _descendVelocity);
+                            CreateInfoBroadcast("Navigating to job site");
                             ToggleCriticalFlightSystems(true, "C");
                             MinerMainState = MinerState.FLY_TO_JOB_SITE;
                         }
@@ -320,6 +339,7 @@ namespace IngameScript {
 
                     case MinerState.ERROR:
                         // Do nothing
+                        Me.CustomData = _errorReason;
                         break;
 
                 }
@@ -336,6 +356,7 @@ namespace IngameScript {
                     _flightController.ActiveThrusters[i].ThrustOverride = 0;
                 }
                 MinerMainState = MinerState.ERROR;
+                _errorReason = "Exception in main loop";
             } finally {
                 WriteAllLogs();
                 UpdateTelemetry();
@@ -367,8 +388,8 @@ namespace IngameScript {
                 CreateInfoBroadcast(output);
                 Echo(output);
             }
-            _batteries.ForEach(battery => battery.ChargeMode = on ? ChargeMode.Auto : ChargeMode.Recharge);
             _hydrogenTanks.ForEach(tank => tank.Stockpile = !on);
+            _batteries.ForEach(battery => battery.ChargeMode = on ? ChargeMode.Auto : ChargeMode.Recharge);
             _flightController.ToggleThrusters(on);
         }
 
@@ -520,6 +541,14 @@ namespace IngameScript {
             // Debug output
             Echo(_tempMetadataDictionary["MinerDroneData"]);
 
+        }
+
+        IMyRadioAntenna GetAntenna() {
+            IMyRadioAntenna antenna = GridTerminalSystem.GetBlockWithName("BC9 Antenna") as IMyRadioAntenna;
+            if (antenna == null) {
+                throw new Exception("No antenna found");
+            }
+            return antenna;
         }
 
         List<IMyLightingBlock> GetStatusLights() {

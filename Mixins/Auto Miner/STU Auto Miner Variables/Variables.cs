@@ -175,6 +175,7 @@ namespace IngameScript {
             public const string FLY_TO_JOB_SITE = "FLY_TO_JOB_SITE";
             public const string FLY_TO_HOME_BASE = "FLY_TO_HOME_BASE";
             public const string REFUELING = "REFUELING";
+            public const string RECHARGING = "RECHARGING";
             public const string MINING = "MINING";
             public const string RTB = "RTB";
             public const string HARD_FAILURE = "HARD_FAILURE";
