@@ -1,5 +1,4 @@
-﻿#if STUGalacticMap
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VRageMath;
 
 namespace IngameScript {
@@ -71,4 +70,3 @@ namespace IngameScript {
         }
     }
 }
-#endif

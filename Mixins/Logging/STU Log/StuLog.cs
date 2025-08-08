@@ -6,12 +6,14 @@ using VRageMath;
 namespace IngameScript {
     partial class Program {
 
-        public static class STULogType {
-            public const string OK = "OK";
-            public const string ERROR = "ERROR";
-            public const string WARNING = "WARNING";
-            public const string INFO = "INFO";
+        #region mdk preserve
+        public enum STULogType {
+            OK,
+            ERROR,
+            WARNING,
+            INFO
         }
+        #endregion
 
         /// <summary>
         /// A custom Log object for use with the STU master logging system.
@@ -19,17 +21,14 @@ namespace IngameScript {
         /// </summary>
         public class STULog {
 
-            private string message;
             private string sender;
-            private string type;
-            private Dictionary<string, string> metadata;
 
             private const string COMPONENT_DELIMITER = "\x1F";
             private const string METADATA_DELIMITER = "\x1E";
 
             public STULog() { }
 
-            public STULog(string sender, string message, string type, Dictionary<string, string> metadata = null) {
+            public STULog(string sender, string message, STULogType type, Dictionary<string, string> metadata = null) {
                 Sender = sender;
                 Message = message;
                 Type = type;
@@ -46,7 +45,13 @@ namespace IngameScript {
 
                 string[] components = s.Split(new string[] { COMPONENT_DELIMITER }, StringSplitOptions.None);
 
-                string logType = components[2];
+                string typeString = components[2];
+                STULogType logType;
+
+                if (!Enum.TryParse(typeString, false, out logType)) {
+                    throw new ArgumentException($"Malformed log string; invalid log type: {typeString}.");
+                }
+
                 switch (components.Length) {
                     case 3:
                         // No metadata
@@ -74,7 +79,7 @@ namespace IngameScript {
                 return metadata;
             }
 
-            public static Color GetColor(string type) {
+            public static Color GetColor(STULogType type) {
                 switch (type) {
                     case STULogType.OK:
                         return Color.Green;
@@ -123,32 +128,11 @@ namespace IngameScript {
                 }
             }
 
-            public string Message {
-                get {
-                    return message;
-                }
-                set {
-                    message = value;
-                }
-            }
+            public string Message { get; set; }
 
-            public string Type {
-                get {
-                    return type;
-                }
-                set {
-                    type = value;
-                }
-            }
+            public STULogType Type { get; set; }
 
-            public Dictionary<string, string> Metadata {
-                get {
-                    return metadata;
-                }
-                set {
-                    metadata = value;
-                }
-            }
+            public Dictionary<string, string> Metadata { get; set; }
 
         }
 

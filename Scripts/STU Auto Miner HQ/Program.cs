@@ -192,7 +192,7 @@ namespace IngameScript {
             }
         }
 
-        void CreateHQLog(string message, string type) {
+        void CreateHQLog(string message, STULogType type) {
             STULog log = new STULog {
                 Sender = AUTO_MINER_VARIABLES.AUTO_MINER_HQ_NAME,
                 Message = message,

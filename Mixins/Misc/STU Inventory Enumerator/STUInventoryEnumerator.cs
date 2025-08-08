@@ -153,7 +153,8 @@ namespace IngameScript {
             public float FilledRatio { get; private set; } = 0;
 
             Dictionary<string, double> _runningItemTotals = new Dictionary<string, double>();
-            Dictionary<string, double> _mostRecentItemTotals = new Dictionary<string, double>();
+
+            public Dictionary<string, double> MostRecentItemTotals { get; protected set; }
 
             IEnumerator<bool> _enumeratorStateMachine;
             float _inventoryIndex;
@@ -163,6 +164,7 @@ namespace IngameScript {
 
             public STUInventoryEnumerator(IMyGridTerminalSystem grid, IMyProgrammableBlock me) {
                 List<IMyTerminalBlock> gridBlocks = new List<IMyTerminalBlock>();
+                MostRecentItemTotals = new Dictionary<string, double>();
                 grid.GetBlocks(gridBlocks);
                 gridBlocks = gridBlocks.Where(block => block.CubeGrid == me.CubeGrid).ToList();
                 _inventories = GetInventories(gridBlocks, me);
@@ -247,7 +249,7 @@ namespace IngameScript {
                     yield return true;
                 }
 
-                _mostRecentItemTotals = new Dictionary<string, double>(_runningItemTotals);
+                MostRecentItemTotals = new Dictionary<string, double>(_runningItemTotals);
                 FilledRatio = GetFilledRatio();
 
             }
@@ -289,40 +291,30 @@ namespace IngameScript {
             //    }
             //}
 
-            void ProcessTank(IMyGasTank tank)
-            {
+            void ProcessTank(IMyGasTank tank) {
                 string subtype = tank.BlockDefinition.SubtypeId;
 
-                if (IsOxygenTank(subtype))
-                {
+                if (IsOxygenTank(subtype)) {
                     double oxygen = tank.Capacity * tank.FilledRatio;
                     AddToRunningTotal("Oxygen", oxygen);
-                }
-                else if (IsHydrogenTank(subtype))
-                {
+                } else if (IsHydrogenTank(subtype)) {
                     double hydrogen = tank.Capacity * tank.FilledRatio;
                     AddToRunningTotal("Hydrogen", hydrogen);
-                }
-                else
-                {
-                    CBT.AddToLogQueue($"Unknown tank subtype: {subtype}");
+                } else {
+                    // nothing
                 }
             }
 
             bool IsHydrogenTank(string subtype) =>
-                subtype.Contains("Hydrogen"); 
+                subtype.Contains("Hydrogen");
 
             bool IsOxygenTank(string subtype) =>
                 subtype.Equals(""); // oxygen tanks do not have a subtype
 
-            void AddToRunningTotal(string key, double amount)
-            {
-                if (_runningItemTotals.ContainsKey(key))
-                {
+            void AddToRunningTotal(string key, double amount) {
+                if (_runningItemTotals.ContainsKey(key)) {
                     _runningItemTotals[key] += amount;
-                }
-                else
-                {
+                } else {
                     _runningItemTotals[key] = amount;
                 }
             }
@@ -362,10 +354,6 @@ namespace IngameScript {
                     totalCapacity += battery.MaxStoredPower;
                 }
                 return totalCapacity;
-            }
-
-            public Dictionary<string, double> GetItemTotals() {
-                return _mostRecentItemTotals;
             }
 
             public float GetProgress() {

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netframework48</TargetFramework>
+    <RootNamespace>IngameScript</RootNamespace>
+    <LangVersion>6</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>Release;Debug</Configurations>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.13">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.1.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Mal.Mdk2.References" Version="2.2.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Instructions.readme" />
+    <AdditionalFiles Include="Instructions.readme" />
+    <AdditionalFiles Include="thumb.png" />
+  </ItemGroup>
+  <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STU Log\STU_Log.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\STU Generic Ship Variables\STU_Generic_Ship_Variables.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
+</Project>

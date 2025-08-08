@@ -1,5 +1,4 @@
-﻿#if STUGalacticMap
-using System;
+﻿using System;
 using VRageMath;
 
 namespace IngameScript {
@@ -159,4 +158,3 @@ namespace IngameScript {
         }
     }
 }
-#endif

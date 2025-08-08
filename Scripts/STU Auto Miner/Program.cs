@@ -516,7 +516,7 @@ namespace IngameScript {
 
         void UpdateTelemetry() {
             // Update drone state
-            _tempInventoryEnumeratorDictionary = _inventoryEnumerator.GetItemTotals();
+            _tempInventoryEnumeratorDictionary = _inventoryEnumerator.MostRecentItemTotals;
             s_droneData.State = MinerMainState;
             s_droneData.WorldPosition = _flightController.CurrentPosition;
             s_droneData.WorldVelocity = _flightController.CurrentVelocity_WorldFrame;
@@ -643,7 +643,7 @@ namespace IngameScript {
 
         // Broadcast utilities
         #region
-        static void CreateBroadcast(string message, string type) {
+        static void CreateBroadcast(string message, STULogType type) {
             s_logBroadcaster.Log(new STULog() {
                 Message = message,
                 Type = type,
