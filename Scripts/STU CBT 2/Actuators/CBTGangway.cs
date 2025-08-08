@@ -5,7 +5,7 @@ namespace IngameScript {
     partial class Program {
         public partial class CBTGangway {
             private const float HINGE_ANGLE_TOLERANCE = 0.0071f;
-            private const float HINGE_TARGET_VELOCITY_RPM = 1.5f;
+            private const float HINGE_TARGET_VELOCITY_RPM = 3f;
             private const float HINGE_TORQUE = 7000000;
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }
@@ -20,7 +20,7 @@ namespace IngameScript {
                 ResettingHinge2,
                 Frozen, // currently not used
             }
-            public GangwayStates CurrentGangwayState { get; set; }
+            public GangwayStates CurrentGangwayState { get; private set; }
             private GangwayStates LastUserInputGangwayState { get; set; }
 
             public CBTGangway(IMyMotorStator hinge1, IMyMotorStator hinge2) {
@@ -48,7 +48,6 @@ namespace IngameScript {
             public void UpdateGangway(GangwayStates desiredState) {
                 if (desiredState != CurrentGangwayState && desiredState != LastUserInputGangwayState) {
                     if (CanGoToRequestedState(desiredState)) {
-                        CBT.AddToLogQueue($"Changing internal gangway state to user input: {desiredState}", STULogType.INFO);
                         CurrentGangwayState = desiredState;
                         LastUserInputGangwayState = desiredState;
                     } else {
@@ -61,7 +60,7 @@ namespace IngameScript {
                         break;
 
                     case GangwayStates.Resetting:
-                        if (ResetGangwayActuators()) { CurrentGangwayState = GangwayStates.ResettingHinge2; }
+                        if (ResetGangwayActuators()) { CurrentGangwayState = GangwayStates.ResettingHinge1; }
                         break;
 
                     case GangwayStates.Retracting:
@@ -85,11 +84,11 @@ namespace IngameScript {
                         break;
 
                     case GangwayStates.ResettingHinge1:
-                        if (ResetHinge1()) { CurrentGangwayState = GangwayStates.Extended; }
+                        if (ResetHinge1()) { CurrentGangwayState = GangwayStates.ResettingHinge2; }
                         break;
 
                     case GangwayStates.ResettingHinge2:
-                        if (ResetHinge2()) { CurrentGangwayState = GangwayStates.ResettingHinge1; }
+                        if (ResetHinge2()) { CurrentGangwayState = GangwayStates.Retracted; }
                         break;
 
                     case GangwayStates.Frozen: // currently not used / inaccessable
@@ -101,7 +100,7 @@ namespace IngameScript {
             }
 
             // methods
-            private GangwayStates TryDetermineState() {
+            public GangwayStates TryDetermineState() {
                 if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) {
                     return GangwayStates.Extended;
                 } else if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) {
@@ -145,6 +144,7 @@ namespace IngameScript {
                 GangwayHinge2.RotorLock = false;
                 GangwayHinge2.UpperLimitDeg = 90;
                 GangwayHinge2.LowerLimitDeg = -90;
+                GangwayHinge2.Enabled = false;
 
                 GangwayHinge1.TargetVelocityRPM = 0;
                 GangwayHinge1.Torque = 0;
@@ -152,60 +152,60 @@ namespace IngameScript {
                 GangwayHinge1.RotorLock = false;
                 GangwayHinge1.UpperLimitDeg = 90;
                 GangwayHinge1.LowerLimitDeg = -90;
+                GangwayHinge1.Enabled = false;
 
                 return true;
             }
 
-            private bool ResetHinge1() // hinge 1 should be reset AFTER hinge 2
+            private bool ResetHinge1() // hinge 1 should be the first to reset (close / retract)
             {
-                GangwayHinge1.RotorLock = false;
+                // keeping the hinge's limits wide open, set it on a course to close (-90 degrees)
+                GangwayHinge1.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
                 GangwayHinge1.Torque = HINGE_TORQUE;
-                if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE) // if it's close to 0 degrees, stop it and set limits
+                GangwayHinge1.Enabled = true;
+
+                if (CBT.RadToDeg(GangwayHinge1.Angle) < -85) // if it's past -85 degrees, fully define its limits (may cause slight snapping) and then set braking torque
                 {
-                    CBT.AddToLogQueue($"Hinge 1 is close to 0 degrees", STULogType.INFO);
-                    // GangwayHinge1.TargetVelocityRPM = 0;
                     GangwayHinge1.UpperLimitDeg = 0;
                     GangwayHinge1.LowerLimitDeg = -90;
                     GangwayHinge1.BrakingTorque = HINGE_TORQUE;
                     return true;
-                } else if (HINGE_ANGLE_TOLERANCE - GangwayHinge1.Angle < 0) // see whether the hinge was in a positive-angle state (which it shouldn't be in)
-                  {
-                    GangwayHinge1.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM; // if it was in a positive-angle state, put velocity negative to bring it to zero
-                    return false;
-                } else if (HINGE_ANGLE_TOLERANCE - GangwayHinge1.Angle > 0) {
-                    GangwayHinge1.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM; // if it was in a negative-angle state, put velocity positive to bring it to zero
-                    return false;
-                } else { return false; }
+                }
+                return false;
             }
 
-            private bool ResetHinge2() // this one is actually ran first
+            private bool ResetHinge2() // hinge 2 should be reset AFTER hinge 1 is reset (closed / retracted)
             {
-                GangwayHinge2.RotorLock = false;
-                GangwayHinge2.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM;
+                // keeping the hinge's limits wide open, set it on a course to close (-90 degrees)
+                GangwayHinge2.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
                 GangwayHinge2.Torque = HINGE_TORQUE;
-                if (Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) {
-                    CBT.AddToLogQueue($"Hinge 2 is close to 90 degrees", STULogType.INFO);
-                    // GangwayHinge2.TargetVelocityRPM = 0;
+                GangwayHinge2.Enabled = true;
+
+                if (CBT.RadToDeg(GangwayHinge2.Angle) < -85) { // once the angle gets less than -85 degrees, it's well on its way. now we set limits and braking torque
                     GangwayHinge2.UpperLimitDeg = 90;
                     GangwayHinge2.LowerLimitDeg = -90;
                     GangwayHinge2.BrakingTorque = HINGE_TORQUE;
                     return true;
-                } else { return false; }
+                }
+                return false;
             }
 
             private bool ExtendGangway() {
-                GangwayHinge1.TargetVelocityRPM = 1;
-                GangwayHinge2.TargetVelocityRPM = 1;
-                if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) // is hinge1 close enough to 0, and hinge2 close enough to +90?
+                // initially set hinge 2 to start extending, then once it gets greater than -50 degrees (so that it clears the ground), begin moving hinge 1
+                GangwayHinge1.TargetVelocityRPM = 0;
+                GangwayHinge2.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM * 2;
+                if (CBT.RadToDeg(GangwayHinge2.Angle) > -50) { GangwayHinge1.TargetVelocityRPM = HINGE_TARGET_VELOCITY_RPM; }
+                if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) // if hinge1 close enough to 0, and hinge2 close enough to +90, call it extended.
                 {
                     CBT.AddToLogQueue("Gangway Extended.", STULogType.OK);
                     return true;
-                } else { return false; }
+                }
+                return false;
             }
 
             private bool RetractGangway() {
                 GangwayHinge1.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
-                GangwayHinge2.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM;
+                GangwayHinge2.TargetVelocityRPM = -HINGE_TARGET_VELOCITY_RPM * 2;
                 if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) // are both hinges close enough to -90, expressed in radians?
                 {
                     CBT.AddToLogQueue("Gangway Retracted.", STULogType.OK);
@@ -213,12 +213,16 @@ namespace IngameScript {
                 } else { return false; }
             }
 
-            public void ToggleGangway(float desiredState = float.NaN) {
+            public void ResetGangway()
+            {
+                CurrentGangwayState = GangwayStates.Resetting;
+            }
+
+            public bool ToggleGangway(float desiredState = float.NaN) {
                 if (CurrentGangwayState == GangwayStates.Unknown) {
                     CBT.AddToLogQueue($"Gangway state unknown; to automatically reset, enter 'gangwayreset' in the prompt.", STULogType.WARNING);
+                    return false;
                 }
-
-                CBT.AddToLogQueue($"desired state: {desiredState}", STULogType.INFO);
 
                 if (desiredState == 1 && CanGoToRequestedState(GangwayStates.Extending)) {
                     CurrentGangwayState = GangwayStates.Extending;
@@ -230,6 +234,7 @@ namespace IngameScript {
                     else if (CurrentGangwayState == GangwayStates.Extended || CurrentGangwayState == GangwayStates.Extending)
                         CurrentGangwayState = GangwayStates.Retracting;
                 }
+                return true;
             }
         }
     }

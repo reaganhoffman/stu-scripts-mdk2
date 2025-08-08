@@ -12,8 +12,6 @@ namespace IngameScript {
                 echo = Echo;
             }
 
-            public ManeuverQueueData ManeuverQueueData;
-
             private MySprite CurrentManeuverName;
             private MySprite CurrentManeuverInitStatus;
             private MySprite CurrentManeuverRunStatus;

@@ -36,7 +36,7 @@ namespace IngameScript
 
             public static ActuatorPosition[] KnownPorts = new ActuatorPosition[]
             {
-                new ActuatorPosition { PistonDistance = 0, Hinge1Angle = DegToRad(90), Hinge2Angle = DegToRad(90) }, // stowed
+                new ActuatorPosition { PistonDistance = 0.75f, Hinge1Angle = DegToRad(90), Hinge2Angle = DegToRad(90) }, // stowed
                 new ActuatorPosition { PistonDistance = 4, Hinge1Angle = 0, Hinge2Angle = 0 }, // neutral
                 new ActuatorPosition { PistonDistance = 10, Hinge1Angle = DegToRad(36), Hinge2Angle = DegToRad(-36) }, // lunar hq
                 new ActuatorPosition { PistonDistance = 3.5f, Hinge1Angle = DegToRad(-90), Hinge2Angle = DegToRad(-72) }, // herobrine on deck
@@ -44,7 +44,7 @@ namespace IngameScript
             };
 
             public RearDockStates CurrentRearDockPhase { get; set; }
-            public static Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
+            public static Queue<STUStateMachine> ManeuverQueue { get; set; }
             public static STUStateMachine CurrentManeuver { get; set; }
 
             public static float DegToRad(float degrees)
@@ -53,8 +53,9 @@ namespace IngameScript
             }
 
             //constructor
-            public CBTRearDock(IMyPistonBase piston, IMyMotorStator hinge1, IMyMotorStator hinge2, IMyShipConnector connector)
+            public CBTRearDock(Queue<STUStateMachine> thisManeuverQueue, IMyPistonBase piston, IMyMotorStator hinge1, IMyMotorStator hinge2, IMyShipConnector connector)
             {
+                ManeuverQueue = thisManeuverQueue;
                 RearDockPiston = piston;
                 RearDockHinge1 = hinge1;
                 RearDockHinge2 = hinge2;
@@ -66,10 +67,12 @@ namespace IngameScript
 
             public void BuildManeuver()
             {
-                ManeuverQueue.Enqueue(new CBT.MovePiston(RearDockPiston, PISTON_NEUTRAL_DISTANCE));
-                ManeuverQueue.Enqueue(new CBT.MoveHinge(RearDockHinge1, KnownPorts[DesiredPosition].Hinge1Angle));
-                ManeuverQueue.Enqueue(new CBT.MoveHinge(RearDockHinge2, KnownPorts[DesiredPosition].Hinge2Angle));
-                ManeuverQueue.Enqueue(new CBT.MovePiston(RearDockPiston, KnownPorts[DesiredPosition].PistonDistance));
+                ManeuverQueue.Enqueue(new CBT.ToggleStingerLockPlate(ManeuverQueue, false)); // always unlock the stinger mag plate
+                ManeuverQueue.Enqueue(new CBT.MovePiston(ManeuverQueue, RearDockPiston, PISTON_NEUTRAL_DISTANCE));
+                ManeuverQueue.Enqueue(new CBT.MoveHinge(ManeuverQueue, RearDockHinge1, KnownPorts[DesiredPosition].Hinge1Angle));
+                ManeuverQueue.Enqueue(new CBT.MoveHinge(ManeuverQueue, RearDockHinge2, KnownPorts[DesiredPosition].Hinge2Angle));
+                ManeuverQueue.Enqueue(new CBT.MovePiston(ManeuverQueue, RearDockPiston, KnownPorts[DesiredPosition].PistonDistance));
+                if (DesiredPosition == 0) ManeuverQueue.Enqueue(new CBT.ToggleStingerLockPlate(ManeuverQueue, true)); // only bother locking the mag plate at the end if we're stowing the stinger
             }
 
             // state machine
@@ -113,11 +116,14 @@ namespace IngameScript
                     case RearDockStates.Moving:
                         try
                         {
+                            CBT.Connector.Disconnect();
                             if (CurrentManeuver.ExecuteStateMachine())
                             {
                                 CurrentManeuver = null;
+                                CBT.RearPiston.Enabled = false;
                                 CurrentRearDockPhase = RearDockStates.Idle;
                             }
+                            
                             break;
                         }
                         catch

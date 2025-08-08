@@ -59,7 +59,7 @@ namespace IngameScript {
                         referenceBlock = RemoteControl;
                     }
 
-                    // If we don't pass in a desired reference block face, use the forward vector
+                    // If we don't pass in a desired reference block face, use the forward vector (handled inside GetVectorOfReferenceBlock())
                     Vector3D referenceBlockFace = GetVectorOfReferenceBlock(referenceBlock, desiredReferenceBlockFace);
 
                     // Adjust the target vector to account for the spatial offset of the reference block. 
@@ -83,7 +83,7 @@ namespace IngameScript {
 
                     Vector3D angularVelocity = rotationAxis * proportionalError;
 
-                    ApplyGyroTransformedAngularVelocity(angularVelocity);
+                    ApplyGyroAlignedAngularVelocity(angularVelocity, referenceBlock);
 
                     return false;
                 }
@@ -129,6 +129,25 @@ namespace IngameScript {
                         gyro.Roll = (float)localAngularVelocity.Z;
                     }
                 }
+
+                /// <summary>
+                /// Use this method when you are trying to point to a target with the face of some reference block that is NOT its forward face.
+                /// </summary>
+                /// <param name="angularVelocity"></param>
+                /// <param name="referenceBlock"></param>
+                public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock)
+                {
+                    Vector3D localAngularVelocity = Vector3D.TransformNormal(angularVelocity, MatrixD.Transpose(referenceBlock.WorldMatrix));
+
+                    foreach (var gyro in Gyros)
+                    {
+                        Vector3D gyroLocalAngularVelocity = Vector3D.TransformNormal(localAngularVelocity, referenceBlock.WorldMatrix * MatrixD.Transpose(gyro.WorldMatrix));
+                        gyro.Pitch = (float)gyroLocalAngularVelocity.X;
+                        gyro.Yaw = (float)gyroLocalAngularVelocity.Y;
+                        gyro.Roll = (float)gyroLocalAngularVelocity.Z;
+                    }
+                }
+
 
                 public void HardStopGyros() {
                     foreach (var gyro in Gyros) {

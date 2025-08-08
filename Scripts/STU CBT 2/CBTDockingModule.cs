@@ -59,9 +59,7 @@ namespace IngameScript {
                         break;
                     case DockingModuleStates.Docking:
                         if (CBT.MergeBlock.IsConnected) {
-                            foreach (var g in CBT.GravityGenerators) {
-                                g.Enabled = false;
-                            }
+                            CBT.GravityGenerator.Enabled = false;
                             CBT.AddToLogQueue($"Docking sequence complete.", STULogType.OK);
                             CBT.CreateBroadcast("DOCKED", false, STULogType.OK);
                             CurrentDockingModuleState = DockingModuleStates.Idle;

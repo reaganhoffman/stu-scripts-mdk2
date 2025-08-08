@@ -1,17 +1,22 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 namespace IngameScript {
     partial class Program {
         public partial class CBT {
             public class MovePiston : STUStateMachine {
                 public override string Name => "Move Piston";
+                public Queue<STUStateMachine> ManeuverQueue { get; set; }
                 public Sandbox.ModAPI.Ingame.IMyPistonBase RearDockPiston { get; set; }
                 public float TargetDistance { get; set; }
-                public MovePiston(Sandbox.ModAPI.Ingame.IMyPistonBase piston, float targetDistance) {
+                public MovePiston(Queue<STUStateMachine> thisManeuverQueue, Sandbox.ModAPI.Ingame.IMyPistonBase piston, float targetDistance) {
                     RearDockPiston = piston;
                     TargetDistance = targetDistance;
+                    ManeuverQueue = thisManeuverQueue;
                 }
 
                 public override bool Init() {
+                    RearDockPiston.Enabled = true;
                     return true;
                 }
 
@@ -32,6 +37,7 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
+                    
                     return true;
                 }
             }

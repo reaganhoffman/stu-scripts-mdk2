@@ -88,6 +88,7 @@ namespace IngameScript {
                 { p + "/Package", "Package" },
                 { co + "/Powerkit", "Powerkit" },
                 { po + "/SpaceCredit", "Space Credit" },
+                { am + "/PaintGunMag", "Paint Gun Magazine" },
 
 
                 // Ammo
@@ -264,27 +265,65 @@ namespace IngameScript {
                 }
             }
 
-            void ProcessTank(IMyGasTank tank) {
+            //void ProcessTank(IMyGasTank tank) {
 
-                string tankSubtype = tank.BlockDefinition.SubtypeId;
-                string tankType = tank.BlockDefinition.TypeId.ToString();
+            //    string tankSubtype = tank.BlockDefinition.SubtypeId;
+            //    string tankType = tank.BlockDefinition.TypeId.ToString();
 
-                if (tankSubtype.Contains("Oxygen") || tankType.Contains("Oxygen")) {
-                    double oxygenInLiters = (double)tank.Capacity * (double)tank.FilledRatio;
-                    if (_runningItemTotals.ContainsKey("Oxygen")) {
-                        _runningItemTotals["Oxygen"] += oxygenInLiters;
-                    } else {
-                        _runningItemTotals["Oxygen"] = oxygenInLiters;
-                    }
-                } else if (tankSubtype.Contains("Hydrogen")) {
-                    double hydrogenInLiters = (double)tank.Capacity * (double)tank.FilledRatio;
-                    if (_runningItemTotals.ContainsKey("Hydrogen")) {
-                        _runningItemTotals["Hydrogen"] += hydrogenInLiters;
-                    } else {
-                        _runningItemTotals["Hydrogen"] = hydrogenInLiters;
-                    }
-                } else {
-                    throw new System.Exception($"Unknown tank: \n {tank.BlockDefinition.TypeId} \n {tank.BlockDefinition.SubtypeId} \n {tank.BlockDefinition.ToString()}");
+            //    if (tankSubtype.Contains("Oxygen") || tankType.Contains("Oxygen")) {
+            //        double oxygenInLiters = (double)tank.Capacity * (double)tank.FilledRatio;
+            //        if (_runningItemTotals.ContainsKey("Oxygen")) {
+            //            _runningItemTotals["Oxygen"] += oxygenInLiters;
+            //        } else {
+            //            _runningItemTotals["Oxygen"] = oxygenInLiters;
+            //        }
+            //    } else if (tankSubtype.Contains("Hydrogen")) {
+            //        double hydrogenInLiters = (double)tank.Capacity * (double)tank.FilledRatio;
+            //        if (_runningItemTotals.ContainsKey("Hydrogen")) {
+            //            _runningItemTotals["Hydrogen"] += hydrogenInLiters;
+            //        } else {
+            //            _runningItemTotals["Hydrogen"] = hydrogenInLiters;
+            //        }
+            //    } else {
+            //        throw new System.Exception($"Unknown tank: \n {tank.BlockDefinition.TypeId} \n {tank.BlockDefinition.SubtypeId} \n {tank.BlockDefinition.ToString()}");
+            //    }
+            //}
+
+            void ProcessTank(IMyGasTank tank)
+            {
+                string subtype = tank.BlockDefinition.SubtypeId;
+
+                if (IsOxygenTank(subtype))
+                {
+                    double oxygen = tank.Capacity * tank.FilledRatio;
+                    AddToRunningTotal("Oxygen", oxygen);
+                }
+                else if (IsHydrogenTank(subtype))
+                {
+                    double hydrogen = tank.Capacity * tank.FilledRatio;
+                    AddToRunningTotal("Hydrogen", hydrogen);
+                }
+                else
+                {
+                    CBT.AddToLogQueue($"Unknown tank subtype: {subtype}");
+                }
+            }
+
+            bool IsHydrogenTank(string subtype) =>
+                subtype.Contains("Hydrogen"); 
+
+            bool IsOxygenTank(string subtype) =>
+                subtype.Equals(""); // oxygen tanks do not have a subtype
+
+            void AddToRunningTotal(string key, double amount)
+            {
+                if (_runningItemTotals.ContainsKey(key))
+                {
+                    _runningItemTotals[key] += amount;
+                }
+                else
+                {
+                    _runningItemTotals[key] = amount;
                 }
             }
 
@@ -300,7 +339,7 @@ namespace IngameScript {
             float GetHydrogenCapacity() {
                 float totalCapacity = 0;
                 foreach (IMyGasTank tank in _tanks) {
-                    if (tank.BlockDefinition.SubtypeId.Contains("Hydrogen")) {
+                    if (IsHydrogenTank(tank.BlockDefinition.SubtypeId)) {
                         totalCapacity += tank.Capacity;
                     }
                 }
@@ -310,7 +349,7 @@ namespace IngameScript {
             float GetOxygenCapacity() {
                 float totalCapacity = 0;
                 foreach (IMyGasTank tank in _tanks) {
-                    if (tank.BlockDefinition.SubtypeId.Contains("Oxygen")) {
+                    if (IsOxygenTank(tank.BlockDefinition.SubtypeId)) {
                         totalCapacity += tank.Capacity;
                     }
                 }
