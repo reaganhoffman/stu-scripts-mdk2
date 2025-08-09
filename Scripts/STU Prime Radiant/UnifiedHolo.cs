@@ -8,7 +8,7 @@ namespace IngameScript {
     partial class Program {
         class UnifiedHolo {
 
-            bool SCREEN_PLANE_INITIALIZED = false;
+            public Queue<STULog> Logs;
 
             const float _spriteWidth = 30f;
             const float _spriteHeight = 30f;
@@ -27,6 +27,8 @@ namespace IngameScript {
 
             Plane _screenPlane;
 
+            IMyCockpit _observerCockpit;
+
             List<STUDisplay> _displays;
             IMySensorBlock _observerSensor;
 
@@ -36,17 +38,15 @@ namespace IngameScript {
 
             public float ScreenOffset = 0.5f; // distance from the center of the display block to the screen portion of the block
 
-            public UnifiedHolo(List<STUDisplay> displays, IMySensorBlock observerSensor, Action<string> echo) {
+            public UnifiedHolo(List<STUDisplay> displays, IMySensorBlock observerSensor, Action<string> echo, IMyCockpit observerCockpit) {
                 _displays = displays;
                 _observerSensor = observerSensor;
+                _observerCockpit = observerCockpit;
+                Logs = new Queue<STULog>();
                 this.echo = echo;
             }
 
             public void Update(Dictionary<long, MyDetectedEntityInfo> targets) {
-                if (_observerSensor.LastDetectedEntity.IsEmpty()) {
-                    echo("Observer sensor has no detected entity.");
-                    return;
-                }
                 foreach (var display in _displays) {
                     DrawTags(display, targets);
                 }
@@ -56,13 +56,20 @@ namespace IngameScript {
 
                 _observer = _observerSensor.LastDetectedEntity;
 
+                // SE takes the engineer's location to be the center of body's mass, so we adjust up toward the "eyes"
+                if (_observerCockpit.IsUnderControl) {
+                    // use cockpit
+                    _observerPosition = _observerCockpit.GetPosition();
+                } else {
+                    // use player
+                    _observerPosition = _observer.Position + _observer.Orientation.Up * 0.5;
+                }
+
                 display.StartFrame();
 
                 Vector2 resolution = display.DisplayBlock.SurfaceSize; // (w,h)
                 MySpriteDrawFrame sprites = display.CurrentFrame;
 
-                // SE takes the engineer's location to be the center of body's mass, so we adjust up toward the "eyes"
-                _observerPosition = _observer.Position + _observer.Orientation.Up * 0.5;
 
                 foreach (var target in targets) {
 
@@ -90,10 +97,9 @@ namespace IngameScript {
                         continue;
                     }
 
-                    // add your sprite
                     var tag = new MySprite() {
                         Type = SpriteType.TEXTURE,
-                        Data = "Triangle",
+                        Data = "Circle",
                         Alignment = TextAlignment.CENTER,
                         RotationOrScale = display.DisplayBlock.CustomData.Contains("true") ? 0 : (float)Math.PI,
                         Position = _screenPosition,
@@ -101,17 +107,29 @@ namespace IngameScript {
                         Size = new Vector2(_spriteWidth, _spriteHeight),
                     };
 
-                    var velocity = new MySprite() {
-                        Type = SpriteType.TEXT,
-                        Data = target.Value.Velocity.Length().ToString(),
-                        Alignment = TextAlignment.CENTER,
-                        Position = new Vector2(_screenPosition.X, display.DisplayBlock.CustomData.Contains("true") ? _screenPosition.Y + 20 : _screenPosition.Y - 40),
-                        RotationOrScale = 0.7f,
-                        FontId = "Monospace",
-                    };
+                    // based on velocity, draw antoher sprite predicting where it'llb e in one second
+
+                    if (target.Value.Velocity != Vector3.Zero) {
+                        Vector3 predictedPosition = target.Value.Position + target.Value.Velocity * 1; // 1 second prediction
+                        Vector3D observerToPredictedPosition = predictedPosition - _observerPosition;
+                        Vector3 predictedWorldHit = _screenPlane.Intersection(ref _observerPosition, ref observerToPredictedPosition);
+                        Vector3 predictedLocalHit = STUTransformationUtils.WorldPositionToLocalPosition(display.DisplayBlock, predictedWorldHit);
+                        float predictedU = (LARGE_GRID_ONE_BLOCK_WIDTH * 0.5f - predictedLocalHit.Z) / LARGE_GRID_ONE_BLOCK_WIDTH;
+                        float predictedV = (LARGE_GRID_ONE_BLOCK_HEIGHT * 0.5f - predictedLocalHit.Y) / LARGE_GRID_ONE_BLOCK_HEIGHT;
+                        Vector2 predictedScreenPosition = new Vector2(predictedU * resolution.X, predictedV * resolution.Y);
+                        var predictedTag = new MySprite() {
+                            Type = SpriteType.TEXTURE,
+                            Data = "Circle",
+                            Alignment = TextAlignment.CENTER,
+                            RotationOrScale = display.DisplayBlock.CustomData.Contains("true") ? 0 : (float)Math.PI,
+                            Position = predictedScreenPosition,
+                            Color = Color.Blue,
+                            Size = new Vector2(_spriteWidth, _spriteHeight),
+                        };
+                        sprites.Add(predictedTag);
+                    }
 
                     sprites.Add(tag);
-                    sprites.Add(velocity);
                 }
 
                 display.EndAndPaintFrame();
@@ -126,6 +144,14 @@ namespace IngameScript {
                     default:
                         return Color.Gray;
                 }
+            }
+
+            public void CreateLog(string message, STULogType type) {
+                Logs.Enqueue(new STULog {
+                    Sender = "PR",
+                    Message = message,
+                    Type = type
+                });
             }
 
         }

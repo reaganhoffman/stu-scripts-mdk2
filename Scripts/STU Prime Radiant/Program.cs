@@ -17,6 +17,8 @@ namespace IngameScript {
         MyIni _ini = new MyIni();
         UnifiedHolo _unifiedHolo;
 
+        STUDisplay _logDisplay;
+
         List<Vector3> _tempTargets = new List<Vector3> {
             new Vector3(-36135.47,-35919.1,-37193.12),
             new Vector3(-36133.7,-35925.19,-37188.17),
@@ -35,9 +37,11 @@ namespace IngameScript {
         Dictionary<IMyCameraBlock, List<MyDetectedEntityInfo>> _cameraTargets = new Dictionary<IMyCameraBlock, List<MyDetectedEntityInfo>>();
 
         public Program() {
-            _unifiedHolo = new UnifiedHolo(DiscoverUnifiedHoloDisplays(), InitializeObserverSensor(), Echo);
+            _logDisplay = GetLogDisplay();
+            _unifiedHolo = new UnifiedHolo(DiscoverUnifiedHoloDisplays(), InitializeObserverSensor(), Echo, DiscoverCockpit());
             _cameras = InitializeCameras();
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            _unifiedHolo.CreateLog("Init", STULogType.INFO);
         }
 
         public void Main(string arg) {
@@ -55,6 +59,7 @@ namespace IngameScript {
             }
             UpdateTargets();
             _unifiedHolo.Update(_targets);
+            WriteLogs();
         }
 
         public void UpdateTargets() {
@@ -171,6 +176,35 @@ namespace IngameScript {
 
         public void echo(string s) {
             Echo(s);
+        }
+
+        IMyCockpit DiscoverCockpit() {
+            List<IMyCockpit> cockpits = new List<IMyCockpit>();
+            GridTerminalSystem.GetBlocksOfType(cockpits, block => block.CubeGrid == Me.CubeGrid
+                && MyIni.HasSection(block.CustomData, "PrimeRadiantCockpit"));
+            if (cockpits.Count == 0) {
+                throw new Exception("No cockpit found on the grid.");
+            }
+            if (cockpits.Count > 1) {
+                throw new Exception("Multiple cockpits found on the grid. Please ensure only one cockpit is present.");
+            }
+            return cockpits[0];
+        }
+
+        STUDisplay GetLogDisplay() {
+            List<IMyTextPanel> logPanels = new List<IMyTextPanel>();
+            GridTerminalSystem.GetBlocksOfType(logPanels, block => MyIni.HasSection(block.CustomData, "PrimeRadiantLogDisplay")
+                && block.CubeGrid == Me.CubeGrid);
+            if (logPanels.Count == 0) {
+                throw new Exception("No log display found with tag 'PrimeRadiantLogDisplay'");
+            }
+            return new STUDisplay(logPanels[0], 0);
+        }
+
+        void WriteLogs() {
+            _logDisplay.StartFrame();
+            _logDisplay.WriteWrappableLogs(_unifiedHolo.Logs);
+            _logDisplay.EndAndPaintFrame();
         }
 
     }

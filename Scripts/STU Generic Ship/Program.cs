@@ -12,6 +12,10 @@ namespace IngameScript {
 
         public void Save() { }
 
+        private void doSomething() {
+
+        }
+
         public void Main(string argument, UpdateType updateSource) {
             try {
 
