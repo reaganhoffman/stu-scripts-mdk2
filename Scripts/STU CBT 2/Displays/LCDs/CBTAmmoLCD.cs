@@ -214,7 +214,7 @@ namespace IngameScript {
                 {
                     return Color.Red;
                 }
-                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                var inventory = CBT.InventoryEnumerator.MostRecentItemTotals;
                 if (!inventory.ContainsKey("Large Railgun Sabot")) { return Color.Yellow; }
                 else return Color.White;
             }
@@ -238,7 +238,7 @@ namespace IngameScript {
                 {
                     return Color.Red;
                 }
-                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                var inventory = CBT.InventoryEnumerator.MostRecentItemTotals;
                 if (!inventory.ContainsKey("Artillery Shell")) { return Color.Yellow; }
                 else return Color.White;
             }
@@ -258,7 +258,7 @@ namespace IngameScript {
                 {
                     return Color.Red;
                 }
-                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                var inventory = CBT.InventoryEnumerator.MostRecentItemTotals;
                 if (!inventory.ContainsKey("Assault Cannon Shell")) return Color.Yellow;
                 else return Color.White;
             }
@@ -275,7 +275,7 @@ namespace IngameScript {
                     }
                 }
                 catch {  return Color.Red; }
-                var inventory = CBT.InventoryEnumerator.GetItemTotals();
+                var inventory = CBT.InventoryEnumerator.MostRecentItemTotals;
                 if (!inventory.ContainsKey("Gatling Ammo Box")) return Color.Yellow;
                 else return Color.White;
             }

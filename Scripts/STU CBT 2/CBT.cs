@@ -5,8 +5,11 @@ using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management.Instrumentation;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
@@ -16,6 +19,8 @@ namespace IngameScript {
         public partial class CBT {
 
             public static Action<string> echo;
+
+            public static CBT ThisCBT { get; set; }
 
             public const float TimeStep = 1.0f / 6.0f;
             public static Phase CurrentPhase { get; set; } = Phase.Idle;
@@ -31,17 +36,17 @@ namespace IngameScript {
 
             public static List<BlockInfo> CBTBlocks { get; private set; } = new List<BlockInfo>();
 
-            public static float UserInputForwardVelocity = 0;
-            public static float UserInputRightVelocity = 0;
-            public static float UserInputUpVelocity = 0;
-            public static float UserInputRollVelocity = 0;
-            public static float UserInputPitchVelocity = 0;
-            public static float UserInputYawVelocity = 0;
+            public static float UserInputForwardVelocity { get; set; } = 0;
+            public static float UserInputRightVelocity { get; set; } = 0;
+            public static float UserInputUpVelocity { get; set; } = 0;
+            public static float UserInputRollVelocity { get; set; } = 0;
+            public static float UserInputPitchVelocity { get; set; } = 0;
+            public static float UserInputYawVelocity { get; set; } = 0;
 
-            public static CBTGangway.GangwayStates UserInputGangwayState;
-            public static int UserInputRearDockPosition;
+            public static CBTGangway.GangwayStates UserInputGangwayState { get; set; }
+            public static int UserInputRearDockPosition { get; set; }
 
-            public bool CanDockWithCR = false;
+            public bool CanDockWithCR { get; set; } = false;
 
             public static bool CruiseControlActivated { get; private set; } = false;
             public static float CruiseControlSpeed { get; private set; } = 0f;
@@ -67,6 +72,7 @@ namespace IngameScript {
             public static Queue<STUStateMachine> ManeuverQueue { get; set; }
             public static List<CBTAmmoLCD> AmmoChannel { get; set; } = new List<CBTAmmoLCD>();
             public static List<CBTStatusLCD> StatusChannel { get; set; } = new List<CBTStatusLCD>();
+            public static List<CBTBottomCameraLCD> BottomCameraChannel { get; set; } = new List<CBTBottomCameraLCD>();
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
@@ -162,6 +168,8 @@ namespace IngameScript {
                 Runtime = runtime;
                 CBTGrid = grid;
                 echo = Echo;
+                ThisCBT = this;
+                
 
                 AddToLogQueue("INITIALIZING...");
                 // overhead
@@ -170,6 +178,7 @@ namespace IngameScript {
                 AddManeuverQueueSubscribers(grid);
                 AddAmmoScreens(grid);
                 AddStatusScreens(grid);
+                AddBottomCameraScreens(grid);
 
                 // power level 0 (flight critical, negligible or intermittent power draw)
                 Batteries = LoadAllBlocksOfType<IMyBatteryBlock>();
@@ -260,7 +269,7 @@ namespace IngameScript {
 
             // define the broadcaster method so that display messages can be sent throughout the world
             // (currently not implemented, just keeping this code here for future use)
-            public static void CreateBroadcast(string message, bool encrypt = false, string type = STULogType.INFO) {
+            public static void CreateBroadcast(string message, bool encrypt = false, STULogType type = STULogType.INFO) {
                 // had some abandoned encryption logic here
 
                 Broadcaster.Log(new STULog {
@@ -273,7 +282,7 @@ namespace IngameScript {
 
             // define the method to send CBT log messages to the queue of all the screens on the CBT that are subscribed to such messages
             // actually pulling those messages from the queue and displaying them is done in UpdateLogScreens()
-            public static void AddToLogQueue(string message, string type = STULogType.INFO, string sender = CBT_VARIABLES.CBT_VEHICLE_NAME) {
+            public static void AddToLogQueue(string message, STULogType type = STULogType.INFO, string sender = CBT_VARIABLES.CBT_VEHICLE_NAME) {
                 foreach (var screen in LogChannel) {
                     screen.FlightLogs.Enqueue(new STULog {
                         Sender = sender,
@@ -359,7 +368,7 @@ namespace IngameScript {
             }
 
             public static void UpdateAmmoScreens() {
-                var inventory = InventoryEnumerator.GetItemTotals();
+                var inventory = InventoryEnumerator.MostRecentItemTotals;
                 foreach (var screen in AmmoChannel) {
                     screen.StartFrame();
                     screen.LoadAmmoData(
@@ -373,11 +382,22 @@ namespace IngameScript {
                 }
             }
 
+            
             public static void UpdateStatusScreens()
             {
-                // logic here getting status updates of other systems
+                // logic for handling the gathering of subsystem statuses is handled within the CBTStatusLCD class... probably not a good idea for porting to GSC...
 
                 foreach (var screen in StatusChannel)
+                {
+                    screen.StartFrame();
+                    screen.BuildScreen(screen.CurrentFrame, screen.Center);
+                    screen.EndAndPaintFrame();
+                }
+            }
+
+            public static void UpdateBottomCameraScreens()
+            {
+                foreach (var screen in BottomCameraChannel)
                 {
                     screen.StartFrame();
                     screen.BuildScreen(screen.CurrentFrame, screen.Center);
@@ -391,8 +411,7 @@ namespace IngameScript {
             private static void AddLogSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    string[] CustomDataLines = block.CustomData.Split('\n');
                     foreach (var line in CustomDataLines) {
                         if (line.Contains("CBT_LOG")) {
                             string[] kvp = line.Split(':');
@@ -417,8 +436,7 @@ namespace IngameScript {
             private static void AddAutopilotIndicatorSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    string[] CustomDataLines = block.CustomData.Split('\n');
                     foreach (var line in CustomDataLines) {
                         if (line.Contains("CBT_AUTOPILOT")) {
                             string[] kvp = line.Split(':');
@@ -431,8 +449,7 @@ namespace IngameScript {
             private static void AddManeuverQueueSubscribers(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    string[] CustomDataLines = block.CustomData.Split('\n');
                     foreach (var line in CustomDataLines) {
                         if (line.Contains("CBT_MANEUVER_QUEUE")) {
                             string[] kvp = line.Split(':');
@@ -445,8 +462,7 @@ namespace IngameScript {
             private static void AddAmmoScreens(IMyGridTerminalSystem grid) {
                 grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks) {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    string[] CustomDataLines = block.CustomData.Split('\n');
                     foreach (var line in CustomDataLines) {
                         if (line.Contains("CBT_AMMO")) {
                             string[] kvp = line.Split(':');
@@ -487,6 +503,48 @@ namespace IngameScript {
                             StatusChannel.Add(screen);
                         }
                     }
+                }
+            }
+
+            private static void AddBottomCameraScreens(IMyGridTerminalSystem grid)
+            {
+                grid.GetBlocks(AllTerminalBlocks);
+                foreach (var block in AllTerminalBlocks)
+                {
+                    string CustomDataRawText = block.CustomData;
+                    string[] CustomDataLines = CustomDataRawText.Split('\n');
+                    foreach (var line in CustomDataLines)
+                    {
+                        if (line.Contains("CBT_BOTTOM_CAMERA"))
+                        {
+                            string[] kvp = line.Split(':');
+                            float fontSize;
+                            try
+                            {
+                                fontSize = float.Parse(kvp[2]);
+                                if (fontSize < 0.1f || fontSize > 10f)
+                                {
+                                    throw new Exception("Invalid font size");
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                echo("caught exception in CBT.AddBottomCameraScreens():");
+                                echo(e.Message);
+                                fontSize = 0.5f;
+                            }
+                            CBTBottomCameraLCD screen = new CBTBottomCameraLCD(ThisCBT, echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
+                            BottomCameraChannel.Add(screen);
+                        }
+                    }
+                }
+            }
+
+            public void PushTOLStatusToBottomCameraScreens(string status)
+            {
+                foreach (var item in BottomCameraChannel)
+                {
+                    item.TOLStatus = status;
                 }
             }
             #endregion
@@ -550,7 +608,7 @@ namespace IngameScript {
             #region Inventory reports
             public static int GetHydrogenPercentFilled()
             {
-                var inventory = InventoryEnumerator.GetItemTotals();
+                var inventory = InventoryEnumerator.MostRecentItemTotals;
                 double h2RawAmount = inventory.ContainsKey("Hydrogen") ? inventory["Hydrogen"] : 0;
                 try
                 {
@@ -563,7 +621,7 @@ namespace IngameScript {
             }
             public static int GetOxygenPercentFilled()
             {
-                var inventory = InventoryEnumerator.GetItemTotals();
+                var inventory = InventoryEnumerator.MostRecentItemTotals;
                 float o2RawAmount = inventory.ContainsKey("Oxygen") ? (float)inventory["Oxygen"] : 0;
                 try
                 {
@@ -576,7 +634,7 @@ namespace IngameScript {
             }
             public static int GetPowerPercent()
             {
-                var inventory = InventoryEnumerator.GetItemTotals();
+                var inventory = InventoryEnumerator.MostRecentItemTotals;
                 float kWrunningTotal = 0;
                 foreach (var battery in Batteries)
                 {

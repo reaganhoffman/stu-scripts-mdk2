@@ -31,16 +31,17 @@ namespace IngameScript
                 public float PistonDistance;
                 public float Hinge1Angle;
                 public float Hinge2Angle;
+                public string Name;
             }
             public static int DesiredPosition { get; set; }
 
             public static ActuatorPosition[] KnownPorts = new ActuatorPosition[]
             {
-                new ActuatorPosition { PistonDistance = 0.75f, Hinge1Angle = DegToRad(90), Hinge2Angle = DegToRad(90) }, // stowed
-                new ActuatorPosition { PistonDistance = 4, Hinge1Angle = 0, Hinge2Angle = 0 }, // neutral
-                new ActuatorPosition { PistonDistance = 10, Hinge1Angle = DegToRad(36), Hinge2Angle = DegToRad(-36) }, // lunar hq
-                new ActuatorPosition { PistonDistance = 3.5f, Hinge1Angle = DegToRad(-90), Hinge2Angle = DegToRad(-72) }, // herobrine on deck
-                new ActuatorPosition { PistonDistance = 10f, Hinge1Angle = DegToRad(81), Hinge2Angle = DegToRad(9) }, // CLAM
+                new ActuatorPosition { PistonDistance = 0.75f, Hinge1Angle = DegToRad(90), Hinge2Angle = DegToRad(90), Name = "Stowed" },
+                new ActuatorPosition { PistonDistance = 4, Hinge1Angle = 0, Hinge2Angle = 0, Name = "Neutral" },
+                new ActuatorPosition { PistonDistance = 10, Hinge1Angle = DegToRad(36), Hinge2Angle = DegToRad(-36), Name = "Lunar HQ" },
+                new ActuatorPosition { PistonDistance = 3.5f, Hinge1Angle = DegToRad(-90), Hinge2Angle = DegToRad(-72), Name = "Herobrine on deck" },
+                new ActuatorPosition { PistonDistance = 10f, Hinge1Angle = DegToRad(81), Hinge2Angle = DegToRad(9), Name = "CLAM"},
             };
 
             public RearDockStates CurrentRearDockPhase { get; set; }

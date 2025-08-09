@@ -9,6 +9,7 @@ namespace IngameScript {
         public partial class CBT {
             public class ParkManeuver : STUStateMachine {
                 public override string Name => "Landing";
+                static CBT ThisCBT { get; set; }
                 Queue<STUStateMachine> ManeuverQueue { get; set; }
                 CBTGangway CBTGangway { get; set; }
                 public enum LandingPhases
@@ -49,9 +50,11 @@ namespace IngameScript {
                     } 
                 }
                 
-                public ParkManeuver(Queue<STUStateMachine> thisManeuverQueue, CBTGangway cBTGangway) {
+                public ParkManeuver(CBT thisCBT, Queue<STUStateMachine> thisManeuverQueue, CBTGangway cBTGangway) {
+                    ThisCBT = thisCBT;
                     ManeuverQueue = thisManeuverQueue;
                     CBTGangway = cBTGangway;
+                    ThisCBT.PushTOLStatusToBottomCameraScreens("Acquiring LZ Distance");
                 }
 
                 public override bool Init() {
@@ -80,6 +83,7 @@ namespace IngameScript {
                             AltitudeAboveLZ = InitialLandingZoneVector.Length() + 10; // empirical testing requires this 10m offset be added to get what the in-game HUD (maybe)
                             LandingZonePlatformElevation = FlightController.GetCurrentSurfaceAltitude() - AltitudeAboveLZ;
 
+                            ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
                             AddToLogQueue($"Current altitude above LZ: {AltitudeAboveLZ}");
                             AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
                             AskedForConfirmationAlready = true;
@@ -99,6 +103,7 @@ namespace IngameScript {
                     switch (InternalState)
                     {
                         case LandingPhases.InitialDescent:
+                            ThisCBT.PushTOLStatusToBottomCameraScreens("DESCENDING...");
                             double descendVelocity = Math.Max((FlightController.GetCurrentSurfaceAltitude() - Math.Max(0,LandingZonePlatformElevation ?? 0 ))/ 10, 4);
                             if (
                                 FlightController.MaintainSurfaceAltitude(30 + LandingZonePlatformElevation ?? 0, 10, descendVelocity) && 
@@ -109,6 +114,7 @@ namespace IngameScript {
                             }
                             break;
                         case LandingPhases.FinalApproach:
+                            ThisCBT.PushTOLStatusToBottomCameraScreens("FINAL \nAPPROACH");
                             CancelAttitudeControl();
                             foreach (var light in LandingLights) { light.Enabled = true; }
                             if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) 
@@ -131,9 +137,11 @@ namespace IngameScript {
 
                 public override bool Closeout() {
                     Camera.EnableRaycast = InitialRaycastState; // return the camera's raycast state to whatever it was before
-
+                    ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM \nPARK");
+                    
                     if (PilotConfirmation)
                     {
+                        ThisCBT.PushTOLStatusToBottomCameraScreens("");
                         SetLandingGear(true);
                         CancelAttitudeControl();
                         SetAutopilotControl(false, false, true);

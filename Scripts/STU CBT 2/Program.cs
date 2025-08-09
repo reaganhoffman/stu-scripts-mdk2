@@ -44,7 +44,7 @@ namespace IngameScript {
             GridTerminalSystem.GetBlocks(AllTerminalBlocks);
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
             GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(AllBatteries);
-            InventoryEnumerator = new STUInventoryEnumerator(AllTerminalBlocks, AllTanks, AllBatteries, Me);
+            InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
@@ -71,6 +71,7 @@ namespace IngameScript {
                 }
                 catch (Exception ex)
                 {
+                    Echo("Could not instantiate inventory enumerator");
                     CBT.AddToLogQueue("Something is wrong with the inventory enumerator...", STULogType.WARNING);
                     CBT.AddToLogQueue($"{ex.Message}");
                 }
@@ -124,6 +125,7 @@ namespace IngameScript {
                 CBT.UpdateManeuverQueueScreens(GatherManeuverQueueData());
                 CBT.UpdateAmmoScreens();
                 CBT.UpdateStatusScreens();
+                CBT.UpdateBottomCameraScreens();
                 CBT.ACM.UpdateAirlocks();
                 CBT.DockingModule.UpdateDockingModule();
                 if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.QueueManeuvers) {
@@ -179,6 +181,7 @@ namespace IngameScript {
 
         public void ResetAutopilot() {
             ManeuverQueue.Clear();
+            CBTShip.PushTOLStatusToBottomCameraScreens("");
             CBT.CancelAttitudeControl();
             CBT.CancelCruiseControl();
             CBT.ResetUserInputVelocities();
@@ -312,6 +315,7 @@ namespace IngameScript {
                         #region CBT Software Commands
                         case "CLOSEOUT": // instantly moves the current maneuver's state to the Closeout phase, if there is a currently executing maneuver.
                             CBT.AddToLogQueue($"Cancelling maneuver '{CurrentManeuver.Name}'...", STULogType.INFO);
+                            CBTShip.PushTOLStatusToBottomCameraScreens("");
                             if (CurrentManeuver != null)
                             {
                                 CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Closeout;
@@ -542,6 +546,7 @@ namespace IngameScript {
                             {
                                 case "RESET":
                                     CBT.AddToLogQueue("Resetting autopilot...", STULogType.INFO);
+                                    CBTShip.PushTOLStatusToBottomCameraScreens("");
                                     ResetAutopilot();
                                     break;
                                 case "THRUSTERS":
@@ -569,8 +574,15 @@ namespace IngameScript {
                             }
                             else if (predicate == "ON")
                             {
-                                CBT.LevelToHorizon();
-                                CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
+                                if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0, 0, 0))
+                                {
+                                    CBT.AddToLogQueue("No gravity detected, cannot enable Attitude Control.", STULogType.WARNING);
+                                }
+                                else
+                                {
+                                    CBT.LevelToHorizon();
+                                    CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
+                                }
                             }
                             else {
                                 PrintParseError(subject, predicate);
@@ -645,7 +657,7 @@ namespace IngameScript {
                                 CBT.AddToLogQueue("No gravity detected or current altitude too low. Aborting landing sequence.", STULogType.WARNING); 
                                 break; 
                             }
-                            ManeuverQueue.Enqueue(new CBT.ParkManeuver(ManeuverQueue, CBT.Gangway));
+                            ManeuverQueue.Enqueue(new CBT.ParkManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
                             break;
 
                         case "CONFIRM":
@@ -683,7 +695,7 @@ namespace IngameScript {
                                 CBT.AddToLogQueue("Not in gravity. Aborting takeoff sequence.", STULogType.WARNING);
                                 break;
                             }
-                            ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(ManeuverQueue, CBT.Gangway));
+                            ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
                             break;
 
                         case "HOVER": // queues a hover maneuver

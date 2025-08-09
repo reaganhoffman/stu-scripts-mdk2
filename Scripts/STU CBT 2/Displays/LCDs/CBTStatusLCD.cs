@@ -7,17 +7,18 @@ using VRageMath;
 namespace IngameScript {
     partial class Program {
         public partial class CBTStatusLCD : STUDisplay {
-            public static Action<string> echo;
+            static Action<string> Echo { get; set; }
 
             public float CharWidth { get; set; }
             public float CharHeight { get; set; }
             public float FontSize { get; set; }
             
-            public CBTStatusLCD(Action<string> Echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
-                echo = Echo;
+            public CBTStatusLCD(Action<string> echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
+                Echo = echo;
                 CharWidth = GetTextSpriteWidth("A") * fontSize;
                 CharHeight = GetTextSpriteHeight("A") * fontSize;
                 FontSize = fontSize;
+
             }
 
             public Color GetGearStatusColor()
