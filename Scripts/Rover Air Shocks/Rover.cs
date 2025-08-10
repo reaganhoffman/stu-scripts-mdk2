@@ -21,7 +21,8 @@ namespace IngameScript
 
             public static IMyMotorSuspension[] Wheels { get; set; }
             public static float WheelHeight { get; set; }
-            public Suspension ThisSuspension { get; set; }
+            public static Suspension ThisSuspension { get; set; }
+            public static Suspension.States UserInputSuspensionState { get; set; }
 
             public Rover(IMyGridTerminalSystem grid, IMyProgrammableBlock programmableBlock, Action<string> echo)
             {

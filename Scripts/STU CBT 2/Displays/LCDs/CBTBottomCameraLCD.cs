@@ -16,9 +16,10 @@ namespace IngameScript
             CBT ThisCBT { get; set; }
             Action<string> Echo { get; set; }
 
-            public float CharWidth { get; set; }
             public float CharHeight { get; set; }
             public float FontSize { get; set; }
+            
+            readonly Color cl = Color.Cyan;
 
             double Vt { get; set; }
             double Vx { get; set; }
@@ -35,7 +36,6 @@ namespace IngameScript
             {
                 ThisCBT = cbtObject;
                 Echo = echo;
-                CharWidth = GetTextSpriteWidth("A") * fontSize;
                 CharHeight = GetTextSpriteHeight("A") * fontSize;
                 FontSize = fontSize;
             }
@@ -56,14 +56,10 @@ namespace IngameScript
                     case CBTGangway.GangwayStates.Extending: GangwayStatus = "EXTENDING"; break;
                     case CBTGangway.GangwayStates.Extended: GangwayStatus = "EXTENDED"; break;
                 }
-                RampStatus = "MOVING";
+                RampStatus = "NOT CLOSED";
                 if (CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(CBT.HangarRotor.Angle), 0))
                 {
                     RampStatus = "CLOSED";
-                }
-                else if (CBT.AngleRangeCloseEnoughDegrees(CBT.RadToDeg(CBT.HangarRotor.Angle), 90, 110))
-                {
-                    RampStatus = "OPEN";
                 }
                 StingerStatus = CBTRearDock.KnownPorts[CBTRearDock.DesiredPosition].Name.ToString();
                 CCStatus = CBT.CruiseControlSpeed.ToString();
@@ -82,119 +78,20 @@ namespace IngameScript
                     Size = new Vector2(ScreenWidth, ScreenHeight),
                     Color = new Color(0, 0, 0, 0) // fourth argument makes the screen clear... I think
                 };
-                MySprite VT = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"Vt " + $"{this.Vt,5}",
-                    Position = TopLeft + new Vector2(ScreenWidth - GetTextSpriteWidth($"Vt {this.Vt,5}"), 0),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite VX = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"Vx " + $"{this.Vx,5}",
-                    Position = TopLeft + new Vector2(ScreenWidth - GetTextSpriteWidth($"Vx {this.Vx,5}"), GetTextSpriteHeight("A")),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite VY = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"Vy " + $"{this.Vy,5}",
-                    Position = TopLeft + new Vector2(ScreenWidth - GetTextSpriteWidth($"Vy {this.Vy,5}"), GetTextSpriteHeight("A") * 2),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite VZ = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"Vz " + $"{this.Vz,5}",
-                    Position = TopLeft + new Vector2(ScreenWidth - GetTextSpriteWidth($"Vz {this.Vz,5}"), GetTextSpriteHeight("A") * 3),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite ALT = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"ALT " + $"{this.ALT,5}",
-                    Position = TopLeft + new Vector2(ScreenWidth - GetTextSpriteWidth($"ALT {this.ALT,5}"), GetTextSpriteHeight("A") * 4),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                
-                MySprite GangwayStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"GANGWAY: {this.GangwayStatus}",
-                    Position = TopLeft + new Vector2(0, 0),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite RampStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"RAMP: {this.RampStatus}",
-                    Position = TopLeft + new Vector2(0, GetTextSpriteHeight("A")),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite StingerStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"STINGER: {this.StingerStatus}",
-                    Position = TopLeft + new Vector2(0, GetTextSpriteHeight("A") * 2),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite CCStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"CC: {this.CCStatus}",
-                    Position = TopLeft + new Vector2(0, GetTextSpriteHeight("A") * 4),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite ATTStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"ATT: {this.ATTStatus}",
-                    Position = TopLeft + new Vector2(0, GetTextSpriteHeight("A") * 5),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite TOLStatus = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"{this.TOLStatus}",
-                    Position = TopLeft + new Vector2(0, GetTextSpriteHeight("A") * 7),
-                    Color = Color.Cyan,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
+
 
                 frame.Add(background);
-                frame.Add(VT);
-                frame.Add(VX);
-                frame.Add(VY);
-                frame.Add(VZ);
-                frame.Add(ALT);
-                frame.Add(TOLStatus);
-                frame.Add(GangwayStatus);
-                frame.Add(RampStatus);
-                frame.Add(StingerStatus);
-                frame.Add(CCStatus);
-                frame.Add(ATTStatus);
+                frame.Add(BuildTextSprite($"Vt " + $"{Vt,5}", ScreenWidth - GetTextSpriteWidth($"Vt {Vt,5}"), 0, cl));
+                frame.Add(BuildTextSprite($"Vx " + $"{Vx,5}", ScreenWidth - GetTextSpriteWidth($"Vx {Vx,5}"), CharHeight, cl));
+                frame.Add(BuildTextSprite($"Vy " + $"{Vy,5}", ScreenWidth - GetTextSpriteWidth($"Vy {Vy,5}"), CharHeight * 2, cl));
+                frame.Add(BuildTextSprite($"Vz " + $"{Vz,5}", ScreenWidth - GetTextSpriteWidth($"Vz {Vz,5}"), CharHeight * 3, cl));
+                frame.Add(BuildTextSprite($"ALT " + $"{ALT,5}", ScreenWidth - GetTextSpriteWidth($"ALT {ALT,5}"), CharHeight * 4, cl));
+                frame.Add(BuildTextSprite($"{TOLStatus}", 0, CharHeight * 7, cl));
+                frame.Add(BuildTextSprite($"GANGWAY: {GangwayStatus}", 0, 0, cl));
+                frame.Add(BuildTextSprite($"RAMP: {RampStatus}", 0, CharHeight, cl));
+                frame.Add(BuildTextSprite($"STINGER: {StingerStatus}", 0, CharHeight * 2, cl));
+                frame.Add(BuildTextSprite($"CC: {CCStatus}", 0, CharHeight * 4, cl));
+                frame.Add(BuildTextSprite($"ATT: {ATTStatus}", 0, CharHeight * 5, cl));
             }
         }
     }

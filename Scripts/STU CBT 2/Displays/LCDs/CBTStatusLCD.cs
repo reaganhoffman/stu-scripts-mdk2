@@ -243,149 +243,22 @@ namespace IngameScript {
                     Size = new Vector2(ScreenWidth, ScreenHeight),
                     Color = new Color(0, 0, 0)
                 };
-                MySprite GEAR = new MySprite()
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "GEAR",
-                    Position = TopLeft + new Vector2(0, 0),
-                    Color = GetGearStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite CONNECTOR = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "CONN",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, 0),
-                    Color = GetConnectorStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite GANGWAY = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"GWAY:{GetGangwayStatusString()}",
-                    Position = TopLeft + new Vector2(0, CharHeight),
-                    Color = GetGangwayStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite RAMP = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"RAMP:{GetRampStatusString()}",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight),
-                    Color = GetRampStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite GRAVITY_GENERATOR = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "GGEN",
-                    Position = TopLeft + new Vector2(0, CharHeight * 2),
-                    Color = GetGravityGeneratorStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite MERGE = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "STINGR",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 2),
-                    Color = GetStingerStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite ANTENNA = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "TX/RX",
-                    Position = TopLeft + new Vector2(0, CharHeight * 3),
-                    Color = GetRadioTransmissionStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite VENTS = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "VENTS",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 3),
-                    Color = GetVentsStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite FUEL = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"H2:{GetHydrogenStatusString()}",
-                    Position = TopLeft + new Vector2(0, CharHeight * 4),
-                    Color = GetHydrogenStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite ENGINES = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "PGEN",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 4),
-                    Color = GetHydrogenEngineStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite OXYGEN = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"O2:{GetOxygenStatusString()}",
-                    Position = TopLeft + new Vector2(0, CharHeight * 5),
-                    Color = GetOxygenStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite MED = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = "MED",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 5),
-                    Color = GetMedBayStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite ELECTRICITY = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"kW:{GetBatteryStatusString()}",
-                    Position = TopLeft + new Vector2(0, CharHeight * 6),
-                    Color = GetBatteryStatusColor(),
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-                MySprite POWER_LEVEL = new MySprite
-                {
-                    Type = SpriteType.TEXT,
-                    Data = $"PL:{CBT.PowerLevel}",
-                    Position = TopLeft + new Vector2(ScreenWidth / 2 + 1, CharHeight * 6),
-                    Color = Color.White,
-                    FontId = "Monospace",
-                    RotationOrScale = FontSize
-                };
-
 
                 frame.Add(background);
-                frame.Add(GEAR);
-                frame.Add(CONNECTOR);
-                frame.Add(GANGWAY);
-                frame.Add(RAMP);
-                frame.Add(GRAVITY_GENERATOR);
-                frame.Add(MERGE);
-                frame.Add(ANTENNA);
-                frame.Add(VENTS);
-                frame.Add(FUEL);
-                frame.Add(ENGINES);
-                frame.Add(OXYGEN);
-                frame.Add(MED);
-                frame.Add(ELECTRICITY);
-                frame.Add(POWER_LEVEL);
+                frame.Add(BuildTextSprite("GEAR", 0,0, GetGearStatusColor()));
+                frame.Add(BuildTextSprite("CONN", ScreenWidth / 2 + 1, 0, GetConnectorStatusColor()));
+                frame.Add(BuildTextSprite($"GWAY:{GetGangwayStatusString()}", 0, CharHeight, GetGangwayStatusColor()));
+                frame.Add(BuildTextSprite($"RAMP:{GetRampStatusString()}", ScreenWidth / 2 + 1, CharHeight, GetRampStatusColor()));
+                frame.Add(BuildTextSprite("GGEN", 0, CharHeight * 2, GetGravityGeneratorStatusColor()));
+                frame.Add(BuildTextSprite("STINGR", ScreenWidth / 2 + 1, CharHeight * 2, GetStingerStatusColor()));
+                frame.Add(BuildTextSprite("TX/RX", 0, CharHeight * 3, GetRadioTransmissionStatusColor()));
+                frame.Add(BuildTextSprite("VENTS", ScreenWidth / 2 + 1, CharHeight * 3, GetVentsStatusColor()));
+                frame.Add(BuildTextSprite($"H2:{GetHydrogenStatusString()}", 0, CharHeight * 4, GetHydrogenStatusColor()));
+                frame.Add(BuildTextSprite("PGEN", ScreenWidth / 2 + 1, CharHeight * 4, GetHydrogenEngineStatusColor()));
+                frame.Add(BuildTextSprite($"O2:{GetOxygenStatusString()}", 0, CharHeight * 5, GetOxygenStatusColor()));
+                frame.Add(BuildTextSprite("MED", ScreenWidth / 2 + 1, CharHeight * 5, GetMedBayStatusColor()));
+                frame.Add(BuildTextSprite($"kW:{GetBatteryStatusString()}", 0, CharHeight * 6, GetBatteryStatusColor()));
+                frame.Add(BuildTextSprite($"PL:{CBT.PowerLevel}", ScreenWidth / 2 + 1, CharHeight * 6, Color.White));
 
             }
 

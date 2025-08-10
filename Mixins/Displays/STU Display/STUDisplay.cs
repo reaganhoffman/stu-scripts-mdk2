@@ -227,6 +227,19 @@ namespace IngameScript {
                 return Surface.MeasureStringInPixels(builder.Append("A"), Surface.Font, Surface.FontSize).Y;
             }
 
+            public MySprite BuildTextSprite(string text, float topLeftOffsetX, float topLeftOffsetY, Color color)
+            {
+                return new MySprite
+                {
+                    Type = SpriteType.TEXT,
+                    Data = text,
+                    Position = TopLeft + new Vector2(topLeftOffsetX, topLeftOffsetY),
+                    Color = color,
+                    FontId = Surface.Font,
+                    RotationOrScale = Surface.FontSize
+                };
+            }
+
             /// <summary>
             /// Aligns a sprite to the center of its parent sprite.
             /// </summary>

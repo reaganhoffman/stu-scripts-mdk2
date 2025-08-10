@@ -51,7 +51,7 @@ namespace IngameScript {
                         CurrentGangwayState = desiredState;
                         LastUserInputGangwayState = desiredState;
                     } else {
-                        CBT.AddToLogQueue($"Cannot go to requested state {desiredState} cause of da rulez", STULogType.ERROR);
+                        CBT.AddToLogQueue($"Cannot go to requested state {desiredState}", STULogType.ERROR);
                     }
                 }
                 switch (CurrentGangwayState) {

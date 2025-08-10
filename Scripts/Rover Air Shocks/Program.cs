@@ -33,16 +33,18 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
+            Rover.ThisSuspension.UpdateState();
+            
             switch (argument.Trim().ToUpper())
             {
                 case "TEST":
                     Rover.Test();
                     break;
                 case "UP":
-                    Rover.AirUp();
+                    Rover.ThisSuspension.Set(Suspension.States.Raising);
                     break;
                 case "DOWN":
-                    Rover.AirDown();
+                    Rover.ThisSuspension.Set(Suspension.States.Lowering);
                     break;
             }
         }

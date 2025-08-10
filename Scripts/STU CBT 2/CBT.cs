@@ -309,7 +309,7 @@ namespace IngameScript {
                     { 
                         if (powerLevel < 1 && (FlightController.HasGyroControl || FlightController.HasThrusterControl))
                         {
-                            AddToLogQueue("FLIGHT CONTROLLER IS ACTIVE! Refusing to go below power level 1.", STULogType.WARNING);
+                            AddToLogQueue("FLIGHT CONTROLLER IS ACTIVE! Aborting...", STULogType.WARNING);
                             return;
                         }
                         block.Enabled = false; 
@@ -420,11 +420,9 @@ namespace IngameScript {
                             try {
                                 fontSize = float.Parse(kvp[2]);
                                 if (fontSize < 0.1f || fontSize > 10f) {
-                                    throw new Exception("Invalid font size");
+                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
                                 }
-                            } catch (Exception e) {
-                                echo("caught exception in CBT.AddLogSubscribers():");
-                                echo(e.Message);
+                            } catch (Exception) {
                                 fontSize = 0.5f;
                             }
                             CBTLogLCD screen = new CBTLogLCD(echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
@@ -490,13 +488,11 @@ namespace IngameScript {
                                 fontSize = float.Parse(kvp[2]);
                                 if (fontSize < 0.1f || fontSize > 10f)
                                 {
-                                    throw new Exception("Invalid font size");
+                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                echo("caught exception in CBT.AddStatusScreens():");
-                                echo(e.Message);
                                 fontSize = 0.5f;
                             }
                             CBTStatusLCD screen = new CBTStatusLCD(echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
@@ -524,13 +520,11 @@ namespace IngameScript {
                                 fontSize = float.Parse(kvp[2]);
                                 if (fontSize < 0.1f || fontSize > 10f)
                                 {
-                                    throw new Exception("Invalid font size");
+                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                echo("caught exception in CBT.AddBottomCameraScreens():");
-                                echo(e.Message);
                                 fontSize = 0.5f;
                             }
                             CBTBottomCameraLCD screen = new CBTBottomCameraLCD(ThisCBT, echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
@@ -583,7 +577,7 @@ namespace IngameScript {
                 var block = CBTGrid.GetBlockWithName(name);
                 if (block == null)
                 {
-                    AddToLogQueue($"Could not find block with name '{name}'. Is it named correctly?", STULogType.ERROR);
+                    AddToLogQueue($"Could not find block with name '{name}'.", STULogType.ERROR);
                     return null;
                 }
                 else { return block as T; }
@@ -598,7 +592,7 @@ namespace IngameScript {
                     !block.BlockDefinition.SubtypeName.Contains("LargeBlockLargeCalibreGun") && // not artillery
                     !block.BlockDefinition.SubtypeName.Contains("LargeRailgun")); // not railguns
 
-                if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found on the CBT", STULogType.ERROR); return; }
+                if (gatlingGunBlocks.Count == 0) { AddToLogQueue("No gatling guns found.", STULogType.ERROR); return; }
 
                 GatlingTurrets = gatlingGunBlocks.ToArray();
             }
@@ -687,7 +681,7 @@ namespace IngameScript {
             {
                 if (RemoteControl.GetNaturalGravity() == null) 
                 { 
-                    AddToLogQueue("No gravity detected, cannot set attitude control.", STULogType.WARNING);
+                    AddToLogQueue("No gravity detected, aborting.", STULogType.WARNING);
                     CancelAttitudeControl();
                     return false; 
                 }
@@ -799,10 +793,11 @@ namespace IngameScript {
                 return (angle >= lowerBound - tolerance && angle <= upperBound + tolerance);
             }
 
-            public static float DegToRad(float angle)
-            {
-                return (angle * (float)Math.PI / 180);
-            }
+            // this method did not have any references, so I commented it for character-limit reasons.
+            //public static float DegToRad(float angle)
+            //{
+            //    return (angle * (float)Math.PI / 180);
+            //}
 
             public static float RadToDeg(float angle)
             {
@@ -813,14 +808,14 @@ namespace IngameScript {
             {
                 if (LogChannelMessageBuffer.Count <= 0)
                 {
-                    AddToLogQueue("--END OF MESSAGE BUFFER--", STULogType.WARNING);
+                    AddToLogQueue("--END--", STULogType.WARNING);
                     return;
                 }
                 for (int i = 0; i < Math.Min(10, LogChannelMessageBuffer.Count); i++)
                 {
                     AddToLogQueue(LogChannelMessageBuffer.Dequeue(), STULogType.INFO);
                 }
-                if (LogChannelMessageBuffer.Count > 0) { AddToLogQueue("REPORT CONTINUES...", STULogType.OK); }
+                if (LogChannelMessageBuffer.Count > 0) { AddToLogQueue("CONTINUES...", STULogType.OK); }
             }
 
             public static void PopulatePowerLevelReport()
