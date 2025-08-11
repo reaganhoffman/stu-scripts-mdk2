@@ -336,19 +336,31 @@ namespace IngameScript {
                             }
                             break;
 
-                        case "REPORT":
+                        // commenting for space saving reasons
+                        //case "REPORT":
+                        //    switch (predicate)
+                        //    {
+                        //        case "NEXT":
+                        //            CBT.FlushLogChannelMessageBuffer();
+                        //            break;
+                        //        case "CLEAR":
+                        //            CBT.LogChannelMessageBuffer.Clear();
+                        //            CBT.AddToLogQueue("Report Message Buffer cleared.", STULogType.INFO);
+                        //            break;
+                        //        case "POWERLEVELS":
+                        //            CBT.PopulatePowerLevelReport();
+                        //            CBT.AddToLogQueue("Finished gathering power level data. Run 'REPORT NEXT' to view output.", STULogType.OK);
+                        //            break;
+                        //        default:
+                        //            PrintParseError(subject, predicate);
+                        //            break;
+                            //}
+                            //break;
+                        case "FC":
                             switch (predicate)
                             {
-                                case "NEXT":
-                                    CBT.FlushLogChannelMessageBuffer();
-                                    break;
-                                case "CLEAR":
-                                    CBT.LogChannelMessageBuffer.Clear();
-                                    CBT.AddToLogQueue("Report Message Buffer cleared.", STULogType.INFO);
-                                    break;
-                                case "POWERLEVELS":
-                                    CBT.PopulatePowerLevelReport();
-                                    CBT.AddToLogQueue("Finished gathering power level data. Run 'REPORT NEXT' to view output.", STULogType.OK);
+                                case "MASS":
+                                    CBT.FlightController.UpdateShipMass();
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);

@@ -404,6 +404,9 @@ namespace IngameScript {
 
             public void RelinquishGyroControl() {
                 foreach (var gyro in AllGyroscopes) {
+                    gyro.Pitch = 0;
+                    gyro.Roll = 0;
+                    gyro.Yaw = 0;
                     gyro.GyroOverride = false;
                 }
                 HasGyroControl = false;
