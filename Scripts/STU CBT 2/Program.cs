@@ -360,7 +360,10 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "MASS":
+                                    CBT.AddToLogQueue($"Previous ship mass: {CBT.RemoteControl.CalculateShipMass().PhysicalMass}");
                                     CBT.FlightController.UpdateShipMass();
+                                    CBT.AddToLogQueue($"New ship mass: {CBT.RemoteControl.CalculateShipMass().PhysicalMass}");
+                                    CBT.FlightController.UpdateThrustersAfterGridChange(CBT.Thrusters);
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);
