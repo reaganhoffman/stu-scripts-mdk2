@@ -26,20 +26,23 @@ namespace IngameScript
         
         public class AirlockControlModule
         {
-            
+
+            const double DEFAULT_TIME_BUFFER = 1000f;
             public struct Airlock
             {
                 public IMyDoor SideA { get; set; }
                 public IMyDoor SideB { get; set; }
+                public double TimeBufferMS { get; set; }
                 public AirlockStateMachine StateMachine { get; set; }
             }
             public struct SoloAirlock
             {
                 public IMyDoor Door { get; set; }
+                public double TimeBufferMS { get; set; }
                 public SoloAirlockStateMachine StateMachine { get; set; }
             }
-            private List<Airlock> Airlocks { get; set; } = new List<Airlock>();
-            private List<SoloAirlock> SoloAirlocks { get; set; } = new List<SoloAirlock>();
+            List<Airlock> Airlocks { get; set; } = new List<Airlock>();
+            List<SoloAirlock> SoloAirlocks { get; set; } = new List<SoloAirlock>();
 
             public bool SoloEnabled { get; private set; } = true;
             public bool AirlockEnabled { get; private set; } = true;
@@ -47,51 +50,66 @@ namespace IngameScript
             /// <summary>
             /// Searches through the grid, finds solo doors and airlock pairs and loads them into the script.
             /// </summary>
-            /// <param name="grid"></param>
-            /// <param name="programmableBlock"></param>
+            /// <param name="doors"></param>
             /// <param name="runtime"></param>
-            public void LoadAirlocks(IMyGridTerminalSystem grid, IMyProgrammableBlock programmableBlock, IMyGridProgramRuntimeInfo runtime)
+            public void LoadAirlocks(List<IMyDoor> doors, IMyGridProgramRuntimeInfo runtime)
             {
-                // create a temporary list of all the doors on the grid
-                List<IMyTerminalBlock> allDoors = new List<IMyTerminalBlock>();
-                grid.GetBlocksOfType<IMyDoor>(allDoors, airlock => airlock is IMyDoor && airlock.CubeGrid == programmableBlock.CubeGrid);
-                // extract all the solo airlocks from the temp list by checking whether their custom data contains "solo"
-                for (int i = 0; i < allDoors.Count; i++)
+                // create temp dictionary of door name and the door object for assigning airlock pairs later
+                Dictionary<string, IMyDoor> doorDictionary = new Dictionary<string, IMyDoor>();
+                foreach (var door in doors)
                 {
-                    IMyDoor door = (IMyDoor)allDoors[i];
-                    if (door.CustomData.ToUpper().Contains("SOLO"))
+                    CBT.echo($"Adding door {door.CustomName} to internal dictionary");
+                    doorDictionary.Add(door.CustomName.Trim().ToUpper(), door);
+                }
+
+                List<long> doorsAlreadyAdded = new List<long>();
+                
+                foreach (var door in doors)
+                {
+                    if (doorsAlreadyAdded.Contains(door.EntityId))
+                        continue; // skip this door if we've already made an airlock object out of it
+                    MyIni ini = new MyIni();
+
+                    MyIniParseResult result;
+                    if (!ini.TryParse(door.CustomData, out result))
+                        continue; // this should skip the current block if attempting to parse its custom data fails
+
+
+                    string partner = "SOLO";
+                    double timeBuffer = DEFAULT_TIME_BUFFER;
+                    ini.Get("AIRLOCK", "PARTNER").TryGetString(out partner);
+                    if (ini.ContainsKey("AIRLOCK", "TIME_BUFFER"))
+                        ini.Get("AIRLOCK", "TIME_BUFFER").TryGetDouble(out timeBuffer);
+
+                    CBT.echo($"partner: {partner}");
+                    CBT.echo($"time buffer: {timeBuffer}");
+
+                    if (partner.ToUpper() == "SOLO")
                     {
                         SoloAirlock soloAirlock = new SoloAirlock();
                         soloAirlock.Door = door;
-                        soloAirlock.StateMachine = new SoloAirlockStateMachine(door, runtime);
+                        soloAirlock.TimeBufferMS = timeBuffer;
+                        soloAirlock.StateMachine = new SoloAirlockStateMachine(door, runtime, timeBuffer);
                         SoloAirlocks.Add(soloAirlock);
-                        allDoors.Remove(door);
-                        i--;
+                        doorsAlreadyAdded.Add(door.EntityId);
                     }
-                }
-                // loop through the temp list, // repeat until the temp list is empty.
-                while (allDoors.Count > 0)
-                {
-                    IMyDoor door = (IMyDoor)allDoors[0];
-                    // get the first line of its custom data.
-                    string[] customDataRaw = door.CustomData.Split('\n');
-                    string listedPartner = customDataRaw[0];
-                    // if it has a partner, add both doors to a new Airlock struct and add that to the Airlocks list
-                    if (listedPartner != "")
+                    else if (doorDictionary.ContainsKey(partner.Trim().ToUpper()))
                     {
-                        IMyDoor partner = (IMyDoor)grid.GetBlockWithName(listedPartner);
-                        if (partner != null)
-                        {
-                            Airlock airlock = new Airlock();
-                            airlock.SideA = door;
-                            airlock.SideB = partner;
-                            airlock.StateMachine = new AirlockStateMachine(door, partner, runtime);
-                            Airlocks.Add(airlock);
-                        }
+                        Airlock airlock = new Airlock();
+                        airlock.SideA = door;
+                        IMyDoor partnerDoor;
+                        if (!doorDictionary.TryGetValue(partner.Trim().ToUpper(), out partnerDoor))
+                            throw new Exception();
+                        airlock.SideB = partnerDoor;
+                        airlock.TimeBufferMS = timeBuffer;
+                        airlock.StateMachine = new AirlockStateMachine(door, partnerDoor, runtime, timeBuffer);
+                        Airlocks.Add(airlock);
+
+                        doorsAlreadyAdded.Add(door.EntityId);
+                        doorsAlreadyAdded.Add(partnerDoor.EntityId);
+
                     }
-                    // remove both doors from the temp list
-                    allDoors.Remove(door);
-                    allDoors.Remove((IMyTerminalBlock)grid.GetBlockWithName(listedPartner));
+
                 }
             }
 

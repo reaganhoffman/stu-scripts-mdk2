@@ -16,22 +16,22 @@ namespace IngameScript {
                 }
 
                 public override bool Init() {
-                    Hinge.Torque = CBTRearDock.HINGE_TORQUE;
+                    Hinge.Torque = CBT_VARIABLES.HINGE_TORQUE;
                     return true;
                 }
 
                 public override bool Run() {
-                    Hinge.Torque = CBTRearDock.HINGE_TORQUE;
-                    if (Math.Abs(Hinge.Angle - TargetAngle) < CBTRearDock.HINGE_ANGLE_TOLERANCE) {
+                    Hinge.Torque = CBT_VARIABLES.HINGE_TORQUE;
+                    if (Math.Abs(Hinge.Angle - TargetAngle) < CBT_VARIABLES.HINGE_ANGLE_TOLERANCE) {
                         Hinge.TargetVelocityRPM = 0;
                         return true;
                     } else if (Hinge.Angle < TargetAngle) {
                         Hinge.UpperLimitRad = TargetAngle;
-                        Hinge.TargetVelocityRPM = CBTRearDock.HINGE_TARGET_VELOCITY;
+                        Hinge.TargetVelocityRPM = CBT_VARIABLES.HINGE_TARGET_VELOCITY;
                         return false;
                     } else if (Hinge.Angle > TargetAngle) {
                         Hinge.LowerLimitRad = TargetAngle;
-                        Hinge.TargetVelocityRPM = -CBTRearDock.HINGE_TARGET_VELOCITY;
+                        Hinge.TargetVelocityRPM = -CBT_VARIABLES.HINGE_TARGET_VELOCITY;
                         return false;
                     } else
                         return false;

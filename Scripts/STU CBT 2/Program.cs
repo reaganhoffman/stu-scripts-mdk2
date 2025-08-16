@@ -119,7 +119,6 @@ namespace IngameScript {
                 if (CBT.CruiseControlActivated) { CBT.SetCruiseControl(CBT.CruiseControlSpeed); } // set cruise control only if cruise control is activated.
                 if (CBT.AttitudeControlActivated) {  CBT.LevelToHorizon(); } // attempt to level with the horizon only if attitude control is activated.
                 CBT.Gangway.UpdateGangway(CBT.UserInputGangwayState);
-                CBT.RearDock.UpdateRearDock();
                 CBT.UpdateAutopilotScreens();
                 CBT.UpdateLogScreens();
                 CBT.UpdateManeuverQueueScreens(GatherManeuverQueueData());
@@ -193,6 +192,7 @@ namespace IngameScript {
             CurrentManeuver = null;
             CBT.SetAutopilotControl(false, false, true);
             CBT.CurrentPhase = CBT.Phase.Idle;
+            CBT.FlightController.UpdateShipMass();
         }
 
         public void HandleWirelessMessages() {
@@ -241,7 +241,7 @@ namespace IngameScript {
 
 
         public bool ParseCommand(string arg) {
-            // commands MUST follow the structure "[SUBJECT] [PREDICATE]" OR be special, single-word commands.
+            // commands generally follow the structure "[SUBJECT] [PREDICATE]" OR be special, single-word commands.
             if (CommandLineParser.TryParse(arg)) {
                 if (CommandLineParser.ArgumentCount % 2 != 0 && CommandLineParser.ArgumentCount > 1) // check parity of argument count, but ignore single-word commands.
                 {
@@ -336,6 +336,43 @@ namespace IngameScript {
                             }
                             break;
 
+                        case "TOGGLE":
+                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null)
+                                CBT.PCM.TogglePowerClass(PowerControlModule.GetPowerClassByName(predicate));
+                            switch (predicate)
+                            {
+                                case "AIRLOCK":
+                                    CBT.ACM.ChangeAutomaticControl(!CBT.ACM.SoloEnabled, !CBT.ACM.AirlockEnabled);
+                                    CBT.AddToLogQueue($"Automatic Doors (solos) {BoolConverter(CBT.ACM.SoloEnabled)}");
+                                    CBT.AddToLogQueue($"Automatic Airlocks {BoolConverter(CBT.ACM.AirlockEnabled)}", STULogType.INFO);
+                                    break;
+                            }
+                            break;
+                        case "ENABLE":
+                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null)
+                                CBT.PCM.EnablePowerClass(PowerControlModule.GetPowerClassByName(predicate));
+                            switch (predicate)
+                            {
+                                case "AIRLOCK":
+                                    CBT.ACM.ChangeAutomaticControl(true, true);
+                                    CBT.ACM.CloseAirlocks();
+                                    CBT.ACM.CloseSoloDoors();
+                                    CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.OK);
+                                    break;
+                            }
+                            break;
+                        case "DISABLE":
+                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null) // if 'predicate' cannot be found, GetPowerClassByName returns a new PowerClass, which has null values
+                                CBT.PCM.DisablePowerClass(PowerControlModule.GetPowerClassByName(predicate)); 
+                            switch (predicate)
+                            {
+                                case "AIRLOCK":
+                                    CBT.ACM.ChangeAutomaticControl(false, false);
+                                    CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.WARNING);
+                                    break;
+                            }
+                            break;
+
                         // commenting for space saving reasons
                         //case "REPORT":
                         //    switch (predicate)
@@ -360,9 +397,7 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "MASS":
-                                    CBT.AddToLogQueue($"Previous ship mass: {CBT.RemoteControl.CalculateShipMass().PhysicalMass}");
                                     CBT.FlightController.UpdateShipMass();
-                                    CBT.AddToLogQueue($"New ship mass: {CBT.RemoteControl.CalculateShipMass().PhysicalMass}");
                                     CBT.FlightController.UpdateThrustersAfterGridChange(CBT.Thrusters);
                                     break;
                                 default:
@@ -374,56 +409,11 @@ namespace IngameScript {
                         #endregion
 
                         #region CBT Hardware Commands
-                        case "POWER": // turns on/off various blocks on the grid according to their power level. Each successive level includes all the blocks in lower levels.
-                            int powerLevel;
-                            if (int.TryParse(predicate, out powerLevel))
-                            {
-                                if (0 <= powerLevel && powerLevel <= 7)
-                                {
-                                    CBT.SetPowerLevel(powerLevel);
-                                    break;
-                                }
-                                else
-                                {
-                                    CBT.AddToLogQueue($"Power level {powerLevel} is out of range. Must be between 1 and 7 (inclusive).");
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                PrintParseError(subject, predicate);
-                            }
-                            break;
-
                         case "AIRLOCK":
                             if (float.TryParse(predicate, out predicateAsFloat))
                             {
                                 CBT.ACM.ChangeDuration(predicateAsFloat);
                                 CBT.AddToLogQueue($"Airlock duration: {predicateAsFloat}ms", STULogType.OK);
-                            }
-                            else
-                            {
-                                switch (predicate)
-                                {
-                                    case "ENABLE":
-                                        CBT.ACM.ChangeAutomaticControl(true, true);
-                                        CBT.ACM.CloseAirlocks();
-                                        CBT.ACM.CloseSoloDoors();
-                                        CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.OK);
-                                        break;
-                                    case "DISABLE":
-                                        CBT.ACM.ChangeAutomaticControl(false, false);
-                                        CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.WARNING);
-                                        break;
-                                    case "TOGGLE":
-                                        CBT.ACM.ChangeAutomaticControl(!CBT.ACM.SoloEnabled, !CBT.ACM.AirlockEnabled);
-                                        CBT.AddToLogQueue($"Automatic Doors (solos) {BoolConverter(CBT.ACM.SoloEnabled)}");
-                                        CBT.AddToLogQueue($"Automatic Airlocks {BoolConverter(CBT.ACM.AirlockEnabled)}", STULogType.INFO);
-                                        break;
-                                    default:
-                                        PrintParseError(subject, predicate);
-                                        break;
-                                }
                             }
                             break;
 
@@ -518,35 +508,6 @@ namespace IngameScript {
                                     CBT.UserInputGangwayState = CBTGangway.GangwayStates.Unknown;
                                     CBTGangway.GangwayHinge1.Torque = 0;
                                     CBTGangway.GangwayHinge2.Torque = 0;
-                                    break;
-                                default:
-                                    PrintParseError(subject, predicate);
-                                    break;
-                            }
-                            break;
-                        case "STINGER":
-                            switch (predicate)
-                            {
-                                case "STOW":
-                                    CBT.UserInputRearDockPosition = 0;
-                                    break;
-                                case "RESET":
-                                    CBT.UserInputRearDockPosition = 1;
-                                    break;
-                                case "LHQ":
-                                    CBT.UserInputRearDockPosition = 2;
-                                    break;
-                                case "HEROBRINE":
-                                    CBT.UserInputRearDockPosition = 3;
-                                    break;
-                                case "CLAM":
-                                    CBT.UserInputRearDockPosition = 4;
-                                    break;
-                                case "RELAX":
-                                    CBT.RearDock.CurrentRearDockPhase = CBTRearDock.RearDockStates.Idle;
-                                    CBTRearDock.RearDockHinge1.Torque = 0;
-                                    CBTRearDock.RearDockHinge2.Torque = 0;
-                                    CBTRearDock.RearDockPiston.Velocity = 0;
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);
@@ -667,11 +628,6 @@ namespace IngameScript {
                             break;
 
                         case "LAND":
-                            if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0, 0, 0) || CBT.FlightController.GetCurrentSurfaceAltitude() <= 50) 
-                            { 
-                                CBT.AddToLogQueue("No gravity detected or current altitude too low. Aborting landing sequence.", STULogType.WARNING); 
-                                break; 
-                            }
                             ManeuverQueue.Enqueue(new CBT.ParkManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
                             break;
 

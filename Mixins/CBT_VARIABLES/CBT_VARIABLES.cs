@@ -28,6 +28,13 @@ namespace IngameScript
             public const string CBT_BROADCAST_CHANNEL = "CBT";
             public const string TEA_KEY = "SaladTossersUnited";
 
+            public const float HINGE_ANGLE_TOLERANCE = 0.0077f;
+            public const float HINGE_TARGET_VELOCITY = 4f;
+            public const float HINGE_TORQUE = 7000000;
+            public const float PISTON_POSITION_TOLERANCE = 0.01f;
+            public const float PISTON_TARGET_VELOCITY = 1.7f;
+            public const float PISTON_NEUTRAL_DISTANCE = 4f;
+
             public const double PLANETARY_DETECTION_BUFFER = 2000;
             //public const string PRIVATE_KEY = "";
             //public const string PUBLIC_KEY = "";

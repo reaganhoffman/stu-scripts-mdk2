@@ -65,6 +65,7 @@ namespace IngameScript {
             // just understand that when I reference the GridTerminalSystem property of the CBT class, I am referring to this object and NOT the one in Program.cs
             public static IMyGridTerminalSystem CBTGrid { get; set; }
             public static List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
+            public static IMyFunctionalBlock[] AllFunctionalBlocks { get; set; }
             public static List<CBTLogLCD> LogChannel { get; set; } = new List<CBTLogLCD>();
             public static Queue<string> LogChannelMessageBuffer { get; set; } = new Queue<string>();
             public static List<CBTAutopilotLCD> AutopilotStatusChannel { get; set; } = new List<CBTAutopilotLCD>();
@@ -76,8 +77,8 @@ namespace IngameScript {
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
+            public static PowerControlModule PCM { get; set; }
             public static CBTGangway Gangway { get; set; }
-            public static CBTRearDock RearDock { get; set; }
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
             public static STUInventoryEnumerator InventoryEnumerator { get; set; }
@@ -126,7 +127,7 @@ namespace IngameScript {
             public static IMyUserControllableGun[] Railguns { get; set; }
             public static IMySmallMissileLauncher[] ArtilleryCannons { get; set; }
             
-            public static IMyLandingGear[] HangarMagPlates { get; set; }
+            public static IMyLandingGear[] HangarMagPlate { get; set; }
             public static IMyRadioAntenna Antenna { get; set; }
             public static IMyCockpit[] OfficerControlSeats { get; set; }
             public static IMyAssembler Assembler { get; set; }
@@ -147,17 +148,18 @@ namespace IngameScript {
                 Executing,
             }
 
-            public static Dictionary<int, List<IMyFunctionalBlock>> PowerClasses = new Dictionary<int, List<IMyFunctionalBlock>>()
-            {
-                // { 0, new List<IMyFunctionalBlock> { } },
-                { 1, new List<IMyFunctionalBlock> { } },
-                { 2, new List<IMyFunctionalBlock> { } },
-                { 3, new List<IMyFunctionalBlock> { } },
-                { 4, new List<IMyFunctionalBlock> { } },
-                { 5, new List<IMyFunctionalBlock> { } },
-                { 6, new List<IMyFunctionalBlock> { } },
-                { 7, new List<IMyFunctionalBlock> { } },
-            };
+            // commenting because I don't think I need this anymore
+            //public static Dictionary<int, List<IMyFunctionalBlock>> PowerClasses = new Dictionary<int, List<IMyFunctionalBlock>>()
+            //{
+            //    // { 0, new List<IMyFunctionalBlock> { } },
+            //    { 1, new List<IMyFunctionalBlock> { } },
+            //    { 2, new List<IMyFunctionalBlock> { } },
+            //    { 3, new List<IMyFunctionalBlock> { } },
+            //    { 4, new List<IMyFunctionalBlock> { } },
+            //    { 5, new List<IMyFunctionalBlock> { } },
+            //    { 6, new List<IMyFunctionalBlock> { } },
+            //    { 7, new List<IMyFunctionalBlock> { } },
+            //};
 
             // CBT object constructor
             public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
@@ -180,7 +182,7 @@ namespace IngameScript {
                 AddStatusScreens(grid);
                 AddBottomCameraScreens(grid);
 
-                // power level 0 (flight critical, negligible or intermittent power draw)
+                
                 Batteries = LoadAllBlocksOfType<IMyBatteryBlock>();
                 HydrogenEngines = LoadAllBlocksOfTypeWithSubtypeId<IMyPowerProducer>("HydrogenEngine");
                 MergeBlock = LoadBlockByName<IMyShipMergeBlock>("CBT Merge Block");
@@ -194,23 +196,17 @@ namespace IngameScript {
                     Connector.PullStrength = 0;
                 CryoPods = LoadAllBlocksOfType<IMyCryoChamber>();
                 LandingGear = LoadAllBlocksOfType<IMyLandingGear>();
-                HangarMagPlates = LoadAllBlocksOfTypeWithSubtypeId<IMyLandingGear>("MagneticPlate");
-                StingerLockRotor = LoadBlockByName<IMyMotorStator>("Stinger Lock Rotor");
+                HangarMagPlate = LoadAllBlocksOfTypeWithSubtypeId<IMyLandingGear>("MagneticPlate");
 
-                // power level 1
+                
                 LoadGatlingGuns(grid); // keeping this one as is...
                 OfficerControlSeats = LoadAllBlocksOfTypeWithSubtypeId<IMyCockpit>("Module");
-                StingerLock = LoadBlockByName<IMyLandingGear>("Stinger Lock");
                 HydrogenTanks = LoadAllBlocksOfTypeWithDetailedInfo<IMyGasTank>("Hydrogen");
                 RemoteControl = LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
                 FlightSeat = LoadBlockByName<IMyTerminalBlock>("CBT Flight Seat");
                 ButtonPanels = LoadAllBlocksOfType<IMyButtonPanel>();
 
-                // power level 2
-                RearHinge1 = LoadBlockByName<IMyMotorStator>("CBT Rear Hinge 1");
-                RearHinge2 = LoadBlockByName<IMyMotorStator>("CBT Rear Hinge 2");
-                RearPiston = LoadBlockByName<IMyPistonBase>("CBT Rear Piston");
-                    RearDock = new CBTRearDock(ManeuverQueue, RearPiston, RearHinge1, RearHinge2, Connector);
+                
                 GangwayHinge1 = LoadBlockByName<IMyMotorStator>("CBT Gangway Hinge 1");
                 GangwayHinge2 = LoadBlockByName<IMyMotorStator>("CBT Gangway Hinge 2");
                     GangwayHinge1.TargetVelocityRPM = 0;
@@ -219,7 +215,7 @@ namespace IngameScript {
                 HangarRotor = LoadBlockByName<IMyMotorStator>("CBT Ramp Rotor");
                 Doors = LoadAllBlocksOfType<IMyDoor>();
 
-                // power level 3
+                
                 LandingLights = LoadAllBlocksOfTypeWithCustomData<IMyInteriorLight>("LandingLight");
                 DownwardSpotlights = LoadAllBlocksOfTypeWithCustomData<IMyReflectorLight>("DownwardSpotlight");
                 Headlights = LoadAllBlocksOfTypeWithCustomData<IMyReflectorLight>("Headlight");
@@ -229,32 +225,47 @@ namespace IngameScript {
                 CameraHinge = LoadBlockByName<IMyMotorStator>("CBT Camera Hinge");
                 Camera = LoadBlockByName<IMyCameraBlock>("CBT Bottom Camera");
 
-                // power level 4
+                
                 Antenna = LoadBlockByName<IMyRadioAntenna>("CBT Antenna");
                 H2O2Generators = LoadAllBlocksOfType<IMyGasGenerator>();
                 AirVents = LoadAllBlocksOfType<IMyAirVent>();
 
-                // power level 5
+                
                 AssaultCannons = LoadAllBlocksOfTypeWithSubtypeId<IMyUserControllableGun>("LargeBlockMediumCalibreTurret");
                 Railguns = LoadAllBlocksOfTypeWithSubtypeId<IMyUserControllableGun>("LargeRailgun");
                 ArtilleryCannons = LoadAllBlocksOfTypeWithSubtypeId<IMySmallMissileLauncher>("LargeBlockLargeCalibreGun");
 
-                // power level 6
+                
                 Refinery = LoadBlockByName<IMyRefinery>("CBT Refinery");
                 Assembler = LoadBlockByName<IMyAssembler>("CBT Assembler");
 
-                // power level 7
+                
                 Sensors = LoadAllBlocksOfType<IMySensorBlock>();
                 OreDetector = LoadBlockByName<IMyOreDetector>("CBT Ore Detector");
 
-                SetPowerLevel(7);
-
+                // instantiate flight controller
+                AddToLogQueue("Initializing FC");
                 FlightController = new STUFlightController(grid, RemoteControl, me);
+                AddToLogQueue("FC Initialized", STULogType.OK);
 
+                // instantiate docking module
+                AddToLogQueue("Initializing Docking Module");
                 DockingModule = new CBTDockingModule();
-                ACM = new AirlockControlModule();
-                ACM.LoadAirlocks(grid, me, runtime);
+                AddToLogQueue("Docking Module Initialized", STULogType.OK);
 
+                // instantiate airlock control module
+                AddToLogQueue("Initializing ACM");
+                ACM = new AirlockControlModule();
+                ACM.LoadAirlocks(Doors.ToList(), runtime);
+                AddToLogQueue("ACM Initialized", STULogType.OK);
+
+                // instantiate power control module
+                AddToLogQueue("Initializing PCM");
+                AllFunctionalBlocks = LoadAllBlocksOfType<IMyFunctionalBlock>();
+                PCM = new PowerControlModule(AllFunctionalBlocks.ToList());
+                AddToLogQueue("PCM Initialized", STULogType.OK);
+
+                // ensure initial state of certain blocks
                 Connector.Enabled = true;
                 Connector.IsParkingEnabled = false;
                 Connector.PullStrength = 0;
@@ -263,15 +274,7 @@ namespace IngameScript {
             }
 
             #region High-Level Software Control Methods
-            //public static void EchoPassthru(string text) {
-            //    echo(text);
-            //}
-
-            // define the broadcaster method so that display messages can be sent throughout the world
-            // (currently not implemented, just keeping this code here for future use)
             public static void CreateBroadcast(string message, bool encrypt = false, STULogType type = STULogType.INFO) {
-                // had some abandoned encryption logic here
-
                 Broadcaster.Log(new STULog {
                     Sender = CBT_VARIABLES.CBT_VEHICLE_NAME,
                     Message = message,
@@ -292,46 +295,7 @@ namespace IngameScript {
                 }
             }
 
-            public static void SetPowerLevel(int powerLevel) {
-                AddToLogQueue($"Setting Power Level to PL-{powerLevel}");
-                PowerLevel = powerLevel;
-                List<IMyFunctionalBlock> allFunctionalBlocks = new List<IMyFunctionalBlock>();
-                CBTGrid.GetBlocksOfType<IMyFunctionalBlock>(allFunctionalBlocks);
-                foreach (var block in allFunctionalBlocks)
-                {
-                    int powerClassOfBlock = GetPowerClassOfBlock(block);
-                    if (powerClassOfBlock < 0 ) continue; // don't interact at all with blocks that don't have a defined power class
-                    else if (powerClassOfBlock <= powerLevel) 
-                    {
-                        block.Enabled = true; 
-                    }
-                    else 
-                    { 
-                        if (powerLevel < 1 && (FlightController.HasGyroControl || FlightController.HasThrusterControl))
-                        {
-                            AddToLogQueue("FLIGHT CONTROLLER IS ACTIVE! Aborting...", STULogType.WARNING);
-                            return;
-                        }
-                        block.Enabled = false; 
-                    }
-                }
-            }
 
-            public static int GetPowerClassOfBlock(IMyTerminalBlock block)
-            {
-                int powerLevel;
-                string[] customDataRawLines = block.CustomData.Split('\n');
-                foreach (var line in customDataRawLines)
-                {
-                    if (line.Equals("")) { continue; }
-                    else if (line.Contains("PL"))
-                    {
-                        if (int.TryParse(line.Substring(2), out powerLevel)) { return powerLevel; }
-                        else continue;
-                    }
-                }
-                return -1;
-            }
             #endregion
 
             #region Screen Update Methods
@@ -841,7 +805,6 @@ namespace IngameScript {
                     {
                         Id = block.EntityId,
                         Name = block.CustomName,
-                        PowerLevel = GetPowerClassOfBlock(block),
                     });
                 }
 

@@ -29,7 +29,6 @@ namespace IngameScript
             public string TOLStatus { get; set; }
             string GangwayStatus { get; set; }
             string RampStatus { get; set; }
-            string StingerStatus { get; set; }
             string CCStatus { get; set; }
             string ATTStatus { get; set; }
             public CBTBottomCameraLCD(CBT cbtObject, Action<string> echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
@@ -61,7 +60,6 @@ namespace IngameScript
                 {
                     RampStatus = "CLOSED";
                 }
-                StingerStatus = CBTRearDock.KnownPorts[CBTRearDock.DesiredPosition].Name.ToString();
                 CCStatus = CBT.CruiseControlSpeed.ToString();
                 if (!CBT.CruiseControlActivated) CCStatus = "OFF";
                 ATTStatus = BoolConverter(CBT.AttitudeControlActivated);
@@ -89,9 +87,8 @@ namespace IngameScript
                 frame.Add(BuildTextSprite($"{TOLStatus}", 0, CharHeight * 7, cl));
                 frame.Add(BuildTextSprite($"GANGWAY: {GangwayStatus}", 0, 0, cl));
                 frame.Add(BuildTextSprite($"RAMP: {RampStatus}", 0, CharHeight, cl));
-                frame.Add(BuildTextSprite($"STINGER: {StingerStatus}", 0, CharHeight * 2, cl));
-                frame.Add(BuildTextSprite($"CC: {CCStatus}", 0, CharHeight * 4, cl));
-                frame.Add(BuildTextSprite($"ATT: {ATTStatus}", 0, CharHeight * 5, cl));
+                frame.Add(BuildTextSprite($"CC: {CCStatus}", 0, CharHeight * 3, cl));
+                frame.Add(BuildTextSprite($"ATT: {ATTStatus}", 0, CharHeight * 4, cl));
             }
         }
     }

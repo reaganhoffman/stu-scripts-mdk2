@@ -124,19 +124,6 @@ namespace IngameScript {
                 }
             }
 
-            public Color GetStingerStatusColor()
-            {
-                if (!CBT.Connector.IsFunctional) return Color.Red;
-                if (CBT.StingerLock.IsLocked) return Color.Green;
-                switch (CBT.MergeBlock.State)
-                {
-                    case MergeState.None: return new Color(64, 64, 64);
-                    case MergeState.Working: return Color.Yellow;
-                    case MergeState.Locked: return Color.Green;
-                    default: return Color.Black;
-                }
-            }
-
             public Color GetRadioTransmissionStatusColor()
             {
                 switch (CBT.Antenna.IsWorking)
@@ -250,7 +237,6 @@ namespace IngameScript {
                 frame.Add(BuildTextSprite($"GWAY:{GetGangwayStatusString()}", 0, CharHeight, GetGangwayStatusColor()));
                 frame.Add(BuildTextSprite($"RAMP:{GetRampStatusString()}", ScreenWidth / 2 + 1, CharHeight, GetRampStatusColor()));
                 frame.Add(BuildTextSprite("GGEN", 0, CharHeight * 2, GetGravityGeneratorStatusColor()));
-                frame.Add(BuildTextSprite("STINGR", ScreenWidth / 2 + 1, CharHeight * 2, GetStingerStatusColor()));
                 frame.Add(BuildTextSprite("TX/RX", 0, CharHeight * 3, GetRadioTransmissionStatusColor()));
                 frame.Add(BuildTextSprite("VENTS", ScreenWidth / 2 + 1, CharHeight * 3, GetVentsStatusColor()));
                 frame.Add(BuildTextSprite($"H2:{GetHydrogenStatusString()}", 0, CharHeight * 4, GetHydrogenStatusColor()));

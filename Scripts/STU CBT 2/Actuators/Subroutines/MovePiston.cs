@@ -21,16 +21,16 @@ namespace IngameScript {
                 }
 
                 public override bool Run() {
-                    if (Math.Abs(RearDockPiston.CurrentPosition - TargetDistance) < CBTRearDock.PISTON_POSITION_TOLERANCE) {
+                    if (Math.Abs(RearDockPiston.CurrentPosition - TargetDistance) < CBT_VARIABLES.PISTON_POSITION_TOLERANCE) {
                         RearDockPiston.Velocity = 0;
                         return true;
                     } else if (RearDockPiston.CurrentPosition < TargetDistance) {
                         RearDockPiston.MaxLimit = TargetDistance;
-                        RearDockPiston.Velocity = CBTRearDock.PISTON_TARGET_VELOCITY;
+                        RearDockPiston.Velocity = CBT_VARIABLES.PISTON_TARGET_VELOCITY;
                         return false;
                     } else if (RearDockPiston.CurrentPosition > TargetDistance) {
                         RearDockPiston.MinLimit = TargetDistance;
-                        RearDockPiston.Velocity = -CBTRearDock.PISTON_TARGET_VELOCITY;
+                        RearDockPiston.Velocity = -CBT_VARIABLES.PISTON_TARGET_VELOCITY;
                         return false;
                     } else
                         return false;

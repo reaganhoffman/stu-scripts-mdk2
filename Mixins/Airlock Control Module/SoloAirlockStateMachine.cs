@@ -35,12 +35,13 @@ namespace IngameScript
             private IMyDoor Door { get; set; }
             private IMyGridProgramRuntimeInfo Runtime { get; set; }
 
-            public double TimeBufferMS = 1000f;
+            public double TimeBufferMS { get; set; }
 
-            public SoloAirlockStateMachine(IMyDoor door, IMyGridProgramRuntimeInfo runtime)
+            public SoloAirlockStateMachine(IMyDoor door, IMyGridProgramRuntimeInfo runtime, double timeBufferMS = 1000f)
             {
                 Door = door;
                 Runtime = runtime;
+                TimeBufferMS = timeBufferMS;
             }
 
             private double CurrentTime = 0f;

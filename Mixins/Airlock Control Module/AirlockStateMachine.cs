@@ -42,13 +42,14 @@ namespace IngameScript
             private IMyDoor DoorB { get; set; }
             private IMyGridProgramRuntimeInfo Runtime { get; set; }
 
-            public double TimeBufferMS = 1000f;
+            public double TimeBufferMS { get; set; }
 
-            public AirlockStateMachine(IMyDoor doorA, IMyDoor doorB, IMyGridProgramRuntimeInfo runtime)
+            public AirlockStateMachine(IMyDoor doorA, IMyDoor doorB, IMyGridProgramRuntimeInfo runtime, double timeBufferMS = 1000f)
             {
                 DoorA = doorA;
                 DoorB = doorB;
                 Runtime = runtime;
+                TimeBufferMS = timeBufferMS;
             }
 
             private double CurrentTime = 0f;

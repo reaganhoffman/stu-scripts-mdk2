@@ -74,7 +74,7 @@ namespace IngameScript
                         ResetUserInputVelocities();
                         CancelCruiseControl();
                         
-                        foreach (var mp in HangarMagPlates) { mp.Enabled = true; } // lock hangar mag plates
+                        foreach (var mp in HangarMagPlate) { mp.Enabled = true; } // lock hangar mag plates
                         foreach (var bat in Batteries) { bat.ChargeMode = ChargeMode.Auto; } // set batteries to auto
                         foreach (var tank in HydrogenTanks) { tank.Stockpile = false; } // disable stockpiling for hydro tanks
                         foreach (var thruster in Thrusters) { thruster.Enabled = true; } // turn on thrusters
