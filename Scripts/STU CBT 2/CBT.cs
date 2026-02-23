@@ -3,7 +3,9 @@ using Sandbox.Game.Screens;
 using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Management.Instrumentation;
 using System.Runtime.CompilerServices;
@@ -11,7 +13,9 @@ using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-using VRage.Game.ModAPI.Ingame;
+using VRage.Game.ModAPI.Ingame.Utilities;
+using VRage.Game.ObjectBuilders.VisualScripting;
+using VRage.Game.VisualScripting;
 using VRageMath;
 
 namespace IngameScript {
@@ -54,17 +58,9 @@ namespace IngameScript {
             public static float AltitudeControlHeight { get; private set; } = 0f;
             public static bool ShipIsLevel { get; private set; } = false;
 
-            //public static Vector3D NextWaypoint;
-
-            /// <summary>
-            ///  prepare the program by declaring all the different blocks we are going to use
-            /// </summary>
-            // this may be potentially confusing, but "GridTerminalSystem" as it is commonly used in Program.cs to get blocks from the grid
-            // does not exist in this namespace. Therefore, we are creating a new GridTerminalSystem object here to use in this class.
-            // I could have named it whatever, e.g. "CBTGrid" but I don't want to have too many different names for the same thing.
-            // just understand that when I reference the GridTerminalSystem property of the CBT class, I am referring to this object and NOT the one in Program.cs
+            // prepare the program by declaring all the different blocks we are going to use
             public static IMyGridTerminalSystem CBTGrid { get; set; }
-            public static List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
+            public static IMyTerminalBlock[] AllTerminalBlocks { get; set; }
             public static IMyFunctionalBlock[] AllFunctionalBlocks { get; set; }
             public static List<CBTLogLCD> LogChannel { get; set; } = new List<CBTLogLCD>();
             public static Queue<string> LogChannelMessageBuffer { get; set; } = new Queue<string>();
@@ -140,28 +136,11 @@ namespace IngameScript {
 
             public static bool LandingGearState { get; set; }
 
-
-            // define phases for the main state machine
-            // the one that will be used in conjunction with the ManeuverQueue
             public enum Phase {
                 Idle,
                 Executing,
             }
 
-            // commenting because I don't think I need this anymore
-            //public static Dictionary<int, List<IMyFunctionalBlock>> PowerClasses = new Dictionary<int, List<IMyFunctionalBlock>>()
-            //{
-            //    // { 0, new List<IMyFunctionalBlock> { } },
-            //    { 1, new List<IMyFunctionalBlock> { } },
-            //    { 2, new List<IMyFunctionalBlock> { } },
-            //    { 3, new List<IMyFunctionalBlock> { } },
-            //    { 4, new List<IMyFunctionalBlock> { } },
-            //    { 5, new List<IMyFunctionalBlock> { } },
-            //    { 6, new List<IMyFunctionalBlock> { } },
-            //    { 7, new List<IMyFunctionalBlock> { } },
-            //};
-
-            // CBT object constructor
             public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
                 ManeuverQueue = thisManeuverQueue;
                 Me = me;
@@ -171,18 +150,16 @@ namespace IngameScript {
                 CBTGrid = grid;
                 echo = Echo;
                 ThisCBT = this;
-                
 
+
+                AllTerminalBlocks = LoadAllBlocksOfType<IMyTerminalBlock>();
+                AllFunctionalBlocks = LoadAllBlocksOfType<IMyFunctionalBlock>();
+
+                
+                PopulateScreenSubscribers();
                 AddToLogQueue("INITIALIZING...");
-                // overhead
-                AddLogSubscribers(grid);
-                AddAutopilotIndicatorSubscribers(grid);
-                AddManeuverQueueSubscribers(grid);
-                AddAmmoScreens(grid);
-                AddStatusScreens(grid);
-                AddBottomCameraScreens(grid);
 
-                
+
                 Batteries = LoadAllBlocksOfType<IMyBatteryBlock>();
                 HydrogenEngines = LoadAllBlocksOfTypeWithSubtypeId<IMyPowerProducer>("HydrogenEngine");
                 MergeBlock = LoadBlockByName<IMyShipMergeBlock>("CBT Merge Block");
@@ -261,7 +238,6 @@ namespace IngameScript {
 
                 // instantiate power control module
                 AddToLogQueue("Initializing PCM");
-                AllFunctionalBlocks = LoadAllBlocksOfType<IMyFunctionalBlock>();
                 PCM = new PowerControlModule(AllFunctionalBlocks.ToList());
                 AddToLogQueue("PCM Initialized", STULogType.OK);
 
@@ -372,132 +348,81 @@ namespace IngameScript {
 
             #region Hardware Initialization
             #region Screens
-            private static void AddLogSubscribers(IMyGridTerminalSystem grid) {
-                grid.GetBlocks(AllTerminalBlocks);
-                foreach (var block in AllTerminalBlocks) {
-                    string[] CustomDataLines = block.CustomData.Split('\n');
-                    foreach (var line in CustomDataLines) {
-                        if (line.Contains("CBT_LOG")) {
-                            string[] kvp = line.Split(':');
-                            // adjust font size based on what screen we're trying to initalize
-                            float fontSize;
-                            try {
-                                fontSize = float.Parse(kvp[2]);
-                                if (fontSize < 0.1f || fontSize > 10f) {
-                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
-                                }
-                            } catch (Exception) {
-                                fontSize = 0.5f;
-                            }
-                            CBTLogLCD screen = new CBTLogLCD(echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
-                            LogChannel.Add(screen);
-                        }
-                    }
-                }
-            }
-            private static void AddAutopilotIndicatorSubscribers(IMyGridTerminalSystem grid) {
-                grid.GetBlocks(AllTerminalBlocks);
-                foreach (var block in AllTerminalBlocks) {
-                    string[] CustomDataLines = block.CustomData.Split('\n');
-                    foreach (var line in CustomDataLines) {
-                        if (line.Contains("CBT_AUTOPILOT")) {
-                            string[] kvp = line.Split(':');
-                            CBTAutopilotLCD screen = new CBTAutopilotLCD(echo, block, int.Parse(kvp[1]));
-                            AutopilotStatusChannel.Add(screen);
-                        }
-                    }
-                }
-            }
-            private static void AddManeuverQueueSubscribers(IMyGridTerminalSystem grid) {
-                grid.GetBlocks(AllTerminalBlocks);
-                foreach (var block in AllTerminalBlocks) {
-                    string[] CustomDataLines = block.CustomData.Split('\n');
-                    foreach (var line in CustomDataLines) {
-                        if (line.Contains("CBT_MANEUVER_QUEUE")) {
-                            string[] kvp = line.Split(':');
-                            CBTManeuverQueueLCD screen = new CBTManeuverQueueLCD(echo, block, int.Parse(kvp[1]));
-                            ManeuverQueueChannel.Add(screen);
-                        }
-                    }
-                }
-            }
-            private static void AddAmmoScreens(IMyGridTerminalSystem grid) {
-                grid.GetBlocks(AllTerminalBlocks);
-                foreach (var block in AllTerminalBlocks) {
-                    string[] CustomDataLines = block.CustomData.Split('\n');
-                    foreach (var line in CustomDataLines) {
-                        if (line.Contains("CBT_AMMO")) {
-                            string[] kvp = line.Split(':');
-                            CBTAmmoLCD screen = new CBTAmmoLCD(echo, block, int.Parse(kvp[1]));
-                            AmmoChannel.Add(screen);
-                        }
-                    }
-                }
-            }
-            private static void AddStatusScreens(IMyGridTerminalSystem grid)
+            private static void PopulateScreenSubscribers()
             {
-                grid.GetBlocks(AllTerminalBlocks);
                 foreach (var block in AllTerminalBlocks)
                 {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
-                    foreach (var line in CustomDataLines)
+                    MyIni ini = new MyIni();
+                    MyIniParseResult result;
+                    if (!ini.TryParse(block.CustomData, out result))
                     {
-                        if (line.Contains("CBT_STATUS"))
-                        {
-                            string[] kvp = line.Split(':');
+                        // if there is no text in the custom data, the TryParse will return false (?), so skip to the next block
+                        continue;
+                    }
+                    List<string> sections = new List<string>();
+                    ini.GetSections(sections);
+                    foreach(var section in sections)
+                    {
+                        if (section == "SCREEN") {
+                            string screenConfig;
+                            string channel;
                             float fontSize;
-                            try
+                            List<MyIniKey> keys = new List<MyIniKey>();
+                            ini.GetKeys(section, keys);
+                            foreach (var key in keys)
                             {
-                                fontSize = float.Parse(kvp[2]);
-                                if (fontSize < 0.1f || fontSize > 10f)
+                                try
                                 {
-                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
+                                    screenConfig = ini.Get(key).ToString();
+                                    // fill in default font size if not provided
+                                    if (!screenConfig.Contains(","))
+                                        screenConfig += ",1";
+                                    channel = screenConfig.Substring(0, screenConfig.IndexOf(','));
+                                    fontSize = 1;
+                                    float.TryParse(screenConfig.Substring(screenConfig.IndexOf(',') + 1), out fontSize);
+                                    int screenIndex = 0;
+                                    int.TryParse(key.ToString().Substring(key.ToString().IndexOf('/') + 1), out screenIndex);
+                                    AssignScreenToChannel(screenIndex, channel, fontSize, block);
+                                }
+                                catch (Exception e)
+                                {
+                                    echo($"parsing screenConfig or AssignScreenToChannel() failed on block {block.CustomName}:\n{e.Message}");
+                                    continue;
                                 }
                             }
-                            catch (Exception)
-                            {
-                                fontSize = 0.5f;
-                            }
-                            CBTStatusLCD screen = new CBTStatusLCD(echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
-                            StatusChannel.Add(screen);
                         }
                     }
                 }
             }
 
-            private static void AddBottomCameraScreens(IMyGridTerminalSystem grid)
+            private static void AssignScreenToChannel(int screenIndex, string channel, float fontSize, IMyTerminalBlock block)
             {
-                grid.GetBlocks(AllTerminalBlocks);
-                foreach (var block in AllTerminalBlocks)
+                //echo($"attempting to add block {block.CustomName} to channel {channel} with font size {fontSize}. custom data:\n{block.CustomData}");
+                switch (channel)
                 {
-                    string CustomDataRawText = block.CustomData;
-                    string[] CustomDataLines = CustomDataRawText.Split('\n');
-                    foreach (var line in CustomDataLines)
-                    {
-                        if (line.Contains("CBT_BOTTOM_CAMERA"))
-                        {
-                            string[] kvp = line.Split(':');
-                            float fontSize;
-                            try
-                            {
-                                fontSize = float.Parse(kvp[2]);
-                                if (fontSize < 0.1f || fontSize > 10f)
-                                {
-                                    throw new Exception(); // used to say "Invalid font size", but I think I gotta trim it for character-limit reasons
-                                }
-                            }
-                            catch (Exception)
-                            {
-                                fontSize = 0.5f;
-                            }
-                            CBTBottomCameraLCD screen = new CBTBottomCameraLCD(ThisCBT, echo, block, int.Parse(kvp[1]), "Monospace", fontSize);
-                            BottomCameraChannel.Add(screen);
-                        }
-                    }
+                    case "LOG":
+                        LogChannel.Add(new CBTLogLCD(echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "AUTOPILOT":
+                        AutopilotStatusChannel.Add(new CBTAutopilotLCD(echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "MANEUVER":
+                        ManeuverQueueChannel.Add(new CBTManeuverQueueLCD(echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "AMMO":
+                        AmmoChannel.Add(new CBTAmmoLCD(echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "STATUS":
+                        StatusChannel.Add(new CBTStatusLCD(echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "BOTTOM":
+                        BottomCameraChannel.Add(new CBTBottomCameraLCD(ThisCBT, echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    default:
+                        return;
                 }
             }
-
+            
             public void PushTOLStatusToBottomCameraScreens(string status)
             {
                 foreach (var item in BottomCameraChannel)
@@ -511,7 +436,7 @@ namespace IngameScript {
             public static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
-                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid);
+                CBTGrid.GetBlocksOfType(intermediateList); // removed block => block.CubeGrid == Me.CubeGrid so the bottom camera LCDs should get recognized
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }

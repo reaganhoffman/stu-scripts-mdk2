@@ -58,7 +58,6 @@ namespace IngameScript
                 Dictionary<string, IMyDoor> doorDictionary = new Dictionary<string, IMyDoor>();
                 foreach (var door in doors)
                 {
-                    CBT.echo($"Adding door {door.CustomName} to internal dictionary");
                     doorDictionary.Add(door.CustomName.Trim().ToUpper(), door);
                 }
 
@@ -80,9 +79,6 @@ namespace IngameScript
                     ini.Get("AIRLOCK", "PARTNER").TryGetString(out partner);
                     if (ini.ContainsKey("AIRLOCK", "TIME_BUFFER"))
                         ini.Get("AIRLOCK", "TIME_BUFFER").TryGetDouble(out timeBuffer);
-
-                    CBT.echo($"partner: {partner}");
-                    CBT.echo($"time buffer: {timeBuffer}");
 
                     if (partner.ToUpper() == "SOLO")
                     {

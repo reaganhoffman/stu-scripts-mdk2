@@ -100,7 +100,6 @@ namespace IngameScript {
                                 CBT.CurrentPhase = CBT.Phase.Executing;
                             } catch {
                                 CBT.AddToLogQueue("Could not pull maneuver from queue, despite the queue's count being greater than zero. Something is wrong, halting program...", STULogType.ERROR);
-                                CBT.CreateBroadcast("MAYDAY MAYDAY MAYDAY", false, STULogType.ERROR);
                                 Runtime.UpdateFrequency = UpdateFrequency.None;
                             }
                         }
@@ -359,6 +358,9 @@ namespace IngameScript {
                                     CBT.ACM.CloseSoloDoors();
                                     CBT.AddToLogQueue("Automatic Airlocks ENABLED", STULogType.OK);
                                     break;
+                                case "ENGINES":
+                                    foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = true; }
+                                    break;
                             }
                             break;
                         case "DISABLE":
@@ -369,6 +371,33 @@ namespace IngameScript {
                                 case "AIRLOCK":
                                     CBT.ACM.ChangeAutomaticControl(false, false);
                                     CBT.AddToLogQueue("Automatic Airlocks DISABLED", STULogType.WARNING);
+                                    break;
+                                case "ENGINES":
+                                    foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = false; }
+                                    break;
+                                default:
+                                    PrintParseError(subject, predicate);
+                                    break;
+                            }
+                            break;
+
+                        case "POWER":
+                            switch (predicate)
+                            {
+                                case "LOW":
+                                    CBT.PCM.GoToLowPowerMode();
+                                    break;
+                                case "RESUME":
+                                    CBT.PCM.RestoreFromLowPowerMode();
+                                    break;
+                                case "ALL":
+                                    foreach (var @class in PowerControlModule.PowerClasses)
+                                    {
+                                        CBT.PCM.EnablePowerClass(@class);
+                                    }
+                                    break;
+                                default:
+                                    PrintParseError(subject, predicate);
                                     break;
                             }
                             break;
@@ -425,21 +454,6 @@ namespace IngameScript {
                                     break;
                                 case "UNLOCK":
                                     CBT.SetLandingGear(false);
-                                    break;
-                                default:
-                                    PrintParseError(subject, predicate);
-                                    break;
-                            }
-                            break;
-
-                        case "ENGINES":
-                            switch (predicate)
-                            {
-                                case "ON":
-                                    foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = true; }
-                                    break;
-                                case "OFF":
-                                    foreach (var engine in CBT.HydrogenEngines) { engine.Enabled = false; }
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);

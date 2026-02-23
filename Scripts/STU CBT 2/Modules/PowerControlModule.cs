@@ -93,7 +93,7 @@ namespace IngameScript
                 }
             }
 
-            public void RestoreFromLowPowerMode(List<IMyFunctionalBlock> blocks)
+            public void RestoreFromLowPowerMode()
             {
                 foreach (var @class in PowerClassesBeforeLowPowerMode)
                 {
