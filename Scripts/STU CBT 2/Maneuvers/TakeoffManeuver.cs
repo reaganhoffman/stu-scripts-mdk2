@@ -23,7 +23,7 @@ namespace IngameScript
                     AscendToTakeoffHeight,
                     HandoffToPilot
                 }
-                public TakeoffPhases InternalState { get; set; }
+                public TakeoffPhases TakeoffPhase { get; set; }
                 public double InitialAltitude { get; set; }
                 public bool ReadyForHandoff { get; private set; } = false;
                 private bool AskedForConfirmationAlready { get; set; } = false;
@@ -80,6 +80,7 @@ namespace IngameScript
                         foreach (var thruster in Thrusters) { thruster.Enabled = true; } // turn on thrusters
                         foreach (var gyro in Gyros) { gyro.Enabled = true; } // turn on gyros
                         PilotConfirmation = false;
+                        AskedForConfirmationAlready = false;
                         return true;
                     }
                     else return false;
@@ -87,51 +88,51 @@ namespace IngameScript
 
                 public override bool Run()
                 {
-                    switch (InternalState)
+                    switch (TakeoffPhase)
                     {
                         case TakeoffPhases.HardwareActuatorPrep:
                             Connector.Disconnect(); // disconnect rear connector
-                            Gangway.ResetGangway(); // retract gangway
+                            Gangway.UpdateGangway(CBTGangway.GangwayStates.Retracting); // ask the Gangway Controller to retract gangway
                             SetLandingGear(false); // disengage landing gear
                             HangarRotor.TargetVelocityRPM = Math.Abs(HangarRotor.TargetVelocityRPM) * -1; // close hangar ramp, ensuring its velocity is negative
-                            UserInputRearDockPosition = 0; // tell the stinger actuator state machine to stow the stinger
-
-                            StingerLock.Lock();
-                            if (StingerLock.IsLocked) InternalState = TakeoffPhases.AscendToTakeoffHeight; // only proceed once the stinger is locked in place
-
+                            TakeoffPhase = TakeoffPhases.AscendToTakeoffHeight; // now we're ready to takeoff
                             break;
                         case TakeoffPhases.AscendToTakeoffHeight:
                             ThisCBT.PushTOLStatusToBottomCameraScreens("TAKING OFF...");
                             double x = FlightController.GetCurrentSurfaceAltitude() - InitialAltitude;
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
-                            if (FlightController.MaintainSurfaceAltitude(InitialAltitude + 50, ascendVelocity, 1)) { InternalState = TakeoffPhases.HandoffToPilot; }
+                            if (FlightController.MaintainSurfaceAltitude(InitialAltitude + 50, ascendVelocity, 1)) { TakeoffPhase = TakeoffPhases.HandoffToPilot; }
                             break;
                         case TakeoffPhases.HandoffToPilot:
                             LevelToHorizon();
-                            StingerLock.Lock();
-                            if (StingerLock.IsLocked) // hand off control once the stinger is actually locked
-                            {
-                                ReadyForHandoff = true;
-                                ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM FLIGHT");
-                                AddToLogQueue("Takeoff sequence Complete. Ready to fly.", STULogType.OK);
-                                return true;
-                            }
-                            return false;
-                            
+                            return true;
                     }
                     return false;
                 }
 
                 public override bool Closeout()
                 {
-                    ThisCBT.PushTOLStatusToBottomCameraScreens("");
-                    foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
-                    foreach (var light in LandingLights) { light.Enabled = false; }
-                    CBT.CancelAttitudeControl();
-                    CBT.SetAutopilotControl(false, false, true);
-                    if (ReadyForHandoff) ManeuverQueue.Enqueue(new CBT.HoverManeuver()); // only queue a hover maneuver if we got this far naturally-
-                    // in the case that I "cancel" the takeoff maneuver halfway through by running AP RESET, for example, then ReadyForTakeoff would not have been hit
-                    return true;
+                    if (!AskedForConfirmationAlready)
+                    {
+                        ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM FLIGHT");
+                        AddToLogQueue("Enter 'CONFIRM' to complete takeoff sequence.", STULogType.WARNING);
+                        AskedForConfirmationAlready = true;
+                        ReadyForHandoff = true;
+                    }
+                    if (PilotConfirmation) // hand off control once the pilot confirms
+                    {
+                        ThisCBT.PushTOLStatusToBottomCameraScreens("");
+                        AddToLogQueue("Takeoff sequence Complete. Ready to fly.", STULogType.OK);
+                        foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
+                        foreach (var light in LandingLights) { light.Enabled = false; }
+                        CBT.CancelAttitudeControl();
+                        CBT.SetAutopilotControl(false, false, true);
+                        if (ReadyForHandoff) ManeuverQueue.Enqueue(new CBT.HoverManeuver()); // only queue a hover maneuver if we got this far naturally-
+                        // in the case that I "cancel" the takeoff maneuver halfway through by running AP RESET, for example, then
+                        // ReadyForTakeoff would not have been hit
+                        return true;
+                    }
+                    return false;
                 }
             }
         }

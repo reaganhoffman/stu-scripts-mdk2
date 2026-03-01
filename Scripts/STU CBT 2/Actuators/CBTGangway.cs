@@ -4,9 +4,11 @@ using System;
 namespace IngameScript {
     partial class Program {
         public partial class CBTGangway {
-            private const float HINGE_ANGLE_TOLERANCE = 0.0071f;
+            private const float HINGE_ANGLE_TOLERANCE = 0.05f; //was previously 0.0071f, this was causing it to get stuck in the 'extending' state
+            // failed to trigger on 0.01 too
             private const float HINGE_TARGET_VELOCITY_RPM = 3f;
             private const float HINGE_TORQUE = 7000000;
+            private const float HINGE_WEAK_BRAKING_TORQUE = 100;
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }
             public enum GangwayStates {
@@ -18,7 +20,6 @@ namespace IngameScript {
                 Resetting,
                 ResettingHinge1,
                 ResettingHinge2,
-                Frozen, // currently not used
             }
             public GangwayStates CurrentGangwayState { get; private set; }
             private GangwayStates LastUserInputGangwayState { get; set; }
@@ -90,12 +91,6 @@ namespace IngameScript {
                     case GangwayStates.ResettingHinge2:
                         if (ResetHinge2()) { CurrentGangwayState = GangwayStates.Retracted; }
                         break;
-
-                    case GangwayStates.Frozen: // currently not used / inaccessable
-                        CBT.AddToLogQueue($"Halting Gangway actuators.", STULogType.INFO);
-                        GangwayHinge1.TargetVelocityRad = 0;
-                        GangwayHinge2.TargetVelocityRad = 0;
-                        break;
                 }
             }
 
@@ -129,8 +124,6 @@ namespace IngameScript {
                         return CurrentGangwayState == GangwayStates.ResettingHinge2;
                     case GangwayStates.ResettingHinge2:
                         return CurrentGangwayState == GangwayStates.Resetting;
-                    case GangwayStates.Frozen:
-                        return true;
                     default:
                         return false;
                 }
@@ -140,7 +133,7 @@ namespace IngameScript {
             private bool ResetGangwayActuators() {
                 GangwayHinge2.TargetVelocityRPM = 0;
                 GangwayHinge2.Torque = 0;
-                GangwayHinge2.BrakingTorque = 0;
+                GangwayHinge2.BrakingTorque = HINGE_WEAK_BRAKING_TORQUE;
                 GangwayHinge2.RotorLock = false;
                 GangwayHinge2.UpperLimitDeg = 90;
                 GangwayHinge2.LowerLimitDeg = -90;
@@ -148,7 +141,7 @@ namespace IngameScript {
 
                 GangwayHinge1.TargetVelocityRPM = 0;
                 GangwayHinge1.Torque = 0;
-                GangwayHinge1.BrakingTorque = 0;
+                GangwayHinge1.BrakingTorque = HINGE_WEAK_BRAKING_TORQUE;
                 GangwayHinge1.RotorLock = false;
                 GangwayHinge1.UpperLimitDeg = 90;
                 GangwayHinge1.LowerLimitDeg = -90;
@@ -164,7 +157,7 @@ namespace IngameScript {
                 GangwayHinge1.Torque = HINGE_TORQUE;
                 GangwayHinge1.Enabled = true;
 
-                if (CBT.RadToDeg(GangwayHinge1.Angle) < -85) // if it's past -85 degrees, fully define its limits (may cause slight snapping) and then set braking torque
+                if (CBT.RadToDeg(GangwayHinge1.Angle) < -85) // if it's past -85 degrees, fully define its limits (may cause slight snapping) and then set braking torque to the max
                 {
                     GangwayHinge1.UpperLimitDeg = 0;
                     GangwayHinge1.LowerLimitDeg = -90;

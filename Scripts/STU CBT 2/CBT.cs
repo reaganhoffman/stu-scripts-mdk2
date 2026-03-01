@@ -48,7 +48,6 @@ namespace IngameScript {
             public static float UserInputYawVelocity { get; set; } = 0;
 
             public static CBTGangway.GangwayStates UserInputGangwayState { get; set; }
-            public static int UserInputRearDockPosition { get; set; }
 
             public bool CanDockWithCR { get; set; } = false;
 
@@ -70,6 +69,7 @@ namespace IngameScript {
             public static List<CBTAmmoLCD> AmmoChannel { get; set; } = new List<CBTAmmoLCD>();
             public static List<CBTStatusLCD> StatusChannel { get; set; } = new List<CBTStatusLCD>();
             public static List<CBTBottomCameraLCD> BottomCameraChannel { get; set; } = new List<CBTBottomCameraLCD>();
+            public static List<CBTConfirmationTerminal> ConfirmationTerminalChannel { get; set; } = new List<CBTConfirmationTerminal>();
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
@@ -82,19 +82,19 @@ namespace IngameScript {
             // power level 0:
             public static IMyBatteryBlock[] Batteries { get; set; } 
             public static IMyButtonPanel[] ButtonPanels { get; set; } 
-            public static IMyPowerProducer[] HydrogenEngines { get; set; } //= LoadAllBlocksOfType<IMyPowerProducer>();
-            public static IMyShipMergeBlock MergeBlock { get; set; } //= LoadBlockByName<IMyShipMergeBlock>("CBT Merge Block");
-            public static IMyGasTank[] HydrogenTanks { get; set; } //= LoadAllBlocksOfType<IMyGasTank>("Hydrogen");
-            public static IMyGasTank[] OxygenTanks { get; set; } //= LoadAllBlocksOfType<IMyGasTank>("Oxygen");
+            public static IMyPowerProducer[] HydrogenEngines { get; set; }
+            public static IMyShipMergeBlock MergeBlock { get; set; }
+            public static IMyGasTank[] HydrogenTanks { get; set; }
+            public static IMyGasTank[] OxygenTanks { get; set; }
             // power level 1:
-            public static IMyRemoteControl RemoteControl { get; set; } //= LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
-            public static IMyThrust[] Thrusters { get; set; } //= LoadAllBlocksOfType<IMyThrust>();
-            public static IMyGyro[] Gyros { get; set; } //= LoadAllBlocksOfType<IMyGyro>();
-            public static IMyTerminalBlock FlightSeat { get; set; } //= LoadBlockByName<IMyTerminalBlock>("CBT Flight Seat");
-            public static IMyShipConnector Connector { get; set; } //= LoadBlockByName<IMyShipConnector>("CBT Rear Connector");
-            public static IMyCryoChamber[] CryoPods { get; set; } //= LoadAllBlocksOfType<IMyCryoChamber>();
-            public static IMyLandingGear[] LandingGear { get; set; } //= LoadAllBlocksOfType<IMyLandingGear>();
-            public static IMyDoor[] Doors { get; set; } //= LoadAllBlocksOfType<IMyDoor>();
+            public static IMyRemoteControl RemoteControl { get; set; }
+            public static IMyThrust[] Thrusters { get; set; }
+            public static IMyGyro[] Gyros { get; set; }
+            public static IMyTerminalBlock FlightSeat { get; set; }
+            public static IMyShipConnector Connector { get; set; }
+            public static IMyCryoChamber[] CryoPods { get; set; }
+            public static IMyLandingGear[] LandingGear { get; set; }
+            public static IMyDoor[] Doors { get; set; }
             public static IMyMotorStator RearHinge1 { get; set; }
             public static IMyMotorStator RearHinge2 { get; set; }
             public static IMyPistonBase RearPiston { get; set; }
@@ -104,8 +104,6 @@ namespace IngameScript {
             public static IMyMotorStator CameraRotor { get; set; }
             public static IMyMotorStator CameraHinge { get; set; }
             public static IMyCameraBlock Camera { get; set; }
-            public static IMyLandingGear StingerLock { get; set; }
-            public static IMyMotorStator StingerLockRotor { get; set; }
             
 
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
@@ -344,6 +342,17 @@ namespace IngameScript {
                     screen.EndAndPaintFrame();
                 }
             }
+
+            public static void UpdateConfirmationTerminals(ManeuverQueueData data)
+            {
+                foreach (var terminal in ConfirmationTerminalChannel)
+                {
+                    terminal.LoadManeuverData(data);
+                    terminal.StartFrame();
+                    terminal.BuildScreen(terminal.CurrentFrame, terminal.Center);
+                    terminal.EndAndPaintFrame();
+                }
+            }
             #endregion
 
             #region Hardware Initialization
@@ -417,6 +426,9 @@ namespace IngameScript {
                         break;
                     case "BOTTOM":
                         BottomCameraChannel.Add(new CBTBottomCameraLCD(ThisCBT, echo, block, screenIndex, "Monospace", fontSize));
+                        break;
+                    case "CONFIRMATION":
+                        ConfirmationTerminalChannel.Add(new CBTConfirmationTerminal(echo, block, screenIndex, "Monospace", fontSize));
                         break;
                     default:
                         return;

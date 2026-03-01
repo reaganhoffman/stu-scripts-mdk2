@@ -24,7 +24,7 @@ namespace IngameScript {
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
         MyCommandLine WirelessMessageParser { get; set; } = new MyCommandLine();
         Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
-        STUStateMachine CurrentManeuver;
+        STUStateMachine CurrentManeuver { get; set; }
         public struct ManeuverQueueData {
             public string CurrentManeuverName;
             public bool CurrentManeuverInitStatus;
@@ -124,13 +124,13 @@ namespace IngameScript {
                 CBT.UpdateAmmoScreens();
                 CBT.UpdateStatusScreens();
                 CBT.UpdateBottomCameraScreens();
+                CBT.UpdateConfirmationTerminals(GatherManeuverQueueData());
                 CBT.ACM.UpdateAirlocks();
                 CBT.DockingModule.UpdateDockingModule();
                 if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.QueueManeuvers) {
                     try {
                         // set up auxiliary hardware
                         CBT.Gangway.ToggleGangway(1);
-                        CBT.UserInputRearDockPosition = 0;
                         CBT.MergeBlock.Enabled = true;
                         // go to point in space behind the CR
                         ManeuverQueue.Enqueue(new STUFlightController.GotoAndStop(CBT.FlightController, CBT.DockingModule.LineUpPosition, 10, CBT.MergeBlock));
@@ -483,8 +483,7 @@ namespace IngameScript {
                             {
                                 case "HOSPITABLE":
                                     CBT.ACM.ChangeAutomaticControl(false, false);
-                                    CBT.AddToLogQueue($"airlock control: {CBT.ACM.AirlockEnabled}");
-                                    CBT.AddToLogQueue($"solo control: {CBT.ACM.SoloEnabled}");
+                                    CBT.AddToLogQueue($"Airlocks open and vents depressurizing.", STULogType.OK);
                                     CBT.ACM.OpenAirlocks(true);
                                     CBT.ACM.OpenSoloDoors(true);
                                     foreach (var vent in CBT.AirVents) { vent.Depressurize = true; }
@@ -493,8 +492,7 @@ namespace IngameScript {
                                     CBT.ACM.CloseSoloDoors();
                                     CBT.ACM.CloseAirlocks();
                                     CBT.ACM.ChangeAutomaticControl(true, true);
-                                    CBT.AddToLogQueue($"airlock control: {CBT.ACM.AirlockEnabled}");
-                                    CBT.AddToLogQueue($"solo control: {CBT.ACM.SoloEnabled}");
+                                    CBT.AddToLogQueue($"Airlocks closed and vents pressurizing.", STULogType.OK);
                                     foreach (var vent in CBT.AirVents) { vent.Depressurize = false; }
                                     break;
                             }
@@ -560,7 +558,7 @@ namespace IngameScript {
                             if (predicate == "OFF")
                             {
                                 CBT.CancelAttitudeControl();
-                                CBT.AddToLogQueue("Attitude Control canceled.", STULogType.OK);
+                                CBT.AddToLogQueue("Attitude Control canceled.", STULogType.WARNING);
                             }
                             else if (predicate == "ON")
                             {
@@ -587,18 +585,18 @@ namespace IngameScript {
                                     CBT.AddToLogQueue($"Setting cruising speed to {predicateAsFloat}m/s", STULogType.INFO);
                                     CBT.SetCruiseControl(predicateAsFloat);
                                 }
-                                else { CBT.AddToLogQueue("Cruising speed must be between 0 and 5,000. Skipping...", STULogType.WARNING); }
+                                else { CBT.AddToLogQueue("Cruising speed must be between 0 and 5,000. Skipping...", STULogType.ERROR); }
                             }
                             else if (predicate == "CANCEL")
                             {
                                 CBT.CancelCruiseControl();
-                                CBT.AddToLogQueue("Cruise Control Cancelled.", STULogType.INFO);
+                                CBT.AddToLogQueue("Cruise Control Cancelled.", STULogType.WARNING);
                             }
                             else if (predicate == "SET")
                             {
                                 if (CBT.FlightController.VelocityMagnitude < 1 || CBT.FlightController.VelocityMagnitude > 5000) { CBT.AddToLogQueue("Cannot set cruise control at current speed", STULogType.WARNING); break; }
                                 CBT.SetCruiseControl((float)CBT.FlightController.VelocityMagnitude);
-                                CBT.AddToLogQueue($"Cruise Control: {CBT.CruiseControlSpeed}m/s", STULogType.OK);
+                                CBT.AddToLogQueue($"Cruise Control: {CBT.CruiseControlSpeed}m/s", STULogType.INFO);
                             }
                             else if (predicate == "INC") // set the cruising speed to the next highest number in the cubic series (f(x)=x^3)
                             {
@@ -633,7 +631,7 @@ namespace IngameScript {
                                         break;
                                 }
                                 CBT.SetCruiseControl(desiredSpeed);
-                                if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.INFO); }
+                                if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.WARNING); }
                             }
                             else
                             {

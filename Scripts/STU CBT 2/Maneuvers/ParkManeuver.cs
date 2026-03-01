@@ -115,6 +115,7 @@ namespace IngameScript {
                             break;
                         case LandingPhases.FinalApproach:
                             ThisCBT.PushTOLStatusToBottomCameraScreens("FINAL \nAPPROACH");
+                            CBT.CameraHinge.TargetVelocityRad = Math.Abs(CBT.CameraHinge.TargetVelocityRad); // point the camera 'up' / level with the horizon
                             CancelAttitudeControl();
                             foreach (var light in LandingLights) { light.Enabled = true; }
                             if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) 
@@ -127,7 +128,7 @@ namespace IngameScript {
                             if (FlightController.VelocityMagnitude < 0.1)
                             {
                                 Landed = true;
-                                AddToLogQueue("Landing sequence complete. Ready to park.", STULogType.OK);
+                                AddToLogQueue("Enter 'CONFIRM' to complete landing sequence.", STULogType.WARNING);
                                 return true;
                             }
                             break;
@@ -147,7 +148,8 @@ namespace IngameScript {
                         SetAutopilotControl(false, false, true);
                         foreach (var thruster in Thrusters) { thruster.Enabled = false; }
                         foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
-                        foreach (var spotlight in Headlights) { spotlight.Enabled = false; };
+                        foreach (var spotlight in Headlights) { spotlight.Enabled = false; }
+                        AddToLogQueue("Landing sequence complete.", STULogType.OK);
                         return true;
                         
                     }

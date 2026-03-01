@@ -71,7 +71,6 @@ namespace IngameScript {
                 switch (CBT.Gangway.CurrentGangwayState)
                 {
                     case CBTGangway.GangwayStates.Unknown: return Color.Red;
-                    case CBTGangway.GangwayStates.Frozen: return Color.Red;
                     case CBTGangway.GangwayStates.Resetting: return Color.Cyan;
                     case CBTGangway.GangwayStates.Extended: return Color.Green;
                     case CBTGangway.GangwayStates.Retracted: return Color.Green;
@@ -85,7 +84,6 @@ namespace IngameScript {
                 switch (CBT.Gangway.CurrentGangwayState)
                 {
                     case CBTGangway.GangwayStates.Unknown: return "U";
-                    case CBTGangway.GangwayStates.Frozen: return "F";
                     case CBTGangway.GangwayStates.Resetting: return "R";
                     case CBTGangway.GangwayStates.Extended: return "O";
                     case CBTGangway.GangwayStates.Retracted: return "C";

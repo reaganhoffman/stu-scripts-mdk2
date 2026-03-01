@@ -1,6 +1,7 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Text;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -238,6 +239,24 @@ namespace IngameScript {
                     FontId = Surface.Font,
                     RotationOrScale = Surface.FontSize
                 };
+            }
+
+            public void DrawCenteredMultilineString(string input, Color color, MySpriteDrawFrame frame)
+            {
+                string[] lines = input.Split('\n');
+                
+                for(int i=0; i<lines.Length; i++)
+                {
+                    frame.Add(new MySprite()
+                    {
+                        Type = SpriteType.TEXT,
+                        Data = lines[i],
+                        Position = TopLeft + new Vector2((ScreenWidth / 2) - (GetTextWidth(lines[i]) / 2) - CharacterWidth, GetDefaultLineHeight()*i),
+                        Color = color,
+                        FontId = Surface.Font,
+                        RotationOrScale = Surface.FontSize
+                    });
+                }
             }
 
             /// <summary>
