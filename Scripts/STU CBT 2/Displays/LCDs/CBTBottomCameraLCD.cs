@@ -56,7 +56,7 @@ namespace IngameScript
                     case CBTGangway.GangwayStates.Extended: GangwayStatus = "EXTENDED"; break;
                 }
                 RampStatus = "NOT CLOSED";
-                if (CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(CBT.HangarRotor.Angle), 0))
+                if (CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(CBT.HangarRotor.Angle), 0, 0.1f))
                 {
                     RampStatus = "CLOSED";
                 }

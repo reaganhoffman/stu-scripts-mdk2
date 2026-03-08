@@ -24,7 +24,7 @@ namespace IngameScript {
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
         MyCommandLine WirelessMessageParser { get; set; } = new MyCommandLine();
         Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
-        STUStateMachine CurrentManeuver { get; set; }
+        static STUStateMachine CurrentManeuver { get; set; }
         public struct ManeuverQueueData {
             public string CurrentManeuverName;
             public bool CurrentManeuverInitStatus;
@@ -48,7 +48,7 @@ namespace IngameScript {
             CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
-            ResetAutopilot();
+            CBT.ResetAutopilot();
 
             // at compile time, Runtime.UpdateFrequency needs to be set to update every 10 ticks. 
             // I'm pretty sure the user input buffer is empty as far as the program is concerned whenever you hit recompile, even if there is text in the box.
@@ -177,22 +177,23 @@ namespace IngameScript {
             return data;
         }
 
-        public void ResetAutopilot() {
-            ManeuverQueue.Clear();
-            CBTShip.PushTOLStatusToBottomCameraScreens("");
-            CBT.CancelAttitudeControl();
-            CBT.CancelCruiseControl();
-            CBT.ResetUserInputVelocities();
-            foreach (var gyro in CBT.FlightController.AllGyroscopes) {
-                gyro.Pitch = 0;
-                gyro.Yaw = 0;
-                gyro.Roll = 0;
-            }
-            CurrentManeuver = null;
-            CBT.SetAutopilotControl(false, false, true);
-            CBT.CurrentPhase = CBT.Phase.Idle;
-            CBT.FlightController.UpdateShipMass();
-        }
+        //public void ResetAutopilot() {
+        //    ManeuverQueue.Clear();
+        //    CBTShip.PushTOLStatusToBottomCameraScreens("");
+        //    CBT.CancelAttitudeControl();
+        //    CBT.CancelCruiseControl();
+        //    CBT.ResetUserInputVelocities();
+        //    foreach (var gyro in CBT.FlightController.AllGyroscopes) {
+        //        gyro.Pitch = 0;
+        //        gyro.Yaw = 0;
+        //        gyro.Roll = 0;
+        //    }
+        //    CurrentManeuver = null;
+        //    CBT.SetAutopilotControl(false, false, true);
+        //    CBT.CurrentPhase = CBT.Phase.Idle;
+        //    CBT.FlightController.UpdateShipMass();
+        //    CBT.FlightController.UpdateThrustersAfterGridChange(CBT.Thrusters);
+        //}
 
         public void HandleWirelessMessages() {
             if (Listener.HasPendingMessage) {
@@ -314,7 +315,7 @@ namespace IngameScript {
                         #region CBT Software Commands
                         case "CLOSEOUT": // instantly moves the current maneuver's state to the Closeout phase, if there is a currently executing maneuver.
                             CBT.AddToLogQueue($"Cancelling maneuver '{CurrentManeuver.Name}'...", STULogType.INFO);
-                            CBTShip.PushTOLStatusToBottomCameraScreens("");
+                            CBT.PushTOLStatusToBottomCameraScreens("");
                             if (CurrentManeuver != null)
                             {
                                 CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Closeout;
@@ -534,8 +535,8 @@ namespace IngameScript {
                             {
                                 case "RESET":
                                     CBT.AddToLogQueue("Resetting autopilot...", STULogType.INFO);
-                                    CBTShip.PushTOLStatusToBottomCameraScreens("");
-                                    ResetAutopilot();
+                                    CBT.PushTOLStatusToBottomCameraScreens("");
+                                    CBT.ResetAutopilot();
                                     break;
                                 case "THRUSTERS":
                                     CBT.AddToLogQueue($"Toggling thruster control {BoolConverter(!CBT.FlightController.HasThrusterControl)}");
@@ -631,7 +632,7 @@ namespace IngameScript {
                                         break;
                                 }
                                 CBT.SetCruiseControl(desiredSpeed);
-                                if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.WARNING); }
+                                if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); CBT.ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.WARNING); }
                             }
                             else
                             {

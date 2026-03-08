@@ -66,7 +66,7 @@ namespace IngameScript
                     foreach (var spotlight in Headlights) { spotlight.Enabled = true; }
                     if (!AskedForConfirmationAlready) AddToLogQueue("Enter 'CONFIRM' to proceed with takeoff sequence.", STULogType.WARNING);
                     AskedForConfirmationAlready = true;
-                    ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM TAKEOFF");
+                    CBT.PushTOLStatusToBottomCameraScreens("CONFIRM TAKEOFF");
                     if (Math.Abs(FlightController.VelocityMagnitude) < 0.1 && PilotConfirmation) // only continue if we're stationary and pilot confirms takeoff
                     {
                         // ensure we have access to the thrusters, gyros, and dampeners are on
@@ -98,7 +98,7 @@ namespace IngameScript
                             TakeoffPhase = TakeoffPhases.AscendToTakeoffHeight; // now we're ready to takeoff
                             break;
                         case TakeoffPhases.AscendToTakeoffHeight:
-                            ThisCBT.PushTOLStatusToBottomCameraScreens("TAKING OFF...");
+                            CBT.PushTOLStatusToBottomCameraScreens("TAKING OFF...");
                             double x = FlightController.GetCurrentSurfaceAltitude() - InitialAltitude;
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
                             if (FlightController.MaintainSurfaceAltitude(InitialAltitude + 50, ascendVelocity, 1)) { TakeoffPhase = TakeoffPhases.HandoffToPilot; }
@@ -114,14 +114,14 @@ namespace IngameScript
                 {
                     if (!AskedForConfirmationAlready)
                     {
-                        ThisCBT.PushTOLStatusToBottomCameraScreens("CONFIRM FLIGHT");
+                        CBT.PushTOLStatusToBottomCameraScreens("CONFIRM FLIGHT");
                         AddToLogQueue("Enter 'CONFIRM' to complete takeoff sequence.", STULogType.WARNING);
                         AskedForConfirmationAlready = true;
                         ReadyForHandoff = true;
                     }
                     if (PilotConfirmation) // hand off control once the pilot confirms
                     {
-                        ThisCBT.PushTOLStatusToBottomCameraScreens("");
+                        CBT.PushTOLStatusToBottomCameraScreens("");
                         AddToLogQueue("Takeoff sequence Complete. Ready to fly.", STULogType.OK);
                         foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
                         foreach (var light in LandingLights) { light.Enabled = false; }

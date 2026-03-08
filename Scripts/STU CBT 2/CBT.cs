@@ -170,7 +170,7 @@ namespace IngameScript {
                     Connector.IsParkingEnabled = false;
                     Connector.PullStrength = 0;
                 CryoPods = LoadAllBlocksOfType<IMyCryoChamber>();
-                LandingGear = LoadAllBlocksOfType<IMyLandingGear>();
+                LandingGear = LoadAllBlocksOfTypeWithSubtypeId<IMyLandingGear>("LandingGear");
                 HangarMagPlate = LoadAllBlocksOfTypeWithSubtypeId<IMyLandingGear>("MagneticPlate");
 
                 
@@ -435,7 +435,7 @@ namespace IngameScript {
                 }
             }
             
-            public void PushTOLStatusToBottomCameraScreens(string status)
+            public static void PushTOLStatusToBottomCameraScreens(string status)
             {
                 foreach (var item in BottomCameraChannel)
                 {
@@ -449,7 +449,7 @@ namespace IngameScript {
             {
                 var intermediateList = new List<T>();
                 CBTGrid.GetBlocksOfType(intermediateList); // removed block => block.CubeGrid == Me.CubeGrid so the bottom camera LCDs should get recognized
-                if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid.", STULogType.ERROR); }
+                if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid or any connected subgrids.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
             public static T[] LoadAllBlocksOfTypeWithCustomData<T>(string customData) where T : class, IMyTerminalBlock
@@ -548,6 +548,26 @@ namespace IngameScript {
 
             #region CBT Helper Functions
             #region Autopilot
+            public static void ResetAutopilot()
+            {
+                ManeuverQueue.Clear();
+                PushTOLStatusToBottomCameraScreens("");
+                CancelAttitudeControl();
+                CancelCruiseControl();
+                ResetUserInputVelocities();
+                foreach (var gyro in CBT.FlightController.AllGyroscopes)
+                {
+                    gyro.Pitch = 0;
+                    gyro.Yaw = 0;
+                    gyro.Roll = 0;
+                }
+                CurrentManeuver = null;
+                SetAutopilotControl(false, false, true);
+                CurrentPhase = CBT.Phase.Idle;
+                FlightController.UpdateShipMass();
+                FlightController.UpdateThrustersAfterGridChange(CBT.Thrusters);
+            }
+            
             public static int GetAutopilotState() {
                 int autopilotState = 0;
                 if (FlightController.HasThrusterControl) { autopilotState += 1; }
