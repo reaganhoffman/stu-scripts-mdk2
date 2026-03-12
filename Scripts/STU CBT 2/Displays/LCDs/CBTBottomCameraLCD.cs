@@ -85,7 +85,10 @@ namespace IngameScript
                 frame.Add(BuildTextSprite($"Vz " + $"{Vz,5}", ScreenWidth - GetTextSpriteWidth($"Vz {Vz,5}"), CharHeight * 3, cl));
                 frame.Add(BuildTextSprite($"ALT " + $"{ALT,5}", ScreenWidth - GetTextSpriteWidth($"ALT {ALT,5}"), CharHeight * 4, cl));
                 frame.Add(BuildTextSprite($"{TOLStatus}", 0, CharHeight * 7, cl));
-                frame.Add(BuildTextSprite($"GANGWAY: {GangwayStatus}", 0, 0, cl));
+                Color gangwayColor = cl;
+                if (GangwayStatus == "UNKNOWN")
+                    gangwayColor = Color.Red;
+                frame.Add(BuildTextSprite($"GANGWAY: {GangwayStatus}", 0, 0, gangwayColor));
                 frame.Add(BuildTextSprite($"RAMP: {RampStatus}", 0, CharHeight, cl));
                 frame.Add(BuildTextSprite($"CC: {CCStatus}", 0, CharHeight * 3, cl));
                 frame.Add(BuildTextSprite($"ATT: {ATTStatus}", 0, CharHeight * 4, cl));

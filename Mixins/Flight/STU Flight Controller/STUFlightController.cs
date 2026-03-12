@@ -388,7 +388,7 @@ namespace IngameScript {
 
 
             public void UpdateShipMass() {
-                STUVelocityController.ShipMass = RemoteControl.CalculateShipMass().PhysicalMass;
+                STUVelocityController.ShipMass = RemoteControl.CalculateShipMass().TotalMass;
             }
 
             public double GetShipMass() {

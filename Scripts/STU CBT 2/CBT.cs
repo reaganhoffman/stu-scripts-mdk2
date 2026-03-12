@@ -584,10 +584,10 @@ namespace IngameScript {
                 return autopilotState;
             }
 
-            public static void SetAutopilotControl(bool thrusters, bool gyroscopes, bool dampeners) {
+            public static void SetAutopilotControl(bool thrusters, bool gyroscopes, bool dampeners_enabled) {
                 if (thrusters) { FlightController.ReinstateThrusterControl(); } else { FlightController.RelinquishThrusterControl(); }
                 if (gyroscopes) { FlightController.ReinstateGyroControl(); } else { FlightController.RelinquishGyroControl(); }
-                RemoteControl.DampenersOverride = dampeners;
+                RemoteControl.DampenersOverride = dampeners_enabled;
             }
 
             public static void ResetUserInputVelocities() {

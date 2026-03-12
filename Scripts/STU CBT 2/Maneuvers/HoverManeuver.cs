@@ -24,8 +24,16 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
+                    // stabilize gyros
+                    foreach (var gyro in CBT.FlightController.AllGyroscopes)
+                    {
+                        gyro.Pitch = 0;
+                        gyro.Yaw = 0;
+                        gyro.Roll = 0;
+                    }
                     // relinquish control of the thrusters and gyros, keep dampeners on 
                     SetAutopilotControl(false, false, true);
+
                     CBT.ResetUserInputVelocities();
                     return true;
                 }

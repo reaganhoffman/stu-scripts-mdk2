@@ -152,6 +152,11 @@ namespace IngameScript {
                         CBT.AddToLogQueue($"Docking sequence failed: {e.Message}", STULogType.ERROR);
                     }
                 }
+
+                Echo($"Physical Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().PhysicalMass}\n" +
+                    $"Total Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().TotalMass}");
+
+
             } catch (Exception e) {
                 Echo($"Program.cs: Caught exception: {e}");
                 CBT.AddToLogQueue($"Program.cs: Caught exception: {e}", STULogType.WARNING);
