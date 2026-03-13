@@ -16,11 +16,13 @@ namespace IngameScript {
                 }
 
                 public override bool Run() {
-                    bool stableVelocity = FlightController.SetStableForwardVelocity(0);
+                    FlightController.SetVx(0);
+                    FlightController.SetVy(0);
+                    FlightController.SetVz(0);
                     FlightController.SetVr(0);
                     FlightController.SetVp(0);
                     FlightController.SetVw(0);
-                    return stableVelocity;
+                    return FlightController.VelocityMagnitude <= 0.01;
                 }
 
                 public override bool Closeout() {

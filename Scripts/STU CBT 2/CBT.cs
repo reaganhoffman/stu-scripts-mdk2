@@ -54,8 +54,10 @@ namespace IngameScript {
             public static bool CruiseControlActivated { get; private set; } = false;
             public static float CruiseControlSpeed { get; private set; } = 0f;
             public static bool AttitudeControlActivated { get; private set; } = false;
+            public static bool AltitudeControlActivated { get; private set; } = false;
             public static float AltitudeControlHeight { get; private set; } = 0f;
             public static bool ShipIsLevel { get; private set; } = false;
+            public static bool ShipIsHovering { get; private set; } = false;
 
             // prepare the program by declaring all the different blocks we are going to use
             public static IMyGridTerminalSystem CBTGrid { get; set; }
@@ -448,28 +450,28 @@ namespace IngameScript {
             public static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
-                CBTGrid.GetBlocksOfType(intermediateList); // removed block => block.CubeGrid == Me.CubeGrid so the bottom camera LCDs should get recognized
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.IsSameConstructAs(Me)); // this should extend to the ends of pistons and rotors and hinges, but not things connected with connectors
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid or any connected subgrids.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
             public static T[] LoadAllBlocksOfTypeWithCustomData<T>(string customData) where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
-                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.CustomData.Contains(customData));
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.IsSameConstructAs(Me) && block.CustomData.Contains(customData)); // instead of block.CubeGrid == Me.CubeGrid
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose custom data contains '{customData}'.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
             public static T[] LoadAllBlocksOfTypeWithDetailedInfo<T>(string detailedInfo) where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
-                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.DetailedInfo.Contains(detailedInfo));
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.IsSameConstructAs(Me) && block.DetailedInfo.Contains(detailedInfo));
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose detailed info contains '{detailedInfo}'.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
             public static T[] LoadAllBlocksOfTypeWithSubtypeId<T>(string subtype) where T : class, IMyTerminalBlock
             {
                 var intermediateList = new List<T>();
-                CBTGrid.GetBlocksOfType(intermediateList, block => block.CubeGrid == Me.CubeGrid && block.BlockDefinition.SubtypeId.Contains(subtype));
+                CBTGrid.GetBlocksOfType(intermediateList, block => block.IsSameConstructAs(Me) && block.BlockDefinition.SubtypeId.Contains(subtype));
                 if (intermediateList.Count == 0) { AddToLogQueue($"No blocks of type '{typeof(T).Name}' found on the grid whose subtype ID contains '{subtype}'.", STULogType.ERROR); }
                 return intermediateList.ToArray();
             }
@@ -488,7 +490,7 @@ namespace IngameScript {
             private static void LoadGatlingGuns(IMyGridTerminalSystem grid)
             {
                 List<IMyUserControllableGun> gatlingGunBlocks = new List<IMyUserControllableGun>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.CubeGrid == Me.CubeGrid && 
+                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.IsSameConstructAs(Me) && 
                     !block.BlockDefinition.SubtypeName.Contains("LargeBlockMediumCalibreTurret") && // not assault turrets
                     !block.BlockDefinition.SubtypeName.Contains("LargeBlockLargeCalibreGun") && // not artillery
                     !block.BlockDefinition.SubtypeName.Contains("LargeRailgun")); // not railguns
@@ -562,10 +564,15 @@ namespace IngameScript {
                     gyro.Roll = 0;
                 }
                 CurrentManeuver = null;
-                SetAutopilotControl(false, false, true);
                 CurrentPhase = CBT.Phase.Idle;
                 FlightController.UpdateShipMass();
-                FlightController.UpdateThrustersAfterGridChange(CBT.Thrusters);
+                Thrusters = LoadAllBlocksOfType<IMyThrust>();
+                FlightController.UpdateThrustersAfterGridChange(Thrusters);
+                Gyros = LoadAllBlocksOfType<IMyGyro>();
+                FlightController.UpdateGyrosAfterGridChange(Gyros);
+
+
+                SetAutopilotControl(false, false, true);
             }
             
             public static int GetAutopilotState() {
@@ -598,6 +605,13 @@ namespace IngameScript {
                 UserInputPitchVelocity = 0;
                 UserInputYawVelocity = 0;
             }
+
+            /// <summary>
+            /// Levels the ship to the horizon by defining a point 1000 meters in front of the ship and then using the Flight Controller's AlignShipToTarget method to point the ship at that point.
+            /// Designed to be called continuously when attitude control is activated.
+            /// Use the getter of ShipIsLevel to determine whether the ship is actually level.
+            /// </summary>
+            /// <returns></returns>
             public static bool LevelToHorizon()
             {
                 if (RemoteControl.GetNaturalGravity() == null) 
@@ -615,6 +629,9 @@ namespace IngameScript {
                 AttitudeControlActivated = true; return true;
             }
 
+            /// <summary>
+            /// Gracefully disengages attitude control.
+            /// </summary>
             public static void CancelAttitudeControl()
             {
                 SetAutopilotControl(FlightController.HasThrusterControl, false, RemoteControl.DampenersOverride);

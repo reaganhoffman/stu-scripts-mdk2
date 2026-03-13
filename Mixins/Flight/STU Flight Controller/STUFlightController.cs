@@ -68,8 +68,15 @@ namespace IngameScript {
             }
 
             public void UpdateThrustersAfterGridChange(IMyThrust[] newActiveThrusters) {
+                ActiveThrusters = newActiveThrusters;
                 _velocityController = new STUVelocityController(RemoteControl, newActiveThrusters);
                 _altitudeController = new STUAltitudeController(this, RemoteControl);
+            }
+
+            public void UpdateGyrosAfterGridChange(IMyGyro[] newActiveGyros)
+            {
+                AllGyroscopes = newActiveGyros;
+                _orientationController = new STUOrientationController(RemoteControl, newActiveGyros);
             }
 
             public void MeasureCurrentVelocity() {
