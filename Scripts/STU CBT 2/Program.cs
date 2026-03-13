@@ -117,7 +117,6 @@ namespace IngameScript {
                 CBT.FlightController.UpdateState();
                 if (CBT.CruiseControlActivated) { CBT.SetCruiseControl(CBT.CruiseControlSpeed); } // set cruise control only if cruise control is activated.
                 if (CBT.AttitudeControlActivated) { CBT.LevelToHorizon(); } // attempt to level with the horizon only if attitude control is activated.
-                if (CBT.AltitudeControlActivated) { CBT.HoverInPlace(); } // attempt to hover in place only if altitude control is activated.
                 CBT.Gangway.UpdateGangway(CBT.UserInputGangwayState);
                 CBT.UpdateAutopilotScreens();
                 CBT.UpdateLogScreens();
@@ -584,20 +583,6 @@ namespace IngameScript {
                             else {
                                 PrintParseError(subject, predicate);
                             }
-                            break;
-
-                        case "ALT":
-                            if (predicate == "OFF")
-                            {
-                                CBT.CancelAltitudeControl();
-                                CBT.AddToLogQueue("Altitude Control canceled.", STULogType.WARNING);
-                            }
-                            else if (predicate == "ON")
-                            {
-                                CBT.HoverInPlace();
-                                CBT.AddToLogQueue("Altitude Control enabled.", STULogType.OK);
-                            }
-                            else { PrintParseError(subject, predicate); }
                             break;
 
                         case "CRUISE":

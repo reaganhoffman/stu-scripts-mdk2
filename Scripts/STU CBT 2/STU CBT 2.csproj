@@ -37,4 +37,5 @@
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\PID\PID.projitems" Label="Shared" />
 </Project>

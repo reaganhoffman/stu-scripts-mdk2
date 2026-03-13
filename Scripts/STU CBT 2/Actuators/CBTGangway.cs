@@ -96,7 +96,7 @@ namespace IngameScript {
 
             // methods
             public GangwayStates TryDetermineState() {
-                if (Math.Abs(GangwayHinge1.Angle) < HINGE_ANGLE_TOLERANCE && Math.Abs(GangwayHinge2.Angle - (Math.PI / 2)) < HINGE_ANGLE_TOLERANCE) {
+                if (CBT.AngleCloseEnoughDegrees(GangwayHinge1.Angle, 0, HINGE_ANGLE_TOLERANCE) && CBT.AngleCloseEnoughDegrees((float)(GangwayHinge2.Angle - (Math.PI / 2)), 0, HINGE_ANGLE_TOLERANCE)) {
                     return GangwayStates.Extended;
                 } else if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) {
                     return GangwayStates.Retracted;

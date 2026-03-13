@@ -20,6 +20,8 @@ namespace IngameScript {
                 public bool FINISHED_ORIENTATION_CALCULATION = false;
                 public float CALCULATION_PROGRESS = 0;
 
+                static PID AccelerationPID = new PID(ShipMass, 0, 0, 1f/6f);
+
                 IMyRemoteControl RemoteControl { get; set; }
                 public Vector3D LocalGravityVector;
 
@@ -123,8 +125,8 @@ namespace IngameScript {
 
                     // https://www.desmos.com/calculator/rsdijct8fq
                     public bool Accelerate(double remainingVelocityToGain, double gravityVectorComponent) {
-                        double newAcceleration = remainingVelocityToGain - gravityVectorComponent;
-                        double force = ShipMass * newAcceleration;
+                        double error = remainingVelocityToGain - gravityVectorComponent;
+                        double force = AccelerationPID.Control(error); // tweak this PID by adjusting the values in the declaration of AccelerationPID above
                         ApplyThrust(force);
                         return false;
                     }
