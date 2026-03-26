@@ -108,8 +108,8 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
-                    _flightController.SetStableForwardVelocity(0);
-                    if (Math.Abs(_flightController.VelocityMagnitude) <= 0.1) {
+                    _flightController.SetV_WorldFrame(_flightController.CurrentPosition,0);
+                    if (Math.Abs(_flightController.VelocityMagnitude) <= _flightController._velocityController.WORLD_VELOCITY_ERROR_TOLERANCE) {
                         _flightController.RelinquishGyroControl();
                         CreateOkFlightLog($"{Name} finished");
                         return true;

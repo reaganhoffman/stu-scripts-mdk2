@@ -16,9 +16,7 @@ namespace IngameScript {
                 }
 
                 public override bool Run() {
-                    FlightController.SetVx(0);
-                    FlightController.SetVy(0);
-                    FlightController.SetVz(0);
+                    FlightController.SetV_WorldFrame(FlightController.CurrentPosition, 0);
                     FlightController.SetVr(0);
                     FlightController.SetVp(0);
                     FlightController.SetVw(0);

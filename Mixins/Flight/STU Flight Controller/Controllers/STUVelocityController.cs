@@ -1,4 +1,5 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.Game.WorldEnvironment.Modules;
+using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace IngameScript {
 
             public partial class STUVelocityController {
 
-                const double WORLD_VELOCITY_ERROR_TOLERANCE = 0.01;
+                public readonly double WORLD_VELOCITY_ERROR_TOLERANCE = 0.01;
 
                 /// <summary>
                 /// All velocity controllers deal with the same grid mass, so it's shared.
@@ -101,18 +102,6 @@ namespace IngameScript {
                         NegDirThrusters = negDirThrusters;
                     }
 
-                    public bool SetVelocity(double currentVelocity, double desiredVelocity, double gravityVectorComponent) {
-
-                        double remainingVelocityToGain = desiredVelocity - currentVelocity;
-
-                        if (Math.Abs(remainingVelocityToGain) < VELOCITY_ERROR_TOLERANCE) {
-                            CounteractGravity(gravityVectorComponent);
-                            return true;
-                        }
-
-                        ALREADY_COUNTERING_GRAVITY = false;
-                        return Accelerate(remainingVelocityToGain, gravityVectorComponent);
-                    }
 
                     private void CounteractGravity(double gravityVectorComponent) {
                         // If we're operating on an axis that's fighting gravity, then we need to counteract gravity with acceleration of our own
@@ -142,30 +131,27 @@ namespace IngameScript {
                     }
                 }
 
-                public bool SetVx(double currentVelocity, double desiredVelocity) {
-                    return RightController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.X);
-                }
 
-                public bool SetVy(double currentVelocity, double desiredVelocity) {
-                    return UpController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.Y);
-                }
-
-                public bool SetVz(double currentVelocity, double desiredVelocity) {
-                    // Flip Gz to account for flipped forward-back orientation of Remote Control
-                    return ForwardController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.Z);
-                }
-
-
-                public void SetFx(double force) {
+                public void SetFx(double force) 
+                { // candidate for deprecation: see ApplyForceVector()
                     RightController.ApplyThrust(force);
                 }
 
-                public void SetFy(double force) {
+                public void SetFy(double force)
+                { // candidate for deprecation: see ApplyForceVector()
                     UpController.ApplyThrust(force);
                 }
 
-                public void SetFz(double force) {
+                public void SetFz(double force)
+                { // candidate for deprecation: see ApplyForceVector()
                     ForwardController.ApplyThrust(force);
+                }
+
+                void ApplyForceVector(Vector3D vector)
+                {
+                    RightController.ApplyThrust(vector.X);
+                    UpController.ApplyThrust(vector.Y);
+                    ForwardController.ApplyThrust(vector.Z);
                 }
 
                 public float GetMaximumReverseAcceleration() {
@@ -341,24 +327,9 @@ namespace IngameScript {
                     Vector3D V_e_vec = V_d - V_c;
                     double V_e = V_e_vec.Length();
 
-                    // If V_e is really low already, we're done
-                    if (V_e < WORLD_VELOCITY_ERROR_TOLERANCE) {
+                    // If V_e is really low or (in the highly unlikely case that it actually hits) zero, we're done
+                    if (V_e < WORLD_VELOCITY_ERROR_TOLERANCE || V_e == double.NaN) {
                         return true;
-                    }
-
-                    // Edge case: if we're not moving, we can't calculate a normalized vector
-                    if (V_c.IsZero()) {
-                        outputVector = V_e_vec * ShipMass;
-                        ExertVectorForce_WorldFrame(outputVector, outputVector.Length());
-                        return V_e < WORLD_VELOCITY_ERROR_TOLERANCE;
-                    }
-
-                    // Edge case: If the desired velocity is zero, we can just stop the ship with standard velocity controls
-                    if (V_d.IsZero()) {
-                        bool stableX = SetVx(V_c.X, 0);
-                        bool stableY = SetVy(V_c.Y, 0);
-                        bool stableZ = SetVz(V_c.Z, 0);
-                        return stableX && stableY && stableZ;
                     }
 
                     // Normalize the velocity error vector
@@ -507,9 +478,11 @@ namespace IngameScript {
                 }
 
                 private static void SetThrusterOverrides(IMyThrust[] thrusters, double thrust) {
+                    if (thrust == double.NaN) thrust = 0; // handle the entire call stack above where we might try to normalize a zero vector, resulting in NaN
                     foreach (IMyThrust thruster in thrusters) {
                         // MaxEffectiveThrust = MaxThrust for hydrogen thrusters, but not for atmospheric or ion thrusters
-                        // If we chose MaxThrust instead, hydrogen thrusters would be unaffected, but atmospheric and ion thrusters would always be inefficient fired at full power
+                        // If we chose MaxThrust instead, hydrogen thrusters would be unaffected, but atmospheric and ion thrusters
+                        // would always be inefficient fired at full power
                         double thrustCoefficient;
                         if (!ThrustCoefficients.TryGetValue(thruster.EntityId.ToString(), out thrustCoefficient)) {
                             throw new Exception("Thrust coefficient not found for thruster: " + thruster.EntityId);

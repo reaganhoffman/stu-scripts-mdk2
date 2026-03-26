@@ -64,7 +64,7 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
-                    if (_flightController.SetStableForwardVelocity(0)) {
+                    if (_flightController.SetV_WorldFrame(_flightController.CurrentPosition, 0)) {
                         return true;
                     }
                     return false;

@@ -142,32 +142,6 @@ namespace IngameScript {
                 }
             }
 
-            /// <summary>
-            /// Sets the ship's forward velocity. Returns true if the ship's velocity is stable.
-            /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public bool SetVx(double desiredVelocity) {
-                return _velocityController.SetVx(CurrentVelocity_LocalFrame.X, desiredVelocity);
-            }
-
-            /// <summary>
-            /// Sets the ship's rightward velocity. Returns true if the ship's velocity is stable.
-            /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public bool SetVy(double desiredVelocity) {
-                return _velocityController.SetVy(CurrentVelocity_LocalFrame.Y, desiredVelocity);
-            }
-
-            /// <summary>
-            /// Sets the ship's upward velocity. Returns true if the ship's velocity is stable.
-            /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public bool SetVz(double desiredVelocity) {
-                return _velocityController.SetVz(CurrentVelocity_LocalFrame.Z, desiredVelocity);
-            }
 
             /// <summary>
             /// Attempts to reach desiredVelocity in the world frame. Pass in a reference position to align the ship with that position. Returns true if the ship's velocity is stable.
@@ -229,29 +203,6 @@ namespace IngameScript {
             /// <returns></returns>
             public void SetVw(double yaw) {
                 _orientationController.SetVw(yaw);
-            }
-
-            /// <summary>
-            /// Sets the ship into a steady forward flight while controlling lateral thrusters. Good for turning while maintaining a forward velocity.
-            /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public bool SetStableForwardVelocity(double desiredVelocity) {
-                TargetVelocity = desiredVelocity;
-                bool forwardStable = SetVz(desiredVelocity);
-                bool rightStable = SetVx(0);
-                bool upStable = SetVy(0);
-                return forwardStable && rightStable && upStable;
-            }
-
-            /// <summary>
-            /// Puts the ship into a stable free-fall by stabilizing x-y velocity components while letting z accelerate with gravity.
-            /// </summary>
-            /// <returns></returns>
-            public bool StableFreeFall() {
-                bool rightStable = SetVx(0);
-                bool upStable = SetVy(0);
-                return rightStable && upStable;
             }
 
             /// <summary>

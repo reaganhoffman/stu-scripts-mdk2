@@ -644,7 +644,9 @@ namespace IngameScript {
                 if (!CruiseControlActivated) { SetAutopilotControl(true, FlightController.HasGyroControl, RemoteControl.DampenersOverride); }
                 CruiseControlActivated = true;
                 CruiseControlSpeed = velocity;
-                FlightController.SetStableForwardVelocity(velocity);
+                FlightController.SetV_WorldFrame(
+                    Me.GetPosition() + (Me.WorldMatrix.Backward * 1000), // arbitrary point 1000 meters in front of the PB
+                    velocity);
             }
 
             public static void CancelCruiseControl()
