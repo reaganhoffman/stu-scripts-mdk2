@@ -416,7 +416,7 @@ namespace IngameScript {
 
                         // Step 3: Compute what the thrust the function's input would require in local space without scaling
                         // If a human is providing input, use that instead; this comes in local reference already
-                        Vector3D humanInput = RemoteControl.MoveIndicator == Vector3D.Zero ? Vector3D.Zero : new Vector3D(RemoteControl.MoveIndicator.Normalized()) * 10e9;
+                        Vector3D humanInput = RemoteControl.MoveIndicator == Vector3D.Zero ? Vector3D.Zero : new Vector3D(RemoteControl.MoveIndicator.Normalized() * new Vector3(1, 1, -1)) * 10e9;
                         Vector3D desiredThrust = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, magnitude * worldDirection) + humanInput;
 
                         // Step 4: Scale Velocity Countering Thrust
