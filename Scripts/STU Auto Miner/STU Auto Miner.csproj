@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netframework48</TargetFramework>
     <RootNamespace>IngameScript</RootNamespace>
@@ -34,4 +34,5 @@
   <Import Project="..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\PID\PID.projitems" Label="Shared" />
 </Project>

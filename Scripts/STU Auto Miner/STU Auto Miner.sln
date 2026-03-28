@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Auto Miner", "STU Auto Miner.csproj", "{1E44C5B2-0A11-48C5-B4C5-FA4FD5FAF0B8}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Auto Miner HQ", "..\STU Auto Miner HQ\STU Auto Miner HQ.csproj", "{366A3E90-DE14-3523-D030-5AFC91F07B63}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Auto Miner Recon", "..\STU Auto Miner Recon\STU Auto Miner Recon.csproj", "{D60B17A9-D6D4-6C20-4C1F-B117CBD4401D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PID", "..\..\Mixins\PID\PID.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,7 @@ Global
 		..\..\Mixins\Misc\STU Damage Monitor\STU_Damage_Monitor.projitems*{1e44c5b2-0a11-48c5-b4c5-fa4fd5faf0b8}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{1e44c5b2-0a11-48c5-b4c5-fa4fd5faf0b8}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{1e44c5b2-0a11-48c5-b4c5-fa4fd5faf0b8}*SharedItemsImports = 5
+		..\..\Mixins\PID\PID.projitems*{1e44c5b2-0a11-48c5-b4c5-fa4fd5faf0b8}*SharedItemsImports = 5
 		..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems*{1e44c5b2-0a11-48c5-b4c5-fa4fd5faf0b8}*SharedItemsImports = 5
 		..\..\Mixins\Auto Miner\STU Auto Miner Variables\STU_Auto_Miner_Variables.projitems*{366a3e90-de14-3523-d030-5afc91f07b63}*SharedItemsImports = 5
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{366a3e90-de14-3523-d030-5afc91f07b63}*SharedItemsImports = 5
@@ -82,6 +85,7 @@ Global
 		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{6ee22094-1878-45bc-805c-d32278f9c704}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{7d53f862-df1c-4fc4-92f8-49568e15c32b}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{83207d78-9012-4ea3-ac3f-5fea6193e59a}*SharedItemsImports = 13
+		..\..\Mixins\PID\PID.projitems*{8a3cdcc5-4b55-4d87-a415-698a0e1ff06f}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{9543d945-4f12-4cd2-9b70-938ae33c98c7}*SharedItemsImports = 13
 		..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems*{b77aa568-7b92-49e3-b6c3-61fa11e47ec0}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems*{c606c84c-c957-4859-be77-23907a2b1b72}*SharedItemsImports = 13

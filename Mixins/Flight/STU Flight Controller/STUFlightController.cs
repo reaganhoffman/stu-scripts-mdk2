@@ -20,7 +20,7 @@ namespace IngameScript {
 
             StandardOutput[] _standardOutputDisplays { get; set; }
 
-            public IMyRemoteControl RemoteControl { get; protected set; }
+            public IMyShipController RemoteControl { get; protected set; }
 
             public bool HasGyroControl { get; private set; }
             public bool HasThrusterControl { get; private set; }
@@ -50,7 +50,7 @@ namespace IngameScript {
             /// Be sure to orient the Remote Control block so that its forward direction is the direction you want to be considered the "forward" direction of your ship.
             /// Also orient the Remote Control block so that its up direction is the direction you want to be considered the "up" direction of your ship.
             /// </summary>
-            public STUFlightController(IMyGridTerminalSystem grid, IMyRemoteControl remoteControl, IMyTerminalBlock me) {
+            public STUFlightController(IMyGridTerminalSystem grid, IMyShipController remoteControl, IMyTerminalBlock me) {
                 RemoteControl = remoteControl;
                 ActiveThrusters = FindThrusters(grid, me);
                 AllGyroscopes = FindGyros(grid, me);
@@ -73,8 +73,7 @@ namespace IngameScript {
                 _altitudeController = new STUAltitudeController(this, RemoteControl);
             }
 
-            public void UpdateGyrosAfterGridChange(IMyGyro[] newActiveGyros)
-            {
+            public void UpdateGyrosAfterGridChange(IMyGyro[] newActiveGyros) {
                 AllGyroscopes = newActiveGyros;
                 _orientationController = new STUOrientationController(RemoteControl, newActiveGyros);
             }

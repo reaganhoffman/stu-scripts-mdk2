@@ -7,14 +7,14 @@ namespace IngameScript {
         public partial class STUFlightController {
             public class STUOrientationController {
 
-                IMyRemoteControl RemoteControl { get; set; }
+                IMyShipController RemoteControl { get; set; }
                 IMyGyro[] Gyros { get; set; }
 
                 const double ANGLE_ERROR_TOLERANCE = 1e-2;
                 const double DOT_PRODUCT_TOLERANCE = 1e-6;
                 const double ANGULAR_VELOCITY_GAIN = 1.8;
 
-                public STUOrientationController(IMyRemoteControl remoteControl, IMyGyro[] gyros) {
+                public STUOrientationController(IMyShipController remoteControl, IMyGyro[] gyros) {
                     Gyros = gyros;
                     RemoteControl = remoteControl;
                     Array.ForEach(Gyros, gyro => {
@@ -135,12 +135,10 @@ namespace IngameScript {
                 /// </summary>
                 /// <param name="angularVelocity"></param>
                 /// <param name="referenceBlock"></param>
-                public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock)
-                {
+                public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock) {
                     Vector3D localAngularVelocity = Vector3D.TransformNormal(angularVelocity, MatrixD.Transpose(referenceBlock.WorldMatrix));
 
-                    foreach (var gyro in Gyros)
-                    {
+                    foreach (var gyro in Gyros) {
                         Vector3D gyroLocalAngularVelocity = Vector3D.TransformNormal(localAngularVelocity, referenceBlock.WorldMatrix * MatrixD.Transpose(gyro.WorldMatrix));
                         gyro.Pitch = (float)gyroLocalAngularVelocity.X;
                         gyro.Yaw = (float)gyroLocalAngularVelocity.Y;

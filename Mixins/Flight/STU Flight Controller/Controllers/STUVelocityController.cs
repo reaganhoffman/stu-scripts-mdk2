@@ -1,5 +1,4 @@
-﻿using Sandbox.Game.WorldEnvironment.Modules;
-using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +20,9 @@ namespace IngameScript {
                 public bool FINISHED_ORIENTATION_CALCULATION = false;
                 public float CALCULATION_PROGRESS = 0;
 
-                static PID AccelerationPID = new PID(ShipMass, 0, 0, 1f/6f);
+                static PID AccelerationPID = new PID(ShipMass, 0, 0, 1f / 6f);
 
-                IMyRemoteControl RemoteControl { get; set; }
+                IMyShipController RemoteControl { get; set; }
                 public Vector3D LocalGravityVector;
 
                 IMyThrust[] HydrogenThrusters { get; set; }
@@ -54,7 +53,7 @@ namespace IngameScript {
 
                 public static Dictionary<string, double> ThrustCoefficients = new Dictionary<string, double>();
 
-                public STUVelocityController(IMyRemoteControl remoteControl, IMyThrust[] allThrusters) {
+                public STUVelocityController(IMyShipController remoteControl, IMyThrust[] allThrusters) {
 
                     ThrustCoefficients.Clear();
                     RemoteControl = remoteControl;
@@ -132,23 +131,19 @@ namespace IngameScript {
                 }
 
 
-                public void SetFx(double force) 
-                { // candidate for deprecation: see ApplyForceVector()
+                public void SetFx(double force) { // candidate for deprecation: see ApplyForceVector()
                     RightController.ApplyThrust(force);
                 }
 
-                public void SetFy(double force)
-                { // candidate for deprecation: see ApplyForceVector()
+                public void SetFy(double force) { // candidate for deprecation: see ApplyForceVector()
                     UpController.ApplyThrust(force);
                 }
 
-                public void SetFz(double force)
-                { // candidate for deprecation: see ApplyForceVector()
+                public void SetFz(double force) { // candidate for deprecation: see ApplyForceVector()
                     ForwardController.ApplyThrust(force);
                 }
 
-                void ApplyForceVector(Vector3D vector)
-                {
+                void ApplyForceVector(Vector3D vector) {
                     RightController.ApplyThrust(vector.X);
                     UpController.ApplyThrust(vector.Y);
                     ForwardController.ApplyThrust(vector.Z);
@@ -419,8 +414,10 @@ namespace IngameScript {
                             magnitude = MaximumThrustVector.Length();
                         }
 
-                        // Step 3: Compute Desired Velocity Countering Thrust
-                        Vector3D desiredThrust = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, magnitude * worldDirection);
+                        // Step 3: Compute what the thrust the function's input would require in local space without scaling
+                        // If a human is providing input, use that instead; this comes in local reference already
+                        Vector3D humanInput = RemoteControl.MoveIndicator == Vector3D.Zero ? Vector3D.Zero : new Vector3D(RemoteControl.MoveIndicator.Normalized()) * 10e9;
+                        Vector3D desiredThrust = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, magnitude * worldDirection) + humanInput;
 
                         // Step 4: Scale Velocity Countering Thrust
                         double thrustFactor_X = Math.Abs(desiredThrust.X) / remainingThrust_X;
@@ -478,7 +475,8 @@ namespace IngameScript {
                 }
 
                 private static void SetThrusterOverrides(IMyThrust[] thrusters, double thrust) {
-                    if (thrust == double.NaN) thrust = 0; // handle the entire call stack above where we might try to normalize a zero vector, resulting in NaN
+                    if (thrust == double.NaN)
+                        thrust = 0; // handle the entire call stack above where we might try to normalize a zero vector, resulting in NaN
                     foreach (IMyThrust thruster in thrusters) {
                         // MaxEffectiveThrust = MaxThrust for hydrogen thrusters, but not for atmospheric or ion thrusters
                         // If we chose MaxThrust instead, hydrogen thrusters would be unaffected, but atmospheric and ion thrusters

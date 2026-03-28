@@ -16,14 +16,14 @@ namespace IngameScript {
 
                 PointOrbitState CurrentState = PointOrbitState.Idle;
                 STUFlightController FlightController { get; set; }
-                IMyRemoteControl RemoteControl { get; set; }
+                IMyShipController RemoteControl { get; set; }
                 Line OrbitalAxis { get; set; }
 
                 private double TargetRadius { get; set; }
                 private double TargetAltitude { get; set; }
                 public double TargetVelocity { get; set; }
 
-                public STUPointOrbitController(STUFlightController flightController, IMyRemoteControl remoteControl) {
+                public STUPointOrbitController(STUFlightController flightController, IMyShipController remoteControl) {
                     FlightController = flightController;
                     RemoteControl = remoteControl;
                 }
