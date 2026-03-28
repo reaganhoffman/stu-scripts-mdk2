@@ -118,7 +118,8 @@ namespace IngameScript {
                             CBT.CameraHinge.TargetVelocityRad = Math.Abs(CBT.CameraHinge.TargetVelocityRad); // point the camera 'level' with the horizon
                             CancelAttitudeControl();
                             foreach (var light in LandingLights) { light.Enabled = true; }
-                            if (FlightController.MaintainSurfaceAltitude(1, 1, 1) || FlightController.VelocityMagnitude <= 0.1) 
+                            if (FlightController.SetV_WorldFrame(STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Down), 1)
+                                && FlightController.VelocityMagnitude <= 0.1) 
                             { 
                                 InternalState = LandingPhases.Touchdown; 
                             }
