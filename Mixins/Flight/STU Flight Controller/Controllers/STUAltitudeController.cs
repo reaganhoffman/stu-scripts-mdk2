@@ -9,7 +9,7 @@ namespace IngameScript {
             public class STUAltitudeController {
 
                 STUFlightController FlightController { get; set; }
-                IMyRemoteControl RemoteControl { get; set; }
+                IMyShipController RemoteControl { get; set; }
 
                 public double CurrentSeaLevelAltitude { get; private set; }
                 public double SeaLevelAltitudeVelocity { get; private set; }
@@ -23,7 +23,7 @@ namespace IngameScript {
 
                 const double ALTITUDE_ERROR_TOLERANCE = 1;
 
-                public STUAltitudeController(STUFlightController flightController, IMyRemoteControl remoteControl) {
+                public STUAltitudeController(STUFlightController flightController, IMyShipController remoteControl) {
                     FlightController = flightController;
                     RemoteControl = remoteControl;
                     CurrentSurfaceAltitude = _previousSurfaceAltitude = GetSurfaceAltitude();
