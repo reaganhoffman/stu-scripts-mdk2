@@ -153,11 +153,12 @@ namespace IngameScript {
                     }
                 }
 
-                Echo($"Physical Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().PhysicalMass}\n" +
-                    $"Total Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().TotalMass}\n" +
-                    $"Center of Mass: \n{CBT.RemoteControl.CenterOfMass}");
+                //Echo($"Physical Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().PhysicalMass}\n" +
+                //    $"Total Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().TotalMass}\n" +
+                //    $"Center of Mass: \n{CBT.RemoteControl.CenterOfMass}");
 
-                CBT.AddToLogQueue($"{CBT.FlightSeat.MoveIndicator}");
+                // use this line to print random shit to the screen during testing
+                // CBT.AddToLogQueue($"{CBT.FlightSeat.RotationIndicator}");
 
 
             } catch (Exception e) {

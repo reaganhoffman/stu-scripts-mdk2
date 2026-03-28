@@ -625,7 +625,7 @@ namespace IngameScript {
                 // point belly towards the ground...
                 Vector3 currentRemoteControlPosition = RemoteControl.GetPosition();
                 Vector3 targetPosition = currentRemoteControlPosition + 10000 * RemoteControl.GetNaturalGravity();
-                ShipIsLevel = FlightController.AlignShipToTarget(targetPosition, MergeBlock, "right");
+                ShipIsLevel = FlightController.AlignShipToTarget(targetPosition, FlightSeat, "down", new Vector3(0,FlightSeat.RotationIndicator.Y,0));
                 AttitudeControlActivated = true; return true;
             }
 

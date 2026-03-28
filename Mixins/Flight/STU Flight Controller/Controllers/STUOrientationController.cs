@@ -53,7 +53,7 @@ namespace IngameScript {
                 /// <param name="currentPosition"></param>
                 /// <param name="referenceBlock"></param>
                 /// <returns></returns>
-                public bool AlignShipToTarget(Vector3D target, IMyTerminalBlock referenceBlock = null, string desiredReferenceBlockFace = null) {
+                public bool AlignShipToTarget(Vector3D target, IMyTerminalBlock referenceBlock = null, string desiredReferenceBlockFace = null, Vector3 humanInput = new Vector3()) {
                     // If we don't pass in a reference block, use the remote control
                     if (referenceBlock == null) {
                         referenceBlock = RemoteControl;
@@ -71,7 +71,7 @@ namespace IngameScript {
                     double dotProduct = MathHelper.Clamp(Vector3D.Dot(forwardVector, targetVector), -1, 1);
                     double rotationAngle = Math.Acos(dotProduct);
 
-                    if (Math.Abs(rotationAngle) < ANGLE_ERROR_TOLERANCE) {
+                    if (Math.Abs(rotationAngle) < ANGLE_ERROR_TOLERANCE && humanInput == Vector3.Zero) {
                         HardStopGyros();
                         return true;
                     }
@@ -83,7 +83,7 @@ namespace IngameScript {
 
                     Vector3D angularVelocity = rotationAxis * proportionalError;
 
-                    ApplyGyroAlignedAngularVelocity(angularVelocity, referenceBlock);
+                    ApplyGyroAlignedAngularVelocity(angularVelocity, referenceBlock, humanInput);
 
                     return false;
                 }
@@ -135,8 +135,15 @@ namespace IngameScript {
                 /// </summary>
                 /// <param name="angularVelocity"></param>
                 /// <param name="referenceBlock"></param>
-                public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock) {
+                public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock, Vector3 humanInput = new Vector3()) {
                     Vector3D localAngularVelocity = Vector3D.TransformNormal(angularVelocity, MatrixD.Transpose(referenceBlock.WorldMatrix));
+                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.X,2)}");
+                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.Y, 2)}");
+                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.Z, 2)}");
+                    localAngularVelocity += humanInput;
+                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.X,2)}");
+                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.Y, 2)}");
+                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.Z, 2)}");
 
                     foreach (var gyro in Gyros) {
                         Vector3D gyroLocalAngularVelocity = Vector3D.TransformNormal(localAngularVelocity, referenceBlock.WorldMatrix * MatrixD.Transpose(gyro.WorldMatrix));
