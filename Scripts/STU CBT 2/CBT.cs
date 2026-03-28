@@ -189,6 +189,8 @@ namespace IngameScript {
                     GangwayHinge1.TargetVelocityRPM = 0;
                     GangwayHinge2.TargetVelocityRPM = 0;
                     Gangway = new CBTGangway(GangwayHinge1, GangwayHinge2);
+                    Gangway.TryDetermineState();
+                    Gangway.ResetGangway();
                 HangarRotor = LoadBlockByName<IMyMotorStator>("CBT Ramp Rotor");
                 Doors = LoadAllBlocksOfType<IMyDoor>();
 

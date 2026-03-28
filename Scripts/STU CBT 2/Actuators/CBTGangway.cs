@@ -108,10 +108,10 @@ namespace IngameScript {
 
             // methods
             public GangwayStates TryDetermineState() {
-                if (CBT.AngleCloseEnoughDegrees(GangwayHinge1.Angle, 0, HINGE_ANGLE_TOLERANCE) && CBT.AngleCloseEnoughDegrees((float)(GangwayHinge2.Angle - (Math.PI / 2)), 0, HINGE_ANGLE_TOLERANCE)) {
+                if (CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(GangwayHinge1.Angle), 0, 1) && CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(GangwayHinge2.Angle), 0, 1)) {
                     CurrentGangwayState = GangwayStates.Extended;
                     return GangwayStates.Extended;
-                } else if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) {
+                } else if (CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(GangwayHinge1.Angle), -90, 1) && CBT.AngleCloseEnoughDegrees(CBT.RadToDeg(GangwayHinge2.Angle), -88, 1)) {
                     CurrentGangwayState = GangwayStates.Retracted;
                     return GangwayStates.Retracted;
                 } else { return GangwayStates.Unknown; }
