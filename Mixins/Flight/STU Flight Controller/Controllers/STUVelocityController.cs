@@ -10,7 +10,8 @@ namespace IngameScript {
 
             public partial class STUVelocityController {
 
-                public readonly double WORLD_VELOCITY_ERROR_TOLERANCE = 0.01;
+                public const double WORLD_VELOCITY_ERROR_TOLERANCE = 0.01;
+                Vector3D FLIP_Z_VECTOR = new Vector3D(1, 1, -1);
 
                 /// <summary>
                 /// All velocity controllers deal with the same grid mass, so it's shared.
@@ -20,9 +21,7 @@ namespace IngameScript {
                 public bool FINISHED_ORIENTATION_CALCULATION = false;
                 public float CALCULATION_PROGRESS = 0;
 
-                static PID AccelerationPID = new PID(ShipMass, 0, 0, 1f / 6f);
-
-                IMyShipController RemoteControl { get; set; }
+                IMyShipController ShipController { get; set; }
                 public Vector3D LocalGravityVector;
 
                 IMyThrust[] HydrogenThrusters { get; set; }
@@ -43,30 +42,36 @@ namespace IngameScript {
                 public double AggregateForwardThrust { get; set; }
                 public double AggregateReverseThrust { get; set; }
 
-                VelocityController ForwardController { get; set; }
-                VelocityController RightController { get; set; }
-                VelocityController UpController { get; set; }
+                ThrusterGroupController ForwardController { get; set; }
+                ThrusterGroupController RightController { get; set; }
+                ThrusterGroupController UpController { get; set; }
 
                 public Vector3D MaximumThrustVector { get; set; }
                 public Vector3D MinimumThrustVector { get; set; }
                 public IMyThrust[] MaximumThrustVectorThrusters { get; set; }
 
+                public enum OverrideMode {
+                    ADDITIVE,
+                    OVERRIDE,
+                    IGNORE_PLAYER_INPUT
+                }
+
                 public static Dictionary<string, double> ThrustCoefficients = new Dictionary<string, double>();
 
-                public STUVelocityController(IMyShipController remoteControl, IMyThrust[] allThrusters) {
+                public STUVelocityController(IMyShipController shipController, IMyThrust[] allThrusters) {
 
                     ThrustCoefficients.Clear();
-                    RemoteControl = remoteControl;
+                    ShipController = shipController;
 
-                    ShipMass = RemoteControl.CalculateShipMass().PhysicalMass;
-                    LocalGravityVector = RemoteControl.GetNaturalGravity();
+                    ShipMass = ShipController.CalculateShipMass().PhysicalMass;
+                    LocalGravityVector = ShipController.GetNaturalGravity();
 
                     AssignThrustersByOrientation(allThrusters);
                     CalculateThrustCoefficients();
 
-                    ForwardController = new VelocityController(ForwardThrusters, ReverseThrusters);
-                    RightController = new VelocityController(RightThrusters, LeftThrusters);
-                    UpController = new VelocityController(UpThrusters, DownThrusters);
+                    ForwardController = new ThrusterGroupController(ForwardThrusters, ReverseThrusters);
+                    RightController = new ThrusterGroupController(RightThrusters, LeftThrusters);
+                    UpController = new ThrusterGroupController(UpThrusters, DownThrusters);
 
                     MaximumThrustVector = GetMaximumThrustVector();
                     MinimumThrustVector = GetMinimumThrustVector();
@@ -83,40 +88,14 @@ namespace IngameScript {
                 /// <summary>
                 /// Velocity controller utility. Handles acceleration and deceleration automatically based on desired velocity; deceleration occurs with a roughly natural decay.
                 /// </summary>
-                private class VelocityController {
-
-                    // Tolerance for velocity error; if the error is less than this, we're done
-                    private const double VELOCITY_ERROR_TOLERANCE = 0.02;
-                    // Extremely small gravity levels are neglible; if the gravity vector component is less than this, we don't need to counteract it,
-                    // otherwise we're just wasting computation
-                    private const double GRAVITY_ERROR_TOLERANCE = 0.02;
-
-                    private bool ALREADY_COUNTERING_GRAVITY = false;
+                private class ThrusterGroupController {
 
                     private IMyThrust[] PosDirThrusters;
                     private IMyThrust[] NegDirThrusters;
 
-                    public VelocityController(IMyThrust[] posDirThrusters, IMyThrust[] negDirThrusters) {
+                    public ThrusterGroupController(IMyThrust[] posDirThrusters, IMyThrust[] negDirThrusters) {
                         PosDirThrusters = posDirThrusters;
                         NegDirThrusters = negDirThrusters;
-                    }
-
-
-                    private void CounteractGravity(double gravityVectorComponent) {
-                        // If we're operating on an axis that's fighting gravity, then we need to counteract gravity with acceleration of our own
-                        if (Math.Abs(gravityVectorComponent) > GRAVITY_ERROR_TOLERANCE && !ALREADY_COUNTERING_GRAVITY) {
-                            double counterForce = -gravityVectorComponent * ShipMass;
-                            ALREADY_COUNTERING_GRAVITY = true;
-                            ApplyThrust(counterForce);
-                        }
-                    }
-
-                    // https://www.desmos.com/calculator/rsdijct8fq
-                    public bool Accelerate(double remainingVelocityToGain, double gravityVectorComponent) {
-                        double error = remainingVelocityToGain - gravityVectorComponent;
-                        double force = AccelerationPID.Control(error); // tweak this PID by adjusting the values in the declaration of AccelerationPID above
-                        ApplyThrust(force);
-                        return false;
                     }
 
                     public void ApplyThrust(double force) {
@@ -130,20 +109,7 @@ namespace IngameScript {
                     }
                 }
 
-
-                public void SetFx(double force) { // candidate for deprecation: see ApplyForceVector()
-                    RightController.ApplyThrust(force);
-                }
-
-                public void SetFy(double force) { // candidate for deprecation: see ApplyForceVector()
-                    UpController.ApplyThrust(force);
-                }
-
-                public void SetFz(double force) { // candidate for deprecation: see ApplyForceVector()
-                    ForwardController.ApplyThrust(force);
-                }
-
-                void ApplyForceVector(Vector3D vector) {
+                void ApplyThrustVector(Vector3D vector) {
                     RightController.ApplyThrust(vector.X);
                     UpController.ApplyThrust(vector.Y);
                     ForwardController.ApplyThrust(vector.Z);
@@ -157,12 +123,9 @@ namespace IngameScript {
                 /// Updates state variables relevant to the velocity controller. For now, just the local gravity vector.
                 /// </summary>
                 public void UpdateState() {
-                    var localGravity = RemoteControl.GetNaturalGravity();
-                    LocalGravityVector = Vector3D.TransformNormal(localGravity, MatrixD.Transpose(RemoteControl.WorldMatrix));
-                    LocalGravityVector.X = Math.Round(LocalGravityVector.X, 2);
-                    LocalGravityVector.Y = Math.Round(LocalGravityVector.Y, 2);
-                    // flip Z to account for flipped forward-back orientation of Remote Control
-                    LocalGravityVector.Z = -Math.Round(LocalGravityVector.Z, 2);
+                    var localGravity = ShipController.GetNaturalGravity();
+                    LocalGravityVector = Vector3D.TransformNormal(localGravity, MatrixD.Transpose(ShipController.WorldMatrix));
+                    LocalGravityVector *= FLIP_Z_VECTOR;
                 }
 
                 private void AssignThrustersByOrientation(IMyThrust[] allThrusters) {
@@ -180,7 +143,7 @@ namespace IngameScript {
 
                     foreach (IMyThrust thruster in allThrusters) {
 
-                        Base6Directions.Direction thrusterDirection = RemoteControl.Orientation.TransformDirectionInverse(thruster.Orientation.Forward);
+                        Base6Directions.Direction thrusterDirection = ShipController.Orientation.TransformDirectionInverse(thruster.Orientation.Forward);
                         string thrusterType = GetThrusterType(thruster);
 
                         // All thrusters have the opposite direction of what you'd expect
@@ -247,7 +210,7 @@ namespace IngameScript {
 
                     foreach (IMyThrust thruster in allThrusters) {
 
-                        Base6Directions.Direction thrusterDirection = RemoteControl.Orientation.TransformDirectionInverse(thruster.Orientation.Forward);
+                        Base6Directions.Direction thrusterDirection = ShipController.Orientation.TransformDirectionInverse(thruster.Orientation.Forward);
                         string thrusterType = GetThrusterType(thruster);
 
                         if (thrusterDirection == Base6Directions.Direction.Backward) {
@@ -306,9 +269,7 @@ namespace IngameScript {
                     if (!alreadyScaled) {
                         outputVector = GetScaledLocalOutputVector(direction, magnitude);
                     }
-                    SetFx(outputVector.X);
-                    SetFy(outputVector.Y);
-                    SetFz(outputVector.Z);
+                    ApplyThrustVector(outputVector);
                 }
 
                 public bool SetV_WorldFrame(Vector3D targetPos, Vector3D currentVelocity, Vector3D currentPos, double desiredVelocity) {
@@ -374,12 +335,12 @@ namespace IngameScript {
 
                 }
 
-                public void ExertVectorForce_WorldFrame(Vector3D worldDirection, double magnitude) {
+                public void ExertVectorForce_WorldFrame(Vector3D worldDirection, double magnitude, OverrideMode overrideMode = OverrideMode.IGNORE_PLAYER_INPUT) {
 
                     worldDirection.Normalize();
 
                     // Step 1: Compute Gravity Compensation Thrust
-                    Vector3D gravityVector = RemoteControl.GetNaturalGravity() * ShipMass;
+                    Vector3D gravityVector = ShipController.GetNaturalGravity() * ShipMass;
 
                     // If gravity is present, we need to adjust the desired counter thrust to account for the gravity compensation
                     if (gravityVector != Vector3D.Zero) {
@@ -391,7 +352,7 @@ namespace IngameScript {
                         double maxPositiveThrust_Z = AggregateForwardThrust;
                         double maxNegativeThrust_Z = AggregateReverseThrust;
 
-                        Vector3D counterGravityThrustLocal = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, -gravityVector);
+                        Vector3D counterGravityThrustLocal = STUTransformationUtils.WorldDirectionToLocalDirection(ShipController, -gravityVector);
 
                         double remainingThrust_X = (counterGravityThrustLocal.X >= 0)
                             ? maxPositiveThrust_X - counterGravityThrustLocal.X
@@ -416,8 +377,20 @@ namespace IngameScript {
 
                         // Step 3: Compute what the thrust the function's input would require in local space without scaling
                         // If a human is providing input, use that instead; this comes in local reference already
-                        Vector3D desiredThrust = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, magnitude * worldDirection) 
-                            + new Vector3D(RemoteControl.MoveIndicator) * new Vector3D(1,1,-1) * 10e9;
+                        Vector3D desiredThrust = STUTransformationUtils.WorldDirectionToLocalDirection(ShipController, magnitude * worldDirection);
+                        Vector3D humanInput = new Vector3D(ShipController.MoveIndicator) * FLIP_Z_VECTOR * 10e9;
+
+                        switch (overrideMode) {
+                            case OverrideMode.IGNORE_PLAYER_INPUT:
+                                // do nothing; only programmatic inputs will be considered in the desiredThrust calculation above
+                                break;
+                            case OverrideMode.ADDITIVE:
+                                desiredThrust += humanInput;
+                                break;
+                            case OverrideMode.OVERRIDE:
+                                desiredThrust = humanInput;
+                                break;
+                        }
 
                         // Step 4: Scale Velocity Countering Thrust
                         double thrustFactor_X = Math.Abs(desiredThrust.X) / remainingThrust_X;
@@ -436,7 +409,7 @@ namespace IngameScript {
                         return;
                     }
 
-                    ExertVectorForce_LocalFrame(STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, worldDirection), magnitude);
+                    ExertVectorForce_LocalFrame(STUTransformationUtils.WorldDirectionToLocalDirection(ShipController, worldDirection), magnitude);
                 }
 
                 public Vector3D CalculateAccelerationVectors() {

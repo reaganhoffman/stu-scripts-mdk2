@@ -34,7 +34,7 @@ namespace IngameScript {
 
                 public bool Run() {
 
-                    if (_flightController.RemoteControl.GetNaturalGravity().Length() == 0) {
+                    if (_flightController.ShipController.GetNaturalGravity().Length() == 0) {
                         CreateErrorFlightLog("ABORT -- NO GRAVITY");
                         State = PlanetOrbitState.Abort;
                     }
@@ -48,7 +48,7 @@ namespace IngameScript {
                                 CreateFatalFlightLog("ABORT -- NO TARGET PLANET");
                             }
                             double gravityMagnitudeAtOrbitAltitude = _flightController._velocityController.LocalGravityVector.Length();
-                            double targetRadius = Vector3D.Distance(_flightController.RemoteControl.CenterOfMass, TargetPlanet.Value.Center);
+                            double targetRadius = Vector3D.Distance(_flightController.ShipController.CenterOfMass, TargetPlanet.Value.Center);
                             TargetVelocity = Math.Sqrt(gravityMagnitudeAtOrbitAltitude * targetRadius);
                             TargetAltitude = _flightController._altitudeController.GetSeaLevelAltitude();
 
@@ -101,15 +101,15 @@ namespace IngameScript {
                 private bool AdjustVelocity() {
                     // One tick of velocity to get started
                     try {
-                        if (_flightController.RemoteControl.GetShipVelocities().LinearVelocity.Length() == 0) {
-                            Vector3D gravityVector = _flightController.RemoteControl.GetNaturalGravity();
+                        if (_flightController.ShipController.GetShipVelocities().LinearVelocity.Length() == 0) {
+                            Vector3D gravityVector = _flightController.ShipController.GetNaturalGravity();
                             Vector3D initialOrbitVector = Vector3D.Cross(gravityVector, new Vector3D(0, 0, 1));
                             Vector3D kickstartVelocityForce = Vector3D.Normalize(initialOrbitVector) * STUVelocityController.ShipMass;
                             _flightController._velocityController.ExertVectorForce_WorldFrame(kickstartVelocityForce, kickstartVelocityForce.Length());
                             return false;
                         }
 
-                        Vector3D velocityVector = _flightController.RemoteControl.GetShipVelocities().LinearVelocity;
+                        Vector3D velocityVector = _flightController.ShipController.GetShipVelocities().LinearVelocity;
                         Vector3D velocityUnitVector = Vector3D.Normalize(velocityVector);
 
                         double velocityMagnitude = velocityVector.Length();
@@ -136,7 +136,7 @@ namespace IngameScript {
                 }
 
                 private bool WithinVelocityErrorTolerance() {
-                    Vector3D velocityVector = _flightController.RemoteControl.GetShipVelocities().LinearVelocity;
+                    Vector3D velocityVector = _flightController.ShipController.GetShipVelocities().LinearVelocity;
                     double velocityMagnitude = velocityVector.Length();
                     double velocityError = Math.Abs(TargetVelocity - velocityMagnitude);
                     return velocityError < VELOCITY_ERROR_TOLERANCE;

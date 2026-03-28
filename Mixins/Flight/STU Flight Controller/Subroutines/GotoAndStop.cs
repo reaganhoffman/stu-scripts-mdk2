@@ -38,7 +38,7 @@ namespace IngameScript {
                     _flightController = thisFlightController;
                     CruiseVelocity = cruiseVelocity;
                     _targetPos = targetPos;
-                    _reference = reference == null ? _flightController.RemoteControl : reference;
+                    _reference = reference == null ? _flightController.ShipController : reference;
                 }
 
                 public override bool Init() {
@@ -108,8 +108,8 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
-                    _flightController.SetV_WorldFrame(_flightController.CurrentPosition,0);
-                    if (Math.Abs(_flightController.VelocityMagnitude) <= _flightController._velocityController.WORLD_VELOCITY_ERROR_TOLERANCE) {
+                    _flightController.SetV_WorldFrame(_flightController.CurrentPosition, 0);
+                    if (Math.Abs(_flightController.VelocityMagnitude) <= STUVelocityController.WORLD_VELOCITY_ERROR_TOLERANCE) {
                         _flightController.RelinquishGyroControl();
                         CreateOkFlightLog($"{Name} finished");
                         return true;

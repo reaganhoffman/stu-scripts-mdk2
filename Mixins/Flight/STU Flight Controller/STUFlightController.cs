@@ -20,7 +20,7 @@ namespace IngameScript {
 
             StandardOutput[] _standardOutputDisplays { get; set; }
 
-            public IMyShipController RemoteControl { get; protected set; }
+            public IMyShipController ShipController { get; protected set; }
 
             public bool HasGyroControl { get; private set; }
             public bool HasThrusterControl { get; private set; }
@@ -50,15 +50,15 @@ namespace IngameScript {
             /// Be sure to orient the Remote Control block so that its forward direction is the direction you want to be considered the "forward" direction of your ship.
             /// Also orient the Remote Control block so that its up direction is the direction you want to be considered the "up" direction of your ship.
             /// </summary>
-            public STUFlightController(IMyGridTerminalSystem grid, IMyShipController remoteControl, IMyTerminalBlock me) {
-                RemoteControl = remoteControl;
+            public STUFlightController(IMyGridTerminalSystem grid, IMyShipController shipController, IMyTerminalBlock me) {
+                ShipController = shipController;
                 ActiveThrusters = FindThrusters(grid, me);
                 AllGyroscopes = FindGyros(grid, me);
                 TargetVelocity = 0;
-                _velocityController = new STUVelocityController(RemoteControl, ActiveThrusters);
-                _orientationController = new STUOrientationController(RemoteControl, AllGyroscopes);
-                _altitudeController = new STUAltitudeController(this, RemoteControl);
-                _pointOrbitController = new STUPointOrbitController(this, RemoteControl);
+                _velocityController = new STUVelocityController(ShipController, ActiveThrusters);
+                _orientationController = new STUOrientationController(ShipController, AllGyroscopes);
+                _altitudeController = new STUAltitudeController(this, ShipController);
+                _pointOrbitController = new STUPointOrbitController(this, ShipController);
                 _planetOrbitController = new STUPlanetOrbitController(this);
                 HasGyroControl = true;
                 _standardOutputDisplays = FindStandardOutputDisplays(grid, me);
@@ -69,18 +69,18 @@ namespace IngameScript {
 
             public void UpdateThrustersAfterGridChange(IMyThrust[] newActiveThrusters) {
                 ActiveThrusters = newActiveThrusters;
-                _velocityController = new STUVelocityController(RemoteControl, newActiveThrusters);
-                _altitudeController = new STUAltitudeController(this, RemoteControl);
+                _velocityController = new STUVelocityController(ShipController, newActiveThrusters);
+                _altitudeController = new STUAltitudeController(this, ShipController);
             }
 
             public void UpdateGyrosAfterGridChange(IMyGyro[] newActiveGyros) {
                 AllGyroscopes = newActiveGyros;
-                _orientationController = new STUOrientationController(RemoteControl, newActiveGyros);
+                _orientationController = new STUOrientationController(ShipController, newActiveGyros);
             }
 
             public void MeasureCurrentVelocity() {
-                CurrentVelocity_WorldFrame = RemoteControl.GetShipVelocities().LinearVelocity;
-                CurrentVelocity_LocalFrame = STUTransformationUtils.WorldDirectionToLocalDirection(RemoteControl, CurrentVelocity_WorldFrame);
+                CurrentVelocity_WorldFrame = ShipController.GetShipVelocities().LinearVelocity;
+                CurrentVelocity_LocalFrame = STUTransformationUtils.WorldDirectionToLocalDirection(ShipController, CurrentVelocity_WorldFrame);
                 VelocityMagnitude = CurrentVelocity_LocalFrame.Length();
             }
 
@@ -89,8 +89,8 @@ namespace IngameScript {
             }
 
             public void MeasureCurrentPositionAndOrientation() {
-                CurrentWorldMatrix = RemoteControl.WorldMatrix;
-                CurrentPosition = RemoteControl.GetPosition();
+                CurrentWorldMatrix = ShipController.WorldMatrix;
+                CurrentPosition = ShipController.GetPosition();
             }
 
             public double GetCurrentSurfaceAltitude() {
@@ -345,7 +345,7 @@ namespace IngameScript {
 
 
             public void UpdateShipMass() {
-                STUVelocityController.ShipMass = RemoteControl.CalculateShipMass().PhysicalMass;
+                STUVelocityController.ShipMass = ShipController.CalculateShipMass().PhysicalMass;
             }
 
             public double GetShipMass() {
@@ -484,7 +484,7 @@ namespace IngameScript {
             }
 
             public void ToggleDampeners(bool on) {
-                RemoteControl.DampenersOverride = on;
+                ShipController.DampenersOverride = on;
             }
 
         }

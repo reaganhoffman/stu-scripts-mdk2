@@ -122,13 +122,13 @@ namespace IngameScript {
 
             public Color GetDampenersStatusColor()
             {
-                if (CBT.FlightController.RemoteControl.DampenersOverride) return Color.Green;
+                if (CBT.FlightController.ShipController.DampenersOverride) return Color.Green;
                 else return Color.Red;
             }
 
             public string GetDampenersStatus()
             {
-                return BoolConverter(CBT.FlightController.RemoteControl.DampenersOverride);
+                return BoolConverter(CBT.FlightController.ShipController.DampenersOverride);
             }
 
             public void DrawAutopilotStatus(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {

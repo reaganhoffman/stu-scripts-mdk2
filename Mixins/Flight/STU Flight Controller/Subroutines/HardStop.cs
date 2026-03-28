@@ -28,13 +28,13 @@ namespace IngameScript {
                     foreach (var thruster in FC.ActiveThrusters) {
                         thruster.Enabled = true;
                     }
-                    FC.RemoteControl.DampenersOverride = false;
+                    FC.ShipController.DampenersOverride = false;
                     FC.UpdateShipMass();
                     return true;
                 }
 
                 public override bool Run() {
-                    Vector3D worldLinearVelocity = FC.RemoteControl.GetShipVelocities().LinearVelocity;
+                    Vector3D worldLinearVelocity = FC.ShipController.GetShipVelocities().LinearVelocity;
                     FC._velocityController.ExertVectorForce_WorldFrame(-worldLinearVelocity, float.PositiveInfinity);
                     FC._orientationController.AlignCounterVelocity(worldLinearVelocity, FC._velocityController.MaximumThrustVector);
                     if (worldLinearVelocity.Length() < oneTickAcceleration) {
@@ -45,7 +45,7 @@ namespace IngameScript {
                 }
 
                 public override bool Closeout() {
-                    FC.RemoteControl.DampenersOverride = true;
+                    FC.ShipController.DampenersOverride = true;
                     FC.RelinquishGyroControl();
                     FC.RelinquishThrusterControl();
                     return true;
