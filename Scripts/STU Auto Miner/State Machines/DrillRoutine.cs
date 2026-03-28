@@ -81,7 +81,7 @@ namespace IngameScript {
                     case RunStates.ORIENT_AGAINST_JOB_PLANE:
                         Vector3D closestPointOnJobPlane = GetClosestPointOnJobPlane(_jobPlane, _flightController.CurrentPosition);
                         bool aligned = _flightController.AlignShipToTarget(closestPointOnJobPlane);
-                        _flightController.SetStableForwardVelocity(0);
+                        _flightController.Hover();
                         if (aligned) {
                             _flightController.GotoAndStopManeuver = new STUFlightController.GotoAndStop(_flightController, Silos[CurrentSilo].StartPos, 5);
                             RunState = RunStates.FLY_TO_SILO_START;

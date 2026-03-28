@@ -239,7 +239,7 @@ namespace IngameScript {
                         break;
 
                     case MinerState.ALIGN_WITH_BASE_CONNECTOR:
-                        bool stable = _flightController.SetStableForwardVelocity(0);
+                        _flightController.Hover();
                         bool aligned = _flightController.AlignShipToTarget(_homeBaseConnector.GetPosition(), _droneConnector);
                         if (aligned) {
                             // Large-grid connectors are 2.5m long, so we need to move the drone forward by 1.0m to dock
