@@ -222,7 +222,7 @@ namespace IngameScript {
 
                 // instantiate flight controller
                 AddToLogQueue("Initializing FC");
-                FlightController = new STUFlightController(grid, RemoteControl, me);
+                FlightController = new STUFlightController(grid, FlightSeat, me);
                 AddToLogQueue("FC Initialized", STULogType.OK);
 
                 // instantiate docking module
