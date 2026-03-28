@@ -67,21 +67,33 @@ namespace IngameScript {
                     case GangwayStates.Retracting:
                         GangwayHinge1.RotorLock = false;
                         GangwayHinge2.RotorLock = false;
+                        GangwayHinge1.Enabled = true;
+                        GangwayHinge2.Enabled = true;
                         if (RetractGangway()) { CurrentGangwayState = GangwayStates.Retracted; }
                         break;
 
                     case GangwayStates.Retracted:
-                        // DO NOTHING
+                        // disable hinges so there are no phantom torques being applied to the CBT
+                        GangwayHinge1.BrakingTorque = HINGE_TORQUE;
+                        GangwayHinge1.Enabled = false;
+                        GangwayHinge2.BrakingTorque = HINGE_TORQUE;
+                        GangwayHinge2.Enabled = false;
                         break;
 
                     case GangwayStates.Extending:
                         GangwayHinge1.RotorLock = false;
                         GangwayHinge2.RotorLock = false;
+                        GangwayHinge1.Enabled = true;
+                        GangwayHinge2.Enabled = true;
                         if (ExtendGangway()) { CurrentGangwayState = GangwayStates.Extended; }
                         break;
 
                     case GangwayStates.Extended:
-                        // DO NOTHING
+                        // disable hinges so there are no phantom torques being applied to the CBT
+                        GangwayHinge1.BrakingTorque = HINGE_TORQUE;
+                        GangwayHinge1.Enabled = false;
+                        GangwayHinge2.BrakingTorque = HINGE_TORQUE;
+                        GangwayHinge2.Enabled = false;
                         break;
 
                     case GangwayStates.ResettingHinge1:
@@ -97,8 +109,10 @@ namespace IngameScript {
             // methods
             public GangwayStates TryDetermineState() {
                 if (CBT.AngleCloseEnoughDegrees(GangwayHinge1.Angle, 0, HINGE_ANGLE_TOLERANCE) && CBT.AngleCloseEnoughDegrees((float)(GangwayHinge2.Angle - (Math.PI / 2)), 0, HINGE_ANGLE_TOLERANCE)) {
+                    CurrentGangwayState = GangwayStates.Extended;
                     return GangwayStates.Extended;
                 } else if (GangwayHinge1.Angle < -1.56 && GangwayHinge2.Angle < -1.52) {
+                    CurrentGangwayState = GangwayStates.Retracted;
                     return GangwayStates.Retracted;
                 } else { return GangwayStates.Unknown; }
             }
