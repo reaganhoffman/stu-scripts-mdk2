@@ -248,7 +248,7 @@ namespace IngameScript {
                 public bool MaintainOrbitalFlight(double desiredVelocity) {
                     while (waypointIndex < OptimalOrbitalPath.Count) {
                         var currentWaypoint = OptimalOrbitalPath[waypointIndex];
-                        FlightController.SetStableForwardVelocity(desiredVelocity);
+                        FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, desiredVelocity);
                         FlightController.AlignShipToTarget(currentWaypoint);
                         FlightController.OptimizeShipRoll(currentWaypoint);
 

@@ -14,7 +14,7 @@ namespace IngameScript {
                 public override bool Run() {
 
                     FirstRunTasks();
-                    FlightController.SetStableForwardVelocity(LAUNCH_VELOCITY);
+                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, LAUNCH_VELOCITY);
 
                     if (RemoteControl.TryGetPlanetElevation(MyPlanetElevation.Surface, out CurrentElevation)) {
                         if (CurrentElevation > ELEVATION_CUTOFF) {

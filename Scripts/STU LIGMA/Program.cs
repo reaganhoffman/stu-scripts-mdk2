@@ -109,7 +109,8 @@ namespace IngameScript {
                             if (LIGMA.IS_STAGED_LIGMA) {
                                 LIGMA.JettisonLaunchStage();
                             }
-                        };
+                        }
+                        ;
                         break;
 
                     case LIGMA.Phase.Flight:
@@ -126,7 +127,8 @@ namespace IngameScript {
                             } catch (Exception e) {
                                 LIGMA.CreateErrorBroadcast(e.ToString());
                             }
-                        };
+                        }
+                        ;
                         break;
 
                     case LIGMA.Phase.Descent:
@@ -136,7 +138,8 @@ namespace IngameScript {
                             LIGMA.CreateWarningBroadcast("Entering terminal phase");
                             // Stop any roll created during this phase
                             LIGMA.FlightController.SetVr(0);
-                        };
+                        }
+                        ;
                         //
                         break;
 
@@ -147,7 +150,7 @@ namespace IngameScript {
                             ALREADY_SAID_GOODBYE = true;
                         }
                         // Failsafe: If LIGMA runs out of fuel, self-destruct ONLY in terminal phase
-                        if (_inventoryEnumerator.GetItemTotals().GetValueOrDefault("Hydrogen", 1) <= 0) {
+                        if (_inventoryEnumerator.MostRecentItemTotals.GetValueOrDefault("Hydrogen", 1) <= 0) {
                             LIGMA.ArmWarheads();
                             LIGMA.SelfDestruct();
                         }

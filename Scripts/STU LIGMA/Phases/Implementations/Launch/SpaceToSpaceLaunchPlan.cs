@@ -11,7 +11,7 @@ namespace IngameScript {
                 public override bool Run() {
                     FirstRunTasks();
 
-                    FlightController.SetStableForwardVelocity(LAUNCH_VELOCITY);
+                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, LAUNCH_VELOCITY);
                     if (Vector3D.Distance(FlightController.CurrentPosition, LaunchCoordinates) >= LAUNCH_DISTANCE) {
                         return true;
                     }

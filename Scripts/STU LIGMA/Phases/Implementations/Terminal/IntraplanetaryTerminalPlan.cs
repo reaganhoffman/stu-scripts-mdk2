@@ -8,7 +8,7 @@ namespace IngameScript {
 
                 public override bool Run() {
                     FirstRunTasks();
-                    FlightController.SetStableForwardVelocity(TERMINAL_VELOCITY);
+                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, TERMINAL_VELOCITY);
                     FlightController.AlignShipToTarget(TargetData.Position);
                     return false;
                 }
