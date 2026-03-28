@@ -174,6 +174,34 @@ namespace IngameScript {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity);
             }
 
+            public bool SetV_WorldFrame(Base6Directions.Direction desiredDirection, double desiredVelocity, IMyTerminalBlock reference = null) {
+                if (reference == null) {
+                    reference = ShipController;
+                }
+                Vector3D direction = GetWorldDirection(reference, desiredDirection);
+                Vector3D targetPos = reference.GetPosition() + direction * 1000;
+                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity);
+            }
+
+            Vector3D GetWorldDirection(IMyTerminalBlock block, Base6Directions.Direction dir) {
+                switch (dir) {
+                    case Base6Directions.Direction.Forward:
+                        return block.WorldMatrix.Forward;
+                    case Base6Directions.Direction.Backward:
+                        return block.WorldMatrix.Backward;
+                    case Base6Directions.Direction.Left:
+                        return block.WorldMatrix.Left;
+                    case Base6Directions.Direction.Right:
+                        return block.WorldMatrix.Right;
+                    case Base6Directions.Direction.Up:
+                        return block.WorldMatrix.Up;
+                    case Base6Directions.Direction.Down:
+                        return block.WorldMatrix.Down;
+                    default:
+                        return Vector3D.Zero;
+                }
+            }
+
             /// <summary>
             /// Sets the ship's roll. Positive values roll the ship clockwise, negative values roll the ship counterclockwise.
             /// </summary>
@@ -182,8 +210,8 @@ namespace IngameScript {
                 _orientationController.SetVr(roll);
             }
 
-            public void Hover() {
-                _velocityController.ExertVectorForce_WorldFrame(Vector3D.Zero, 0);
+            public bool Hover() {
+                return _velocityController.SetV_WorldFrame(CurrentPosition, CurrentVelocity_WorldFrame, CurrentPosition, 0);
             }
 
             /// <summary>

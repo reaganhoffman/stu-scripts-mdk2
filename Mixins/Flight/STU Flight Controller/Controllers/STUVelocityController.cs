@@ -284,7 +284,7 @@ namespace IngameScript {
                     double V_e = V_e_vec.Length();
 
                     // If V_e is really low or (in the highly unlikely case that it actually hits) zero, we're done
-                    if (V_e < WORLD_VELOCITY_ERROR_TOLERANCE || V_e == double.NaN) {
+                    if (V_e < WORLD_VELOCITY_ERROR_TOLERANCE || double.IsNaN(V_e)) {
                         return true;
                     }
 
@@ -448,7 +448,7 @@ namespace IngameScript {
                 }
 
                 private static void SetThrusterOverrides(IMyThrust[] thrusters, double thrust) {
-                    if (thrust == double.NaN)
+                    if (double.IsNaN(thrust))
                         thrust = 0; // handle the entire call stack above where we might try to normalize a zero vector, resulting in NaN
                     foreach (IMyThrust thruster in thrusters) {
                         // MaxEffectiveThrust = MaxThrust for hydrogen thrusters, but not for atmospheric or ion thrusters
