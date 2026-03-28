@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VRageMath;
 
 namespace IngameScript
 {
@@ -25,6 +26,7 @@ namespace IngameScript
                 }
                 public TakeoffPhases TakeoffPhase { get; set; }
                 public double InitialAltitude { get; set; }
+                Vector3D InitialPosition { get; set; }
                 public bool ReadyForHandoff { get; private set; } = false;
                 private bool AskedForConfirmationAlready { get; set; } = false;
                 private bool _pilotConfirmation { get; set; } = false;
@@ -61,6 +63,7 @@ namespace IngameScript
                 public override bool Init()
                 {
                     InitialAltitude = FlightController.GetCurrentSurfaceAltitude();
+                    InitialPosition = FlightController.CurrentPosition;
                     foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = true; }
                     foreach (var light in LandingLights) { light.Enabled = true; }
                     foreach (var spotlight in Headlights) { spotlight.Enabled = true; }
@@ -92,7 +95,7 @@ namespace IngameScript
                     {
                         case TakeoffPhases.HardwareActuatorPrep:
                             Connector.Disconnect(); // disconnect rear connector
-                            Gangway.UpdateGangway(CBTGangway.GangwayStates.Retracting); // ask the Gangway Controller to retract gangway
+                            CBT.UserInputGangwayState = CBTGangway.GangwayStates.Retracting; // ask the Gangway Controller to retract gangway
                             SetLandingGear(false); // disengage landing gear
                             HangarRotor.TargetVelocityRPM = Math.Abs(HangarRotor.TargetVelocityRPM) * -1; // close hangar ramp, ensuring its velocity is negative
                             TakeoffPhase = TakeoffPhases.AscendToTakeoffHeight; // now we're ready to takeoff
@@ -101,7 +104,9 @@ namespace IngameScript
                             CBT.PushTOLStatusToBottomCameraScreens("TAKING OFF...");
                             double x = FlightController.GetCurrentSurfaceAltitude() - InitialAltitude;
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
-                            if (FlightController.MaintainSurfaceAltitude(InitialAltitude + 50, ascendVelocity, 1)) { TakeoffPhase = TakeoffPhases.HandoffToPilot; }
+                            if (FlightController.SetV_WorldFrame(
+                                InitialPosition + STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Up) * 50, ascendVelocity))
+                                { TakeoffPhase = TakeoffPhases.HandoffToPilot; }
                             break;
                         case TakeoffPhases.HandoffToPilot:
                             LevelToHorizon();

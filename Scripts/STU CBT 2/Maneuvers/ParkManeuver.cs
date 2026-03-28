@@ -105,9 +105,10 @@ namespace IngameScript {
                         case LandingPhases.InitialDescent:
                             CBT.PushTOLStatusToBottomCameraScreens("DESCENDING...");
                             double descendVelocity = Math.Max((FlightController.GetCurrentSurfaceAltitude() - Math.Max(0,LandingZonePlatformElevation ?? 0 ))/ 10, 4);
-                            if (
-                                FlightController.MaintainSurfaceAltitude(30 + LandingZonePlatformElevation ?? 0, 10, descendVelocity) && 
-                                CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended
+                            if (FlightController.SetV_WorldFrame(
+                                InitialLandingZoneVector + STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Up) * 30 + (LandingZonePlatformElevation ?? 0), descendVelocity)
+                                // FlightController.MaintainSurfaceAltitude(30 + LandingZonePlatformElevation ?? 0, 10, descendVelocity) && 
+                                && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended
                                 ) 
                             { 
                                 InternalState = LandingPhases.FinalApproach; 

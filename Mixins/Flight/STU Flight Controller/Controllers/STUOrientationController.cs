@@ -137,13 +137,7 @@ namespace IngameScript {
                 /// <param name="referenceBlock"></param>
                 public void ApplyGyroAlignedAngularVelocity(Vector3D angularVelocity, IMyTerminalBlock referenceBlock, Vector3 humanInput = new Vector3()) {
                     Vector3D localAngularVelocity = Vector3D.TransformNormal(angularVelocity, MatrixD.Transpose(referenceBlock.WorldMatrix));
-                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.X,2)}");
-                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.Y, 2)}");
-                    CBT.AddToLogQueue($"LAV: {Math.Round(localAngularVelocity.Z, 2)}");
                     localAngularVelocity += humanInput;
-                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.X,2)}");
-                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.Y, 2)}");
-                    CBT.AddToLogQueue($"LAV w/ hI: {Math.Round(localAngularVelocity.Z, 2)}");
 
                     foreach (var gyro in Gyros) {
                         Vector3D gyroLocalAngularVelocity = Vector3D.TransformNormal(localAngularVelocity, referenceBlock.WorldMatrix * MatrixD.Transpose(gyro.WorldMatrix));
