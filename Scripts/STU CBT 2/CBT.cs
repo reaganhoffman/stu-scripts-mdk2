@@ -92,7 +92,7 @@ namespace IngameScript {
             public static IMyRemoteControl RemoteControl { get; set; }
             public static IMyThrust[] Thrusters { get; set; }
             public static IMyGyro[] Gyros { get; set; }
-            public static IMyTerminalBlock FlightSeat { get; set; }
+            public static IMyShipController FlightSeat { get; set; }
             public static IMyShipConnector Connector { get; set; }
             public static IMyCryoChamber[] CryoPods { get; set; }
             public static IMyLandingGear[] LandingGear { get; set; }
@@ -180,7 +180,7 @@ namespace IngameScript {
                 OfficerControlSeats = LoadAllBlocksOfTypeWithSubtypeId<IMyCockpit>("Module");
                 HydrogenTanks = LoadAllBlocksOfTypeWithDetailedInfo<IMyGasTank>("Hydrogen");
                 RemoteControl = LoadBlockByName<IMyRemoteControl>("CBT Remote Control");
-                FlightSeat = LoadBlockByName<IMyTerminalBlock>("CBT Flight Seat");
+                FlightSeat = LoadBlockByName<IMyShipController>("CBT Flight Seat");
                 ButtonPanels = LoadAllBlocksOfType<IMyButtonPanel>();
 
                 

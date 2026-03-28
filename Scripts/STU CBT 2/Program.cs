@@ -157,6 +157,8 @@ namespace IngameScript {
                     $"Total Mass: {CBT.FlightController.RemoteControl.CalculateShipMass().TotalMass}\n" +
                     $"Center of Mass: \n{CBT.RemoteControl.CenterOfMass}");
 
+                CBT.AddToLogQueue($"{CBT.FlightSeat.MoveIndicator}");
+
 
             } catch (Exception e) {
                 Echo($"Program.cs: Caught exception: {e}");
