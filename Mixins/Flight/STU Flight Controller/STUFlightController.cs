@@ -149,7 +149,7 @@ namespace IngameScript {
             /// <param name="desiredVelocity"></param>
             /// <param name="referencePos"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, Vector3D referencePos) {
+            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, Vector3D referencePos, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, referencePos, desiredVelocity);
             }
 
@@ -160,8 +160,8 @@ namespace IngameScript {
             /// <param name="desiredVelocity"></param>
             /// <param name="reference"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, IMyTerminalBlock reference) {
-                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, reference.GetPosition(), desiredVelocity);
+            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, IMyTerminalBlock reference, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, reference.GetPosition(), desiredVelocity, overrideMode);
             }
 
             /// <summary>
@@ -170,17 +170,17 @@ namespace IngameScript {
             /// <param name="targetPos"></param>
             /// <param name="desiredVelocity"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity) {
-                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity);
+            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity, overrideMode);
             }
 
-            public bool SetV_WorldFrame(Base6Directions.Direction desiredDirection, double desiredVelocity, IMyTerminalBlock reference = null) {
+            public bool SetV_WorldFrame(Base6Directions.Direction desiredDirection, double desiredVelocity, IMyTerminalBlock reference = null, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 if (reference == null) {
                     reference = ShipController;
                 }
                 Vector3D direction = GetWorldDirection(reference, desiredDirection);
                 Vector3D targetPos = reference.GetPosition() + direction * 1000;
-                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity);
+                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity, overrideMode);
             }
 
             Vector3D GetWorldDirection(IMyTerminalBlock block, Base6Directions.Direction dir) {

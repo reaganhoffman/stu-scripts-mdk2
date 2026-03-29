@@ -15,13 +15,13 @@ namespace IngameScript {
                 public enum LandingPhases
                 {
                     InitialDescent,
-                    FinalApproach,
-                    Touchdown
+                    FinalApproach
                 }
                 public LandingPhases InternalState { get; set; }
                 private bool InitialRaycastState { get; set; }
                 public double? AltitudeAboveLZ { get; set; }
-                public Vector3D InitialLandingZoneVector { get; set; }
+                public Vector3D LZWorldCoordinates { get; set; }
+                Vector3D InitialPositionBeforeDescent { get; set; }
                 public MyDetectedEntityInfo Raycast { get; set; }
                 public double? LandingZonePlatformElevation { get; set; }
                 public bool Landed { get; private set; } = false;
@@ -78,9 +78,9 @@ namespace IngameScript {
                         if (!AskedForConfirmationAlready && AngleCloseEnoughDegrees(CameraHinge.Angle, 0) && CBT.ShipIsLevel && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
                         {
                             Raycast = Camera.Raycast(500,0,0); // limit detection to 500 meters
-                            InitialLandingZoneVector = Camera.GetPosition() - Raycast.HitPosition.Value;
+                            LZWorldCoordinates = Camera.GetPosition() - Raycast.HitPosition.Value;
 
-                            AltitudeAboveLZ = InitialLandingZoneVector.Length() + 10; // empirical testing requires this 10m offset be added to get what the in-game HUD (maybe)
+                            AltitudeAboveLZ = LZWorldCoordinates.Length() + 21.2; // empirical testing -> accurately describes the flight seat's altitude above LZ
                             LandingZonePlatformElevation = FlightController.GetCurrentSurfaceAltitude() - AltitudeAboveLZ;
 
                             CBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
@@ -93,6 +93,7 @@ namespace IngameScript {
                         {
                             PilotConfirmation = false;
                             CBTGangway.ToggleGangway(1); // extend gangway
+                            InitialPositionBeforeDescent = FlightController.CurrentPosition;
                             return true;
                         }
                     }
@@ -105,11 +106,9 @@ namespace IngameScript {
                         case LandingPhases.InitialDescent:
                             CBT.PushTOLStatusToBottomCameraScreens("DESCENDING...");
                             double descendVelocity = Math.Max((FlightController.GetCurrentSurfaceAltitude() - Math.Max(0,LandingZonePlatformElevation ?? 0 ))/ 10, 4);
-                            if (FlightController.SetV_WorldFrame(
-                                InitialLandingZoneVector + STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Up) * 30 + (LandingZonePlatformElevation ?? 0), descendVelocity)
-                                // FlightController.MaintainSurfaceAltitude(30 + LandingZonePlatformElevation ?? 0, 10, descendVelocity) && 
-                                && CBTGangway.CurrentGangwayState == CBTGangway.GangwayStates.Extended
-                                ) 
+                            FlightController.SetV_WorldFrame(Base6Directions.Direction.Down, descendVelocity, null, STUFlightController.STUVelocityController.OverrideMode.ADDITIVE);
+                            CBT.AddToLogQueue($"FC.SufAlt - LZPlatElev: {FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation}");
+                            if (FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation < 21.2 + 15) // I want this to engage when I'm 15 meters from impact (wrt the landing gears), so this factor is necessary based on where the flight seat is, offset from the landing gears 
                             { 
                                 InternalState = LandingPhases.FinalApproach; 
                             }
@@ -119,15 +118,8 @@ namespace IngameScript {
                             CBT.CameraHinge.TargetVelocityRad = Math.Abs(CBT.CameraHinge.TargetVelocityRad); // point the camera 'level' with the horizon
                             CancelAttitudeControl();
                             foreach (var light in LandingLights) { light.Enabled = true; }
-                            if (FlightController.SetV_WorldFrame(STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Down), 1)
-                                && FlightController.VelocityMagnitude <= 0.1) 
-                            { 
-                                InternalState = LandingPhases.Touchdown; 
-                            }
-                            break;
-                        case LandingPhases.Touchdown:
-                            FlightController.MaintainSurfaceAltitude(1, 1, 1);
-                            if (FlightController.VelocityMagnitude < 0.1)
+                            FlightController.SetV_WorldFrame(Base6Directions.Direction.Down, 1, null, STUFlightController.STUVelocityController.OverrideMode.ADDITIVE);
+                            if (FlightController.VelocityMagnitude <= 0.1) 
                             {
                                 Landed = true;
                                 AddToLogQueue("Enter 'CONFIRM' to complete landing sequence.", STULogType.WARNING);

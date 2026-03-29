@@ -21,8 +21,7 @@ namespace IngameScript
                 public enum TakeoffPhases
                 {
                     HardwareActuatorPrep,
-                    AscendToTakeoffHeight,
-                    HandoffToPilot
+                    AscendToTakeoffHeight
                 }
                 public TakeoffPhases TakeoffPhase { get; set; }
                 public double InitialAltitude { get; set; }
@@ -84,6 +83,7 @@ namespace IngameScript
                         foreach (var gyro in Gyros) { gyro.Enabled = true; } // turn on gyros
                         PilotConfirmation = false;
                         AskedForConfirmationAlready = false;
+                        Gangway.ResetGangway();
                         return true;
                     }
                     else return false;
@@ -95,7 +95,6 @@ namespace IngameScript
                     {
                         case TakeoffPhases.HardwareActuatorPrep:
                             Connector.Disconnect(); // disconnect rear connector
-                            CBT.UserInputGangwayState = CBTGangway.GangwayStates.Retracting; // ask the Gangway Controller to retract gangway
                             SetLandingGear(false); // disengage landing gear
                             HangarRotor.TargetVelocityRPM = Math.Abs(HangarRotor.TargetVelocityRPM) * -1; // close hangar ramp, ensuring its velocity is negative
                             TakeoffPhase = TakeoffPhases.AscendToTakeoffHeight; // now we're ready to takeoff
@@ -104,13 +103,13 @@ namespace IngameScript
                             CBT.PushTOLStatusToBottomCameraScreens("TAKING OFF...");
                             double x = FlightController.GetCurrentSurfaceAltitude() - InitialAltitude;
                             double ascendVelocity = Math.Min(10, Math.Max(2,(Math.Pow(x,2)+100*x)/100));
-                            if (FlightController.SetV_WorldFrame(
-                                InitialPosition + STUTransformationUtils.LocalDirectionToWorldDirection(FlightSeat, FlightSeat.WorldMatrix.Up) * 50, ascendVelocity))
-                                { TakeoffPhase = TakeoffPhases.HandoffToPilot; }
+                            FlightController.SetV_WorldFrame(Base6Directions.Direction.Up, ascendVelocity);
+                            if (Math.Abs((FlightController.CurrentPosition - InitialPosition).Length()) > 50)
+                            {
+                                LevelToHorizon();
+                                return true;
+                            }
                             break;
-                        case TakeoffPhases.HandoffToPilot:
-                            LevelToHorizon();
-                            return true;
                     }
                     return false;
                 }

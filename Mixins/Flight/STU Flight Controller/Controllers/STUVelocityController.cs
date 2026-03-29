@@ -272,7 +272,7 @@ namespace IngameScript {
                     ApplyThrustVector(outputVector);
                 }
 
-                public bool SetV_WorldFrame(Vector3D targetPos, Vector3D currentVelocity, Vector3D currentPos, double desiredVelocity) {
+                public bool SetV_WorldFrame(Vector3D targetPos, Vector3D currentVelocity, Vector3D currentPos, double desiredVelocity, OverrideMode overrideMode = OverrideMode.IGNORE_PLAYER_INPUT) {
 
                     Vector3D V_c = currentVelocity;
                     Vector3D V_d = Vector3D.Normalize(targetPos - currentPos) * desiredVelocity;
@@ -296,7 +296,7 @@ namespace IngameScript {
                     outputVector *= V_e * ShipMass;
 
                     // Accelerate along the output vector
-                    ExertVectorForce_WorldFrame(outputVector, outputVector.Length());
+                    ExertVectorForce_WorldFrame(outputVector, outputVector.Length(), overrideMode);
                     return false;
                 }
 
