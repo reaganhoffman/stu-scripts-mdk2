@@ -149,7 +149,12 @@ namespace IngameScript {
             /// <param name="desiredVelocity"></param>
             /// <param name="referencePos"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, Vector3D referencePos, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+            public bool SetV_WorldFrame(
+                Vector3D targetPos, 
+                double desiredVelocity, 
+                Vector3D referencePos, 
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
+            {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, referencePos, desiredVelocity);
             }
 
@@ -160,7 +165,12 @@ namespace IngameScript {
             /// <param name="desiredVelocity"></param>
             /// <param name="reference"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, IMyTerminalBlock reference, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+            public bool SetV_WorldFrame(
+                Vector3D targetPos, 
+                double desiredVelocity, 
+                IMyTerminalBlock reference, 
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
+            {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, reference.GetPosition(), desiredVelocity, overrideMode);
             }
 
@@ -170,11 +180,20 @@ namespace IngameScript {
             /// <param name="targetPos"></param>
             /// <param name="desiredVelocity"></param>
             /// <returns></returns>
-            public bool SetV_WorldFrame(Vector3D targetPos, double desiredVelocity, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+            public bool SetV_WorldFrame(
+                Vector3D targetPos, 
+                double desiredVelocity, 
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
+            {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity, overrideMode);
             }
 
-            public bool SetV_WorldFrame(Base6Directions.Direction desiredDirection, double desiredVelocity, IMyTerminalBlock reference = null, STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
+            public bool SetV_WorldFrame(
+                Base6Directions.Direction desiredDirection, 
+                double desiredVelocity, 
+                IMyTerminalBlock reference = null, 
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
+            {
                 if (reference == null) {
                     reference = ShipController;
                 }
@@ -202,34 +221,20 @@ namespace IngameScript {
                 }
             }
 
-            /// <summary>
-            /// Sets the ship's roll. Positive values roll the ship clockwise, negative values roll the ship counterclockwise.
-            /// </summary>
-            /// <param name="roll"></param>
-            public void SetVr(double roll) {
-                _orientationController.SetVr(roll);
-            }
-
-            public bool Hover() {
+            public bool Hover()
+            {
                 return _velocityController.SetV_WorldFrame(CurrentPosition, CurrentVelocity_WorldFrame, CurrentPosition, 0);
             }
 
             /// <summary>
-            /// Sets the ship's pitch. Positive values pitch the ship clockwise, negative values pitch the ship counterclockwise. (probably)
+            /// Sets the ship's axial velocities.
             /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public void SetVp(double pitch) {
-                _orientationController.SetVp(pitch);
-            }
-
-            /// <summary>
-            /// Sets the ship's yaw. Positive values yaw the ship clockwise, negative values yaw the ship counterclockwise. (probably)
-            /// </summary>
-            /// <param name="desiredVelocity"></param>
-            /// <returns></returns>
-            public void SetVw(double yaw) {
-                _orientationController.SetVw(yaw);
+            /// <param name="axialVelocities">This vector's components correlate to the same axes as its planar counterpart; this variable's 'X' component should describe a desired rotation about the X axis, i.e. pitch. Similarly, this variable's 'Y' component should describe a desired yaw, and Z should describe roll.</param>
+            public void SetAxialVelocity(Vector3D axialVelocities)
+            {
+                _orientationController.SetVp(axialVelocities.X);
+                _orientationController.SetVw(axialVelocities.Y);
+                _orientationController.SetVr(axialVelocities.Z);
             }
 
             /// <summary>

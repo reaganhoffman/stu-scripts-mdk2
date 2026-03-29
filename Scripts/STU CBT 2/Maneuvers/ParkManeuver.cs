@@ -20,7 +20,7 @@ namespace IngameScript {
                 public LandingPhases InternalState { get; set; }
                 private bool InitialRaycastState { get; set; }
                 public double? AltitudeAboveLZ { get; set; }
-                public Vector3D LZWorldCoordinates { get; set; }
+                public Vector3D LZVector { get; set; }
                 Vector3D InitialPositionBeforeDescent { get; set; }
                 public MyDetectedEntityInfo Raycast { get; set; }
                 public double? LandingZonePlatformElevation { get; set; }
@@ -49,11 +49,14 @@ namespace IngameScript {
                         }
                     } 
                 }
+
+                bool ZeroG { get; set; } = false; // assume gravity exists unless proven otherwise
                 
                 public ParkManeuver(CBT thisCBT, Queue<STUStateMachine> thisManeuverQueue, CBTGangway cBTGangway) {
                     ThisCBT = thisCBT;
                     ManeuverQueue = thisManeuverQueue;
                     CBTGangway = cBTGangway;
+                    if (FlightController.ShipController.GetNaturalGravity() == Vector3D.Zero) { ZeroG = true; }
                     CBT.PushTOLStatusToBottomCameraScreens("Acquiring LZ Distance");
                 }
 
@@ -70,23 +73,25 @@ namespace IngameScript {
                         SetAutopilotControl(true, true, true);
                         ResetUserInputVelocities();
                         CancelCruiseControl();
-
-                        LevelToHorizon();
-
-                        // get elevation offset by pointing camera downward and taking a raycast
                         CameraHinge.TargetVelocityRPM = Math.Abs(CameraHinge.TargetVelocityRPM) * -1; // point camera downwards
-                        if (!AskedForConfirmationAlready && AngleCloseEnoughDegrees(CameraHinge.Angle, 0) && CBT.ShipIsLevel && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
-                        {
-                            Raycast = Camera.Raycast(500,0,0); // limit detection to 500 meters
-                            LZWorldCoordinates = Camera.GetPosition() - Raycast.HitPosition.Value;
 
-                            AltitudeAboveLZ = LZWorldCoordinates.Length() + 21.2; // empirical testing -> accurately describes the flight seat's altitude above LZ
+                        if (!ZeroG)
+                        {
+                            LevelToHorizon();
+                        }
+                        if (
+                            !AskedForConfirmationAlready
+                            && AngleCloseEnoughDegrees(CameraHinge.Angle, 0)
+                            && ZeroG ? true : CBT.ShipIsLevel // only check whether the ship is level if we're in gravity
+                            && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
+                        {
+                            Raycast = Camera.Raycast(500, 0, 0); // limit detection to 500 meters
+                            LZVector = Camera.GetPosition() - Raycast.HitPosition.Value;
+
+                            AltitudeAboveLZ = LZVector.Length() + 21.2; // empirical testing -> describes the flight seat's altitude above LZ
                             LandingZonePlatformElevation = FlightController.GetCurrentSurfaceAltitude() - AltitudeAboveLZ;
 
-                            CBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
-                            AddToLogQueue($"Current altitude above LZ: {AltitudeAboveLZ}");
-                            AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
-                            AskedForConfirmationAlready = true;
+                            AskForConfirmation();
                         }
 
                         if (PilotConfirmation)
@@ -108,11 +113,15 @@ namespace IngameScript {
                             double descendVelocity = Math.Max((FlightController.GetCurrentSurfaceAltitude() - Math.Max(0,LandingZonePlatformElevation ?? 0 ))/ 10, 4);
                             FlightController.SetV_WorldFrame(Base6Directions.Direction.Down, descendVelocity, null, STUFlightController.STUVelocityController.OverrideMode.ADDITIVE);
                             CBT.AddToLogQueue($"FC.SufAlt - LZPlatElev: {FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation}");
-                            if (FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation < 21.2 + 15) // I want this to engage when I'm 15 meters from impact (wrt the landing gears), so this factor is necessary based on where the flight seat is, offset from the landing gears 
+                            if (!ZeroG && FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation < 21.2 + 15) // I want this to engage when I'm 15 meters from impact (wrt the landing gears), so this factor is necessary based on where the flight seat is, offset from the landing gears 
                             { 
                                 InternalState = LandingPhases.FinalApproach; 
                             }
-                            break;
+                            else if (ZeroG && (Camera.GetPosition() - Raycast.HitPosition.Value).Length() < 10)
+                            {
+                                InternalState = LandingPhases.FinalApproach;
+                            }
+                                break;
                         case LandingPhases.FinalApproach:
                             CBT.PushTOLStatusToBottomCameraScreens("FINAL \nAPPROACH");
                             CBT.CameraHinge.TargetVelocityRad = Math.Abs(CBT.CameraHinge.TargetVelocityRad); // point the camera 'level' with the horizon
@@ -143,12 +152,27 @@ namespace IngameScript {
                         foreach (var thruster in Thrusters) { thruster.Enabled = false; }
                         foreach (var spotlight in DownwardSpotlights) { spotlight.Enabled = false; }
                         foreach (var spotlight in Headlights) { spotlight.Enabled = false; }
-                        AddToLogQueue("Landing sequence complete.", STULogType.OK);
-                        return true;
+                        foreach (var landingGear in LandingGear)
+                        {
+                            if (landingGear.IsLocked) // final check to make sure landing gear actually locked
+                            {
+                                AddToLogQueue("Landing sequence complete.", STULogType.OK);
+                                return true;
+                            }
+                        }
+                        
                         
                     }
                     return false;
                     
+                }
+
+                void AskForConfirmation()
+                {
+                    CBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
+                    AddToLogQueue($"Current altitude above LZ: {AltitudeAboveLZ}");
+                    AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
+                    AskedForConfirmationAlready = true;
                 }
             }
         }

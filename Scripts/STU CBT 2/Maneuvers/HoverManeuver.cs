@@ -17,9 +17,7 @@ namespace IngameScript {
 
                 public override bool Run() {
                     FlightController.SetV_WorldFrame(FlightController.CurrentPosition, 0);
-                    FlightController.SetVr(0);
-                    FlightController.SetVp(0);
-                    FlightController.SetVw(0);
+                    FlightController.SetAxialVelocity(new VRageMath.Vector3D(0, 0, 0));
                     return FlightController.VelocityMagnitude <= 0.01;
                 }
 
