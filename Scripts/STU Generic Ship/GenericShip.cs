@@ -21,7 +21,7 @@ namespace IngameScript {
             STUInventoryEnumerator _inventoryEnumerator;
             Dictionary<string, double> _inventory = new Dictionary<string, double>();
 
-            public GenericShip(IMyGridTerminalSystem grid, IMyProgrammableBlock me) {
+            public GenericShip(IMyProgrammableBlock me, IMyGridTerminalSystem grid, Action<string> echo, Queue<STUStateMachine> maneuverQueue, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster logBroadcaster, IMyGridProgramRuntimeInfo runtime) {
 
                 // Baseline grid access
                 _grid = grid;

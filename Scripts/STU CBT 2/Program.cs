@@ -9,7 +9,6 @@ using System.Security.Cryptography.X509Certificates;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 using VRageRender.Messages;
-// using static VRage.Game.VisualScripting.ScriptBuilder.MyVSAssemblyProvider;
 
 namespace IngameScript {
     partial class Program : MyGridProgram {
