@@ -49,6 +49,13 @@ namespace IngameScript {
                 ArtilleryAmmo = artilleryAmmo;
             }
 
+            string GetAttitudeOrHeadingText()
+            {
+                if (CBT.AttitudeControlActivated) { return "ATT"; }
+                if (CBT.HeadingControlActivated) { return "HEADING"; }
+                return "";
+            }
+
             public void BuildScreen(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {
                 MySprite background = new MySprite() {
                     Type = SpriteType.TEXTURE,
@@ -165,9 +172,9 @@ namespace IngameScript {
                 MySprite ATT_text = new MySprite()
                 {
                     Type = SpriteType.TEXT,
-                    Data = $"ATT {BoolConverter(CBT.AttitudeControlActivated)}",
+                    Data = $"{GetAttitudeOrHeadingText()}",
                     Position = TopLeft + new Vector2(ScreenWidth / 6 - GetTextSpriteWidth("AT") / 2, ScreenHeight / 4 * 3 + 1),
-                    Color = AttitudeControlColor(),
+                    Color = Color.Cyan,
                     FontId = "Monospace",
                     RotationOrScale = 1
                 };

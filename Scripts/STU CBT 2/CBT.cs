@@ -53,7 +53,31 @@ namespace IngameScript {
 
             public static bool CruiseControlActivated { get; private set; } = false;
             public static float CruiseControlSpeed { get; private set; } = 0f;
-            public static bool AttitudeControlActivated { get; private set; } = false;
+            private static bool _attitudeControlActivated { get; set; } = false;
+            public static bool AttitudeControlActivated
+            {
+                get { return _attitudeControlActivated; }
+                private set
+                {
+                    if (value && !_attitudeControlActivated) { CancelHeadingControl(); } // cancel heading control only on the first call
+                    _attitudeControlActivated = value;
+                }
+            }
+            private static bool _headingControlActivated { get; set; } = false;
+            public static Vector3D HeadingControlVector { get; private set; } = Vector3D.Zero;
+            public static bool HeadingControlActivated 
+            {
+                get { return _headingControlActivated; }
+                private set 
+                {
+                    if (value && !_headingControlActivated) // on the first call, cancel attitude control and calculate & store the heading vector
+                    { 
+                        CancelAttitudeControl(); 
+                        HeadingControlVector = FlightController.ShipController.WorldMatrix.Forward.Normalized() * 1e300;
+                    }
+                    _headingControlActivated = value;
+                }
+            }
             public static bool AltitudeControlActivated { get; private set; } = false;
             public static float AltitudeControlHeight { get; private set; } = 0f;
             public static bool ShipIsLevel { get; private set; } = false;
@@ -118,7 +142,7 @@ namespace IngameScript {
             public static IMyGravityGenerator GravityGenerator { get; set; }
             public static IMySensorBlock[] Sensors { get; set; }
             public static IMyInteriorLight[] LandingLights { get; set; }
-            public static IMyUserControllableGun[] GatlingTurrets { get; set; }
+            public static IMyLargeGatlingTurret[] GatlingTurrets { get; set; }
             public static IMyUserControllableGun[] AssaultCannons { get; set; }
             public static IMyUserControllableGun[] Railguns { get; set; }
             public static IMySmallMissileLauncher[] ArtilleryCannons { get; set; }
@@ -491,8 +515,8 @@ namespace IngameScript {
 
             private static void LoadGatlingGuns(IMyGridTerminalSystem grid)
             {
-                List<IMyUserControllableGun> gatlingGunBlocks = new List<IMyUserControllableGun>();
-                grid.GetBlocksOfType<IMyUserControllableGun>(gatlingGunBlocks, block => block.IsSameConstructAs(Me) && 
+                List<IMyLargeGatlingTurret> gatlingGunBlocks = new List<IMyLargeGatlingTurret>();
+                grid.GetBlocksOfType<IMyLargeGatlingTurret>(gatlingGunBlocks, block => block.IsSameConstructAs(Me) && 
                     !block.BlockDefinition.SubtypeName.Contains("LargeBlockMediumCalibreTurret") && // not assault turrets
                     !block.BlockDefinition.SubtypeName.Contains("LargeBlockLargeCalibreGun") && // not artillery
                     !block.BlockDefinition.SubtypeName.Contains("LargeRailgun")); // not railguns
@@ -558,6 +582,7 @@ namespace IngameScript {
                 PushTOLStatusToBottomCameraScreens("");
                 CancelAttitudeControl();
                 CancelCruiseControl();
+                CancelHeadingControl();
                 ResetUserInputVelocities();
                 foreach (var gyro in CBT.FlightController.AllGyroscopes)
                 {
@@ -655,6 +680,19 @@ namespace IngameScript {
             {
                 CruiseControlActivated = false;
                 SetAutopilotControl(false, false, true);
+            }
+
+            public static void SetHeadingControl()
+            {
+                if (!HeadingControlActivated) { SetAutopilotControl(FlightController.HasThrusterControl, true, FlightController.ShipController.DampenersOverride); }
+                HeadingControlActivated = true;
+                FlightController.AlignShipToTarget(HeadingControlVector);
+            }
+
+            public static void CancelHeadingControl()
+            {
+                SetAutopilotControl(FlightController.HasThrusterControl, false, FlightController.ShipController.DampenersOverride); // simply relinquish control of gyros, don't touch anything else.
+                HeadingControlActivated = false;
             }
             #endregion
 

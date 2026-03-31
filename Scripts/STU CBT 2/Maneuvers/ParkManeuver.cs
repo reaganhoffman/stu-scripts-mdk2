@@ -25,7 +25,7 @@ namespace IngameScript {
                 public MyDetectedEntityInfo Raycast { get; set; }
                 public double? LandingZonePlatformElevation { get; set; }
                 public bool Landed { get; private set; } = false;
-                private bool AskedForConfirmationAlready { get; set; } = false;
+                private bool AskedForConfirmationAlready2 { get; set; } = false;
                 private bool _pilotConfirmation { get; set; } = false;
                 public bool PilotConfirmation 
                 {
@@ -79,8 +79,9 @@ namespace IngameScript {
                         {
                             LevelToHorizon();
                         }
+                        AddToLogQueue($"before conditional: {this.GetHashCode()}");
                         if (
-                            !AskedForConfirmationAlready
+                            !AskedForConfirmationAlready2
                             && AngleCloseEnoughDegrees(CameraHinge.Angle, 0)
                             && ZeroG ? true : CBT.ShipIsLevel // only check whether the ship is level if we're in gravity
                             && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
@@ -112,7 +113,6 @@ namespace IngameScript {
                             CBT.PushTOLStatusToBottomCameraScreens("DESCENDING...");
                             double descendVelocity = Math.Max((FlightController.GetCurrentSurfaceAltitude() - Math.Max(0,LandingZonePlatformElevation ?? 0 ))/ 10, 4);
                             FlightController.SetV_WorldFrame(Base6Directions.Direction.Down, descendVelocity, null, STUFlightController.STUVelocityController.OverrideMode.ADDITIVE);
-                            CBT.AddToLogQueue($"FC.SufAlt - LZPlatElev: {FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation}");
                             if (!ZeroG && FlightController.GetCurrentSurfaceAltitude() - LandingZonePlatformElevation < 21.2 + 15) // I want this to engage when I'm 15 meters from impact (wrt the landing gears), so this factor is necessary based on where the flight seat is, offset from the landing gears 
                             { 
                                 InternalState = LandingPhases.FinalApproach; 
@@ -170,9 +170,10 @@ namespace IngameScript {
                 void AskForConfirmation()
                 {
                     CBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
-                    AddToLogQueue($"Current altitude above LZ: {AltitudeAboveLZ}");
+                    AddToLogQueue($"Asked for confirmation already: {AskedForConfirmationAlready2}");
+                    AddToLogQueue($"{this.GetHashCode()}");
                     AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
-                    AskedForConfirmationAlready = true;
+                    AskedForConfirmationAlready2 = true;
                 }
             }
         }

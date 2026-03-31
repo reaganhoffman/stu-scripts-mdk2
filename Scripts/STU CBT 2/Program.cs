@@ -116,6 +116,7 @@ namespace IngameScript {
                 CBT.FlightController.UpdateState();
                 if (CBT.CruiseControlActivated) { CBT.SetCruiseControl(CBT.CruiseControlSpeed); } // set cruise control only if cruise control is activated.
                 if (CBT.AttitudeControlActivated) { CBT.LevelToHorizon(); } // attempt to level with the horizon only if attitude control is activated.
+                if (CBT.HeadingControlActivated) { CBT.SetHeadingControl(); } // continuously call SetHeadingControl if heading control is activated.
                 CBT.Gangway.UpdateGangway(CBT.UserInputGangwayState);
                 CBT.UpdateAutopilotScreens();
                 CBT.UpdateLogScreens();
@@ -565,188 +566,243 @@ namespace IngameScript {
                             }
                             break;
                         case "ATT":
-                            if (predicate == "OFF")
+                            switch (predicate)
                             {
-                                CBT.CancelAttitudeControl();
-                                CBT.AddToLogQueue("Attitude Control canceled.", STULogType.WARNING);
+                                case "OFF":
+                                    CBT.CancelAttitudeControl();
+                                    CBT.AddToLogQueue("Attitude Control canceled.", STULogType.WARNING);
+                                    break;
+                                case "ON":
+                                    if (CBT.RemoteControl.GetNaturalGravity() == Vector3D.Zero)
+                                    {
+                                        CBT.AddToLogQueue("No gravity detected, cannot enable Attitude Control.", STULogType.WARNING);
+                                    }
+                                    else
+                                    {
+                                        CBT.LevelToHorizon();
+                                        CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
+                                    }
+                                    break;
+                                case "TOGGLE":
+                                    if (CBT.AttitudeControlActivated)
+                                    {
+                                        CBT.CancelAttitudeControl();
+                                        CBT.AddToLogQueue("Attitude Control canceled.", STULogType.WARNING);
+                                    }
+                                    else
+                                    {
+                                        if (CBT.RemoteControl.GetNaturalGravity() == Vector3D.Zero)
+                                        {
+                                            CBT.AddToLogQueue("No gravity detected, cannot enable Attitude Control.", STULogType.WARNING);
+                                        }
+                                        else
+                                        {
+                                            CBT.LevelToHorizon();
+                                            CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
+                                        }
+                                    }
+                                    break;
+                                default: PrintParseError(subject, predicate); break;
                             }
-                            else if (predicate == "ON")
+                            break;
+                        case "HEAD":
+                            switch (predicate)
                             {
-                                if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0, 0, 0))
-                                {
-                                    CBT.AddToLogQueue("No gravity detected, cannot enable Attitude Control.", STULogType.WARNING);
-                                }
-                                else
-                                {
-                                    CBT.LevelToHorizon();
-                                    CBT.AddToLogQueue($"Attitude Control enabled.", STULogType.OK);
-                                }
-                            }
-                            else {
-                                PrintParseError(subject, predicate);
+                                case "OFF":
+                                    CBT.CancelHeadingControl();
+                                    CBT.AddToLogQueue("Heading Control canceled.", STULogType.WARNING);
+                                    break;
+                                case "ON":
+                                    CBT.SetHeadingControl();
+                                    CBT.AddToLogQueue("Heading Control enabled.", STULogType.OK);
+                                    break;
+                                case "TOGGLE":
+                                    if (CBT.HeadingControlActivated)
+                                    {
+                                        CBT.CancelHeadingControl();
+                                        CBT.AddToLogQueue("Heading Control canceled.", STULogType.WARNING);
+                                    }
+                                    else
+                                    {
+                                        CBT.SetHeadingControl();
+                                        CBT.AddToLogQueue("Heading Control enabled.", STULogType.OK);
+                                    }
+                                    break;
+                                default: PrintParseError(subject, predicate); break;
                             }
                             break;
 
                         case "CRUISE":
-                                    if (float.TryParse(predicate, out predicateAsFloat))
-                                    {
-                                        if (predicateAsFloat > 0 && predicateAsFloat <= 5000)
-                                        {
-                                            CBT.AddToLogQueue($"Setting cruising speed to {predicateAsFloat}m/s", STULogType.INFO);
-                                            CBT.SetCruiseControl(predicateAsFloat);
-                                        }
-                                        else { CBT.AddToLogQueue("Cruising speed must be between 0 and 5,000. Skipping...", STULogType.ERROR); }
-                                    }
-                                    else if (predicate == "CANCEL")
-                                    {
-                                        CBT.CancelCruiseControl();
-                                        CBT.AddToLogQueue("Cruise Control Cancelled.", STULogType.WARNING);
-                                    }
-                                    else if (predicate == "SET")
-                                    {
-                                        if (CBT.FlightController.VelocityMagnitude < 1 || CBT.FlightController.VelocityMagnitude > 5000) { CBT.AddToLogQueue("Cannot set cruise control at current speed", STULogType.WARNING); break; }
-                                        CBT.SetCruiseControl((float)CBT.FlightController.VelocityMagnitude);
-                                        CBT.AddToLogQueue($"Cruise Control: {CBT.CruiseControlSpeed}m/s", STULogType.INFO);
-                                    }
-                                    else if (predicate == "INC") // set the cruising speed to the next highest number in the cubic series (f(x)=x^3)
-                                    {
-                                        float desiredSpeed = 1;
-                                        switch (CBT.CruiseControlActivated)
-                                        {
-                                            case true:
-                                                if (CBT.CruiseControlSpeed <= 0) { desiredSpeed = NextHighestCubicNumber(0); }
-                                                else { desiredSpeed = Math.Min(5000, NextHighestCubicNumber(CBT.CruiseControlSpeed)); }
-                                                break;
-                                            case false:
-                                                if (CBT.FlightController.VelocityMagnitude <= 0) { desiredSpeed = NextHighestCubicNumber(0); }
-                                                else { desiredSpeed = Math.Min(5000, NextHighestCubicNumber((float)CBT.FlightController.VelocityMagnitude)); }
-                                                break;
-                                        }
-                                        CBT.SetCruiseControl(desiredSpeed);
-                                        if (CBT.CruiseControlSpeed >= 5000) { CBT.AddToLogQueue("Maximum cruise control speed reached (5000)", STULogType.WARNING); }
+                            if (float.TryParse(predicate, out predicateAsFloat))
+                            {
+                                if (predicateAsFloat > 0 && predicateAsFloat <= 5000)
+                                {
+                                    CBT.AddToLogQueue($"Setting cruising speed to {predicateAsFloat}m/s", STULogType.INFO);
+                                    CBT.SetCruiseControl(predicateAsFloat);
+                                }
+                                else { CBT.AddToLogQueue("Cruising speed must be between 0 and 5,000. Skipping...", STULogType.ERROR); }
+                            }
+                            else if (predicate == "CANCEL")
+                            {
+                                CBT.CancelCruiseControl();
+                                CBT.AddToLogQueue("Cruise Control Cancelled.", STULogType.WARNING);
+                            }
+                            else if (predicate == "SET")
+                            {
+                                if (CBT.FlightController.VelocityMagnitude < 1 || CBT.FlightController.VelocityMagnitude > 5000) { CBT.AddToLogQueue("Cannot set cruise control at current speed", STULogType.WARNING); break; }
+                                CBT.SetCruiseControl((float)CBT.FlightController.VelocityMagnitude);
+                                CBT.AddToLogQueue($"Cruise Control: {CBT.CruiseControlSpeed}m/s", STULogType.INFO);
+                            }
+                            else if (predicate == "INC") // set the cruising speed to the next highest number in the cubic series (f(x)=x^3)
+                            {
+                                float desiredSpeed = 1;
+                                switch (CBT.CruiseControlActivated)
+                                {
+                                    case true:
+                                        if (CBT.CruiseControlSpeed <= 0) { desiredSpeed = NextHighestCubicNumber(0); }
+                                        else { desiredSpeed = Math.Min(5000, NextHighestCubicNumber(CBT.CruiseControlSpeed)); }
                                         break;
-                                    }
-                                    else if (predicate == "DEC") // set the cruising speed to the next lowest number in the cubic series (f(x)=x^3)
+                                    case false:
+                                        if (CBT.FlightController.VelocityMagnitude <= 0) { desiredSpeed = NextHighestCubicNumber(0); }
+                                        else { desiredSpeed = Math.Min(5000, NextHighestCubicNumber((float)CBT.FlightController.VelocityMagnitude)); }
+                                        break;
+                                }
+                                CBT.SetCruiseControl(desiredSpeed);
+                                if (CBT.CruiseControlSpeed >= 5000) { CBT.AddToLogQueue("Maximum cruise control speed reached (5000)", STULogType.WARNING); }
+                                break;
+                            }
+                            else if (predicate == "DEC") // set the cruising speed to the next lowest number in the cubic series (f(x)=x^3)
+                            {
+                                float desiredSpeed = 1;
+                                switch (CBT.CruiseControlActivated)
+                                {
+                                    case true:
+                                        if (CBT.CruiseControlSpeed < 1) { desiredSpeed = 0; }
+                                        else { desiredSpeed = Math.Max(0, NextLowestCubicNumber(CBT.CruiseControlSpeed)); }
+                                        break;
+                                    case false:
+                                        if (CBT.FlightController.VelocityMagnitude < 1) { desiredSpeed = 0; }
+                                        else { desiredSpeed = Math.Max(0, NextLowestCubicNumber((float)CBT.FlightController.VelocityMagnitude)); }
+                                        break;
+                                }
+                                CBT.SetCruiseControl(desiredSpeed);
+                                if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); CBT.ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.WARNING); }
+                            }
+                            else
+                            {
+                                PrintParseError(subject, predicate);
+                            }
+                            break;
+
+                        case "LAND":
+                            ManeuverQueue.Enqueue(new CBT.ParkManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
+                            break;
+
+                        case "CONFIRM":
+                            if (CurrentManeuver is CBT.ParkManeuver)
+                            {
+                                var _currentManeuver = (CBT.ParkManeuver)CurrentManeuver;
+                                try
+                                {
+                                    _currentManeuver.PilotConfirmation = true;
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
+                                }
+                                break;
+                            }
+                            else if (CurrentManeuver is CBT.TakeoffManeuver)
+                            {
+                                var _currentManeuver = (CBT.TakeoffManeuver)CurrentManeuver;
+                                try
+                                {
+                                    _currentManeuver.PilotConfirmation = true;
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
+                                }
+                                break;
+                            }
+                            else break;
+
+                        case "TAKEOFF":
+                            if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0, 0, 0))
+                            {
+                                CBT.AddToLogQueue("Not in gravity. Aborting takeoff sequence.", STULogType.WARNING);
+                                break;
+                            }
+                            ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
+                            break;
+
+                        case "HOVER": // queues a hover maneuver
+                            CBT.AddToLogQueue("Queueing a Hover maneuver", STULogType.INFO);
+                            CBT.CancelCruiseControl();
+                            CBT.CancelAttitudeControl();
+                            ManeuverQueue.Enqueue(new CBT.HoverManeuver());
+                            break;
+
+                        case "FASTSTOP": // queues a fast stop maneuver
+                            CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
+                            CBT.CancelCruiseControl();
+                            CBT.CancelAttitudeControl();
+                            ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
+                            break;
+                        #endregion
+
+                        #region Weapons
+                        case "GAT":
+                            switch (predicate)
+                            {
+                                case "POWER":
+                                    foreach (var gat in CBT.GatlingTurrets) { gat.SetTargetingGroup("BatteryBlock"); }
+                                    break;
+                                case "RESET":
+                                    foreach (var gat in CBT.GatlingTurrets) { gat.ResetTargetingToDefault(); }
+                                    break;
+                                default: PrintParseError(subject, predicate); break;
+                            }
+                            break;
+                        #endregion
+                        #region Networking
+                        case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
+                            CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
+                            CBT.CreateBroadcast("PING", false, STULogType.INFO);
+                            break;
+                        case "DOCK":
+                            switch (predicate)
+                            {
+                                case "REQUEST":
+                                    CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
+                                    CBT.DockingModule.SendDockRequestFlag = true;
+                                    break;
+                                case "CONTINUE":
+                                    CBT.DockingModule.PilotConfirmation = true;
+                                    break;
+                                case "CANCEL":
+                                    if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot)
                                     {
-                                        float desiredSpeed = 1;
-                                        switch (CBT.CruiseControlActivated)
-                                        {
-                                            case true:
-                                                if (CBT.CruiseControlSpeed < 1) { desiredSpeed = 0; }
-                                                else { desiredSpeed = Math.Max(0, NextLowestCubicNumber(CBT.CruiseControlSpeed)); }
-                                                break;
-                                            case false:
-                                                if (CBT.FlightController.VelocityMagnitude < 1) { desiredSpeed = 0; }
-                                                else { desiredSpeed = Math.Max(0, NextLowestCubicNumber((float)CBT.FlightController.VelocityMagnitude)); }
-                                                break;
-                                        }
-                                        CBT.SetCruiseControl(desiredSpeed);
-                                        if (CBT.CruiseControlSpeed <= 0) { CBT.CancelCruiseControl(); CBT.ResetAutopilot(); CBT.AddToLogQueue("Cruise Control Cancelled (low speed)", STULogType.WARNING); }
+                                        CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
+                                        CBT.CreateBroadcast("CANCEL");
+                                        CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
                                     }
                                     else
                                     {
-                                        PrintParseError(subject, predicate);
+                                        CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
                                     }
                                     break;
-
-                                case "LAND":
-                                    ManeuverQueue.Enqueue(new CBT.ParkManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
-                                    break;
-
-                                case "CONFIRM":
-                                    if (CurrentManeuver is CBT.ParkManeuver)
-                                    {
-                                        var _currentManeuver = (CBT.ParkManeuver)CurrentManeuver;
-                                        try
-                                        {
-                                            _currentManeuver.PilotConfirmation = true;
-                                        }
-                                        catch (InvalidOperationException ex)
-                                        {
-                                            Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
-                                        }
-                                        break;
-                                    }
-                                    else if (CurrentManeuver is CBT.TakeoffManeuver)
-                                    {
-                                        var _currentManeuver = (CBT.TakeoffManeuver)CurrentManeuver;
-                                        try
-                                        {
-                                            _currentManeuver.PilotConfirmation = true;
-                                        }
-                                        catch (InvalidOperationException ex)
-                                        {
-                                            Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
-                                        }
-                                        break;
-                                    }
-                                    else break;
-
-                                case "TAKEOFF":
-                                    if (CBT.RemoteControl.GetNaturalGravity() == new Vector3D(0, 0, 0))
-                                    {
-                                        CBT.AddToLogQueue("Not in gravity. Aborting takeoff sequence.", STULogType.WARNING);
-                                        break;
-                                    }
-                                    ManeuverQueue.Enqueue(new CBT.TakeoffManeuver(CBTShip, ManeuverQueue, CBT.Gangway));
-                                    break;
-
-                                case "HOVER": // queues a hover maneuver
-                                    CBT.AddToLogQueue("Queueing a Hover maneuver", STULogType.INFO);
-                                    CBT.CancelCruiseControl();
-                                    CBT.CancelAttitudeControl();
-                                    ManeuverQueue.Enqueue(new CBT.HoverManeuver());
-                                    break;
-
-                                case "FASTSTOP": // queues a fast stop maneuver
-                                    CBT.AddToLogQueue("Queueing a fast stop maneuver", STULogType.INFO);
-                                    CBT.CancelCruiseControl();
-                                    CBT.CancelAttitudeControl();
-                                    ManeuverQueue.Enqueue(new STUFlightController.HardStop(CBT.FlightController));
-                                    break;
-                                #endregion
-
-                                #region Weapons
-
-                                #endregion
-                                #region Networking
-                                case "PING": // predicate is ignored, but generally must still have a value. Otherwise, it would be caught at the top of this method.
-                                    CBT.AddToLogQueue("Broadcasting PING", STULogType.INFO);
-                                    CBT.CreateBroadcast("PING", false, STULogType.INFO);
-                                    break;
-                                case "DOCK":
-                                    switch (predicate)
-                                    {
-                                        case "REQUEST":
-                                            CBT.AddToLogQueue("Sending dock request to Hyperdrive Ring...", STULogType.INFO);
-                                            CBT.DockingModule.SendDockRequestFlag = true;
-                                            break;
-                                        case "CONTINUE":
-                                            CBT.DockingModule.PilotConfirmation = true;
-                                            break;
-                                        case "CANCEL":
-                                            if (CBT.DockingModule.CurrentDockingModuleState == CBTDockingModule.DockingModuleStates.ConfirmWithPilot)
-                                            {
-                                                CBT.AddToLogQueue("Docking sequence cancelled. Returning docking module state to idle...", STULogType.WARNING);
-                                                CBT.CreateBroadcast("CANCEL");
-                                                CBT.DockingModule.CurrentDockingModuleState = CBTDockingModule.DockingModuleStates.Idle;
-                                            }
-                                            else
-                                            {
-                                                CBT.AddToLogQueue("Didn't find anything to cancel. Skipping...", STULogType.WARNING);
-                                            }
-                                            break;
-                                        default:
-                                            PrintParseError(subject, predicate);
-                                            break;
-                                    }
-                                    break;
-                                #endregion
-
                                 default:
-                                    CBT.AddToLogQueue($"Unrecognized subject '{subject}'. Skipping...", STULogType.WARNING);
+                                    PrintParseError(subject, predicate);
                                     break;
-                                }
+                            }
+                            break;
+                        #endregion
+
+                        default:
+                            CBT.AddToLogQueue($"Unrecognized subject '{subject}'. Skipping...", STULogType.WARNING);
+                            break;
+                        }
                 }
                 return true;
             } else {

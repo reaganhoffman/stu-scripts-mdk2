@@ -30,7 +30,9 @@ namespace IngameScript
             string GangwayStatus { get; set; }
             string RampStatus { get; set; }
             string CCStatus { get; set; }
+            string OrientationMode { get; set; }
             string ATTStatus { get; set; }
+            string HeadStatus { get; set; }
             public CBTBottomCameraLCD(CBT cbtObject, Action<string> echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
             {
                 ThisCBT = cbtObject;
@@ -62,7 +64,12 @@ namespace IngameScript
                 }
                 CCStatus = CBT.CruiseControlSpeed.ToString();
                 if (!CBT.CruiseControlActivated) CCStatus = "OFF";
-                ATTStatus = BoolConverter(CBT.AttitudeControlActivated);
+                switch((CBT.AttitudeControlActivated ? 1: 0) + (CBT.HeadingControlActivated ? 1 : 0) * 2)
+                {
+                    case 1: OrientationMode = "ATT LOCK"; break;
+                    case 2: OrientationMode = "HEADING"; break;
+                    default: OrientationMode = ""; break;
+                }
             }
 
             public void BuildScreen(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f)
@@ -91,7 +98,7 @@ namespace IngameScript
                 frame.Add(BuildTextSprite($"GANGWAY: {GangwayStatus}", 0, 0, gangwayColor));
                 frame.Add(BuildTextSprite($"RAMP: {RampStatus}", 0, CharHeight, cl));
                 frame.Add(BuildTextSprite($"CC: {CCStatus}", 0, CharHeight * 3, cl));
-                frame.Add(BuildTextSprite($"ATT: {ATTStatus}", 0, CharHeight * 4, cl));
+                frame.Add(BuildTextSprite($"{OrientationMode}", 0, CharHeight * 4, cl));
             }
         }
     }
