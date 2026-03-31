@@ -25,7 +25,7 @@ namespace IngameScript {
                 public MyDetectedEntityInfo Raycast { get; set; }
                 public double? LandingZonePlatformElevation { get; set; }
                 public bool Landed { get; private set; } = false;
-                private bool AskedForConfirmationAlready2 { get; set; } = false;
+                private bool AskedForConfirmationAlready { get; set; } = false;
                 private bool _pilotConfirmation { get; set; } = false;
                 public bool PilotConfirmation 
                 {
@@ -79,11 +79,10 @@ namespace IngameScript {
                         {
                             LevelToHorizon();
                         }
-                        AddToLogQueue($"before conditional: {this.GetHashCode()}");
                         if (
-                            !AskedForConfirmationAlready2
+                            !AskedForConfirmationAlready
                             && AngleCloseEnoughDegrees(CameraHinge.Angle, 0)
-                            && ZeroG ? true : CBT.ShipIsLevel // only check whether the ship is level if we're in gravity
+                            && (ZeroG ? true : CBT.ShipIsLevel) // only check whether the ship is level if we're in gravity AND YOU MUST SURROUND IT IN PARENTHESIS
                             && Camera.CanScan(500)) // only do the raycast if the camera is pointed downards and we're level with the horizon
                         {
                             Raycast = Camera.Raycast(500, 0, 0); // limit detection to 500 meters
@@ -169,11 +168,8 @@ namespace IngameScript {
 
                 void AskForConfirmation()
                 {
-                    CBT.PushTOLStatusToBottomCameraScreens("CONFIRM LAND");
-                    AddToLogQueue($"Asked for confirmation already: {AskedForConfirmationAlready2}");
-                    AddToLogQueue($"{this.GetHashCode()}");
                     AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
-                    AskedForConfirmationAlready2 = true;
+                    AskedForConfirmationAlready = true;
                 }
             }
         }
