@@ -401,13 +401,22 @@ namespace IngameScript {
                                     CBT.PCM.RestoreFromLowPowerMode();
                                     break;
                                 case "ALL":
-                                    foreach (var @class in PowerControlModule.PowerClasses)
+                                    foreach (var powerClass in PowerControlModule.PowerClasses)
                                     {
-                                        CBT.PCM.EnablePowerClass(@class);
+                                        CBT.PCM.EnablePowerClass(powerClass);
                                     }
                                     break;
                                 default:
-                                    PrintParseError(subject, predicate);
+                                    bool foundOne = false;
+                                    foreach (var powerClass in PowerControlModule.PowerClasses)
+                                    {
+                                        if (powerClass.Class == predicate) 
+                                        { 
+                                            CBT.PCM.TogglePowerClass(powerClass); 
+                                            foundOne = true;
+                                        }
+                                    }
+                                    if (!foundOne) PrintParseError(subject, predicate);
                                     break;
                             }
                             break;

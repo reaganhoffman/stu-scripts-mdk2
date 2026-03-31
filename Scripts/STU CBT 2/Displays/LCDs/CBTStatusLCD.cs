@@ -12,6 +12,7 @@ namespace IngameScript {
             public float CharWidth { get; set; }
             public float CharHeight { get; set; }
             public float FontSize { get; set; }
+            Color[] PowerStateColors { get; set; }
             
             public CBTStatusLCD(Action<string> echo, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
                 Echo = echo;
@@ -218,6 +219,17 @@ namespace IngameScript {
                 if (powerLevel == 100) return "F";
                 else return powerLevel.ToString() + "%";
             }
+            public Color[] GetPowerStatesColors()
+            {
+                Color[] _colors = new Color[PowerControlModule.PowerClasses.Length];
+                for (int i = 0; i < PowerControlModule.PowerClasses.Length; i++)
+                {
+                    if (PowerControlModule.PowerClasses[i].Enabled) { _colors[i] = Color.Green; }
+                    else { _colors[i] = Color.Gray; }
+                }
+
+                return _colors;
+            }
 
 
             public void BuildScreen(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f) {
@@ -242,8 +254,11 @@ namespace IngameScript {
                 frame.Add(BuildTextSprite($"O2:{GetOxygenStatusString()}", 0, CharHeight * 5, GetOxygenStatusColor()));
                 frame.Add(BuildTextSprite("MED", ScreenWidth / 2 + 1, CharHeight * 5, GetMedBayStatusColor()));
                 frame.Add(BuildTextSprite($"kW:{GetBatteryStatusString()}", 0, CharHeight * 6, GetBatteryStatusColor()));
-                frame.Add(BuildTextSprite($"PL:{CBT.PowerLevel}", ScreenWidth / 2 + 1, CharHeight * 6, Color.White));
-
+                PowerStateColors = GetPowerStatesColors();
+                for (int i = 0; i < PowerControlModule.PowerClasses.Length; i++)
+                {
+                    frame.Add(BuildTextSprite($"{PowerControlModule.PowerClasses[i].Class.Substring(0, 1)}", (i % 5)+1, CharHeight * (7 + Math.Floor(i/5f)), PowerStateColors[i]));
+                }
             }
 
         }
