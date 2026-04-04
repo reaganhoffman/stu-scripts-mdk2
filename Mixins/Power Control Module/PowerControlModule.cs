@@ -47,7 +47,7 @@ namespace IngameScript
                 new PowerGroup{Name = "LOW", Enabled = true, Blocks = new List<IMyFunctionalBlock>()}
             };
 
-            static List<PowerGroup> PowerGroupsBeforeLowPowerMode { get; set; } = new List<PowerGroup>();
+            public static List<PowerGroup> PowerGroupsSaveState { get; set; } = new List<PowerGroup>();
 
             public static void RefreshGroupMembership(List<IMyFunctionalBlock> blocks)
             {
@@ -100,7 +100,6 @@ namespace IngameScript
 
             static public void EnablePowerGroup(PowerGroup powerGroup)
             {
-                if (powerGroup.Name == "LOW") return; // disallow Low Power Mode to be invoked this way; use GoToLowPowerMode / RestoreFromLowPowerMode
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = true; // turn the block on 
@@ -110,7 +109,7 @@ namespace IngameScript
 
             static public void DisablePowerGroup(PowerGroup powerGroup)
             {
-                if (powerGroup.Name == "LOW") return; // disallow Low Power Mode to be invoked this way; use GoToLowPowerMode / RestoreFromLowPowerMode
+                if (powerGroup.Name == "LOW") return; // disallow blocks designated Low Power Mode to be turned off in software.
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = false; // turn the block off
@@ -120,28 +119,21 @@ namespace IngameScript
 
             static public void GoToLowPowerMode()
             {
-                CBT.AddToLogQueue($"going to low power mode");
+                PowerGroupsSaveState.Clear();
                 foreach (var powerGroup in PowerGroups)
                 {
-                    CBT.AddToLogQueue($"PG {powerGroup.Name} is currently {BoolConverter(powerGroup.Enabled)}");
-                    if (powerGroup.Enabled)
-                    {
-                        PowerGroupsBeforeLowPowerMode.Add(powerGroup);
-                    }
+                    PowerGroupsSaveState.Add(powerGroup);
                     DisablePowerGroup(powerGroup);
                 }
             }
 
-            static public void RestoreFromLowPowerMode()
+            static public void RestoreFromSaveState()
             {
-                CBT.AddToLogQueue("restoring from low power mode");
-                foreach (var powerGroup in PowerGroupsBeforeLowPowerMode)
+                foreach (var powerGroup in PowerGroupsSaveState)
                 {
-                    CBT.AddToLogQueue($"found group {powerGroup.Name} in PGBLPM");
                     if (powerGroup.Enabled)
                         EnablePowerGroup(powerGroup);
                 }
-                PowerGroupsBeforeLowPowerMode.Clear();
             }
 
             static bool IsPartOfPowerGroup(IMyFunctionalBlock block, string group)

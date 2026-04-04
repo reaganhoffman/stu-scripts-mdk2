@@ -13,7 +13,7 @@ using VRageRender.Messages;
 
 namespace IngameScript {
     partial class Program : MyGridProgram {
-        
+        MyIni _ini = new MyIni();
         CBT CBTShip { get; set; }
         STUMasterLogBroadcaster Broadcaster { get; set; }
         IMyBroadcastListener Listener { get; set; }
@@ -38,7 +38,16 @@ namespace IngameScript {
         }
 
         public Program() {
-            // instantiate the actual CBT at the Program level so that all the methods in here will be directed towards a specific CBT object (the one that I fly around in game)
+            // read from Storage
+            _ini.TryParse(Storage);
+            PowerControlModule.PowerGroupsSaveState.Clear();
+            foreach (var group in PowerControlModule.PowerGroups)
+            {
+                PowerControlModule.PowerGroupsSaveState.Add(new PowerControlModule.PowerGroup { Name = group.Name, Blocks = group.Blocks, Enabled = _ini.Get("POWER", group.Name).ToBoolean() } );
+            }
+            PowerControlModule.RestoreFromSaveState();
+
+            
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
             GridTerminalSystem.GetBlocks(AllTerminalBlocks);
@@ -54,6 +63,18 @@ namespace IngameScript {
             // I'm pretty sure the user input buffer is empty as far as the program is concerned whenever you hit recompile, even if there is text in the box.
             // i.e. it's only when you hit "run" does the program pull whatever is in the user input buffer and run it.
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
+        }
+
+        public void Save()
+        {
+            _ini.Clear();
+
+            foreach (var group in PowerControlModule.PowerGroups)
+            {
+                _ini.Set("POWER", group.Name, group.Enabled);
+            }
+            
+            Storage = _ini.ToString();
         }
 
         /// <summary>
@@ -415,7 +436,7 @@ namespace IngameScript {
                                     PowerControlModule.GoToLowPowerMode();
                                     break;
                                 case "RESTORE":
-                                    PowerControlModule.RestoreFromLowPowerMode();
+                                    PowerControlModule.RestoreFromSaveState();
                                     break;
                                 case "ALL":
                                     foreach (var powerClass in PowerControlModule.PowerGroups)
