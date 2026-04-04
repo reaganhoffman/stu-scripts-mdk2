@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Power Control Host", "Power Control Host.csproj", "{0C529674-3EDB-4902-A127-DB372C0C8BA9}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Power Control Module", "..\..\Mixins\Power Control Module\Power Control Module.shproj", "{7760BA51-8C8D-41D2-A9DE-649C33D7AA89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C529674-3EDB-4902-A127-DB372C0C8BA9}.Debug|x64.ActiveCfg = Debug|x64
+		{0C529674-3EDB-4902-A127-DB372C0C8BA9}.Debug|x64.Build.0 = Debug|x64
+		{0C529674-3EDB-4902-A127-DB372C0C8BA9}.Release|x64.ActiveCfg = Release|x64
+		{0C529674-3EDB-4902-A127-DB372C0C8BA9}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F003111F-1A93-42F0-96E5-4173560E3977}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{0c529674-3edb-4902-a127-db372c0c8ba9}*SharedItemsImports = 5
+		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{7760ba51-8c8d-41d2-a9de-649c33d7aa89}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal

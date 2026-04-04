@@ -31,6 +31,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STUInventoryEnumerator", ".
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PID", "..\..\Mixins\PID\PID.shproj", "{8A3CDCC5-4B55-4D87-A415-698A0E1FF06F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Power Control Module", "..\..\Mixins\Power Control Module\Power Control Module.shproj", "{27DEBC59-5914-46CC-92CC-8CE67EDD69F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,6 +52,7 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{23e2d3a8-97cd-4e45-889c-1798f06f4240}*SharedItemsImports = 13
+		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{27debc59-5914-46cc-92cc-8ce67edd69f5}*SharedItemsImports = 13
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{4fb19e00-bd67-4421-ad35-d02f6c4c181b}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
@@ -75,5 +78,6 @@ Global
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\PID\PID.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
+		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

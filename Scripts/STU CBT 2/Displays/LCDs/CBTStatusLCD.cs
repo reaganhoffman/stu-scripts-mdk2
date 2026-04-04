@@ -221,10 +221,10 @@ namespace IngameScript {
             }
             public Color[] GetPowerStatesColors()
             {
-                Color[] _colors = new Color[PowerControlModule.PowerClasses.Length];
-                for (int i = 0; i < PowerControlModule.PowerClasses.Length; i++)
+                Color[] _colors = new Color[PowerControlModule.PowerGroups.Length];
+                for (int i = 0; i < PowerControlModule.PowerGroups.Length; i++)
                 {
-                    if (PowerControlModule.PowerClasses[i].Enabled) { _colors[i] = Color.Green; }
+                    if (PowerControlModule.PowerGroups[i].Enabled) { _colors[i] = Color.Green; }
                     else { _colors[i] = Color.Gray; }
                 }
 
@@ -255,9 +255,9 @@ namespace IngameScript {
                 frame.Add(BuildTextSprite("MED", ScreenWidth / 2 + 1, CharHeight * 5, GetMedBayStatusColor()));
                 frame.Add(BuildTextSprite($"kW:{GetBatteryStatusString()}", 0, CharHeight * 6, GetBatteryStatusColor()));
                 PowerStateColors = GetPowerStatesColors();
-                for (int i = 0; i < PowerControlModule.PowerClasses.Length; i++)
+                for (int i = 0; i < PowerControlModule.PowerGroups.Length; i++)
                 {
-                    frame.Add(BuildTextSprite($"{PowerControlModule.PowerClasses[i].Class.Substring(0, 1)}", (i % 5)+1, CharHeight * (7 + Math.Floor(i/5f)), PowerStateColors[i]));
+                    frame.Add(BuildTextSprite($"{PowerControlModule.PowerGroups[i].Name.Substring(0, 1)}", ((i % 5)+1) * GetTextSpriteWidth("AAA"), CharHeight * (7 + (float)Math.Floor(i/5f)), PowerStateColors[i]));
                 }
             }
 

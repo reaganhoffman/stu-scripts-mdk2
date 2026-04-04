@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Management.Instrumentation;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Activation;
 using System.Runtime.Remoting.Messaging;
@@ -85,8 +86,32 @@ namespace IngameScript {
 
             // prepare the program by declaring all the different blocks we are going to use
             public static IMyGridTerminalSystem CBTGrid { get; set; }
-            public static IMyTerminalBlock[] AllTerminalBlocks { get; set; }
-            public static IMyFunctionalBlock[] AllFunctionalBlocks { get; set; }
+            static IMyTerminalBlock[] _allTerminalBlocks { get; set; }
+            public static IMyTerminalBlock[] AllTerminalBlocks
+            {
+                get
+                {
+                    _allTerminalBlocks = LoadAllBlocksOfType<IMyTerminalBlock>();
+                    return _allTerminalBlocks;
+                }
+                private set
+                {
+                    value = _allTerminalBlocks;
+                }
+            }
+            static IMyFunctionalBlock[] _allFunctionalBlocks { get; set; }
+            public static IMyFunctionalBlock[] AllFunctionalBlocks
+            {
+                get
+                {
+                    _allFunctionalBlocks = LoadAllBlocksOfType<IMyFunctionalBlock>();
+                    return _allFunctionalBlocks;
+                }
+                private set
+                {
+                    value = _allFunctionalBlocks;
+                }
+            }
             public static List<CBTLogLCD> LogChannel { get; set; } = new List<CBTLogLCD>();
             public static Queue<string> LogChannelMessageBuffer { get; set; } = new Queue<string>();
             public static List<CBTAutopilotLCD> AutopilotStatusChannel { get; set; } = new List<CBTAutopilotLCD>();
@@ -99,7 +124,7 @@ namespace IngameScript {
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
-            public static PowerControlModule PCM { get; set; }
+            //public static PowerControlModule PCM { get; set; }
             public static CBTGangway Gangway { get; set; }
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
@@ -127,6 +152,19 @@ namespace IngameScript {
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }
             public static IMyMotorStator HangarRotor { get; set; }
+            static bool _rampShouldBeClosed { get; set; }
+            public static bool RampShouldBeClosed
+            {
+                get
+                {
+                    _rampShouldBeClosed = AngleCloseEnoughDegrees(HangarRotor.Angle, 0, 1);
+                    return _rampShouldBeClosed;
+                }
+                set
+                {
+                    value = _rampShouldBeClosed;
+                }
+            }
             public static IMyMotorStator CameraRotor { get; set; }
             public static IMyMotorStator CameraHinge { get; set; }
             public static IMyCameraBlock Camera { get; set; }
@@ -164,6 +202,14 @@ namespace IngameScript {
                 Idle,
                 Executing,
             }
+
+            public struct Waypoint
+            {
+                public string Name;
+                public Vector3D Location;
+            }
+
+            public static List<Waypoint> SavedWaypoints { get; set; } = new List<Waypoint>();
 
             public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
                 ManeuverQueue = thisManeuverQueue;
@@ -216,6 +262,7 @@ namespace IngameScript {
                     Gangway.TryDetermineState();
                     Gangway.ResetGangway();
                 HangarRotor = LoadBlockByName<IMyMotorStator>("CBT Ramp Rotor");
+                if (AngleCloseEnoughDegrees(HangarRotor.Angle, 0f, 0.1f)) RampShouldBeClosed = true;
                 Doors = LoadAllBlocksOfType<IMyDoor>();
 
                 
@@ -264,8 +311,11 @@ namespace IngameScript {
 
                 // instantiate power control module
                 AddToLogQueue("Initializing PCM");
-                PCM = new PowerControlModule(AllFunctionalBlocks.ToList());
+                PowerControlModule.RefreshGroupMembership(AllFunctionalBlocks.ToList());
                 AddToLogQueue("PCM Initialized", STULogType.OK);
+
+                // load waypoints saved in the PB's custom data
+                RefreshSavedWaypoints();
 
                 // ensure initial state of certain blocks
                 Connector.Enabled = true;
@@ -295,6 +345,54 @@ namespace IngameScript {
                         Type = type,
                     });
                 }
+            }
+
+            public static void RefreshSavedWaypoints()
+            {
+                MyIni ini = new MyIni();
+                MyIniParseResult result;
+                if (!ini.TryParse(Me.CustomData, out result)) return;
+                List<string> sections = new List<string>();
+                ini.GetSections(sections);
+                foreach (var section in sections)
+                {
+                    if (section == "GPS")
+                    {
+                        string waypointName;
+                        Vector3D waypointLocation;
+                        List<MyIniKey> keys = new List<MyIniKey>();
+                        ini.GetKeys(section, keys);
+                        foreach (var key in keys)
+                        {
+                            waypointName = key.ToString().ToUpper();
+                            waypointLocation = TryParseGPSCoordinate(ini.Get(key).ToString());
+                            SavedWaypoints.Add(new Waypoint { Name = waypointName, Location = waypointLocation }); // will return NaN vector if unsuccessful
+                        }
+                    }
+                }
+                AddToLogQueue($"Loaded Waypoints from PB", STULogType.OK);
+            }
+
+            static Vector3D TryParseGPSCoordinate(string rawCoordinateText)
+            {
+                string[] gpsStringComponents = rawCoordinateText.Split(':');
+                double x;
+                double y;
+                double z;
+                if (gpsStringComponents[0] == "GPS"
+                    && Double.TryParse(gpsStringComponents[2], out x)
+                    && Double.TryParse(gpsStringComponents[3], out y)
+                    && Double.TryParse(gpsStringComponents[4], out z))
+                {
+                    return new Vector3D(x, y, z);
+                }
+                else { return new Vector3D(double.NaN, double.NaN, double.NaN); }
+            }
+
+            public static void QueueGotoAndStopManeuver(Vector3D waypoint)
+            {
+                if (waypoint.X == double.NaN || waypoint.Y == double.NaN || waypoint.Z == double.NaN) return;
+                ManeuverQueue.Enqueue(new STUFlightController.GotoAndStop(FlightController, waypoint, CruiseControlSpeed));
             }
 
 
@@ -434,7 +532,6 @@ namespace IngameScript {
 
             private static void AssignScreenToChannel(int screenIndex, string channel, float fontSize, IMyTerminalBlock block)
             {
-                //echo($"attempting to add block {block.CustomName} to channel {channel} with font size {fontSize}. custom data:\n{block.CustomData}");
                 switch (channel)
                 {
                     case "LOG":
@@ -511,7 +608,6 @@ namespace IngameScript {
                 }
                 else { return block as T; }
             }
-            #endregion
 
             private static void LoadGatlingGuns(IMyGridTerminalSystem grid)
             {
@@ -574,7 +670,6 @@ namespace IngameScript {
             }
             #endregion
 
-            #region CBT Helper Functions
             #region Autopilot
             public static void ResetAutopilot()
             {
@@ -633,12 +728,6 @@ namespace IngameScript {
                 UserInputYawVelocity = 0;
             }
 
-            /// <summary>
-            /// Levels the ship to the horizon by defining a point 1000 meters in front of the ship and then using the Flight Controller's AlignShipToTarget method to point the ship at that point.
-            /// Designed to be called continuously when attitude control is activated.
-            /// Use the getter of ShipIsLevel to determine whether the ship is actually level.
-            /// </summary>
-            /// <returns></returns>
             public static bool LevelToHorizon()
             {
                 if (RemoteControl.GetNaturalGravity() == null) 
@@ -656,9 +745,6 @@ namespace IngameScript {
                 AttitudeControlActivated = true; return true;
             }
 
-            /// <summary>
-            /// Gracefully disengages attitude control.
-            /// </summary>
             public static void CancelAttitudeControl()
             {
                 SetAutopilotControl(FlightController.HasThrusterControl, false, RemoteControl.DampenersOverride);

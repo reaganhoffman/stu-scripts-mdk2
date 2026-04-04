@@ -26,6 +26,7 @@ namespace IngameScript
             double Vy { get; set; }
             double Vz { get; set; }
             double ALT { get; set; }
+            double StoppingDistance { get; set; }
             public string TOLStatus { get; set; }
             string GangwayStatus { get; set; }
             string RampStatus { get; set; }
@@ -48,6 +49,7 @@ namespace IngameScript
                 Vy = Math.Round( CBT.FlightController.CurrentVelocity_LocalFrame.Y, 0);
                 Vz = Math.Round( CBT.FlightController.CurrentVelocity_LocalFrame.Z, 0);
                 ALT = Math.Round( CBT.FlightController.GetCurrentSurfaceAltitude(), 0);
+                StoppingDistance = Math.Round(CBT.FlightController.CalculateStoppingDistance(), 0);
                 // TOL status is pushed from the landing / takeoff maneuvers and elsewhere in the code... not a great way to do it, but I think it stems from the CBT constructor not being static.
                 switch (CBT.Gangway.CurrentGangwayState) // can not invoke CBT.Gangway.CurrentGangwayState.ToString() because of the minifier...
                 {
@@ -91,6 +93,10 @@ namespace IngameScript
                 frame.Add(BuildTextSprite($"Vy " + $"{Vy,5}", ScreenWidth - GetTextSpriteWidth($"Vy {Vy,5}"), CharHeight * 2, cl));
                 frame.Add(BuildTextSprite($"Vz " + $"{Vz,5}", ScreenWidth - GetTextSpriteWidth($"Vz {Vz,5}"), CharHeight * 3, cl));
                 frame.Add(BuildTextSprite($"ALT " + $"{ALT,5}", ScreenWidth - GetTextSpriteWidth($"ALT {ALT,5}"), CharHeight * 4, cl));
+                Color deltaStopColor = cl;
+                if (CBT.FlightController.DetectCollisionCourseWithPlanet())
+                    deltaStopColor = Color.Yellow;
+                frame.Add(BuildTextSprite($"ΔSTOP " + $"{StoppingDistance,5}", ScreenWidth - GetTextSpriteWidth($"ΔSTOP{StoppingDistance,5}"), CharHeight * 5, deltaStopColor));
                 frame.Add(BuildTextSprite($"{TOLStatus}", 0, CharHeight * 7, cl));
                 Color gangwayColor = cl;
                 if (GangwayStatus == "UNKNOWN")

@@ -107,19 +107,19 @@ namespace IngameScript {
                 }
             }
 
-            public float CalculateForwardStoppingDistance() {
-                float mass = STUVelocityController.ShipMass;
-                float velocity = (float)CurrentVelocity_LocalFrame.Z;
-                float maxReverseAcceleration = _velocityController.GetMaximumReverseAcceleration();
-                float dx = (velocity * velocity) / (2 * maxReverseAcceleration); // kinematic equation for "how far would I travel if I slammed on the brakes right now?"
-                return dx;
+            public double CalculateStoppingDistance() {
+                double maxReverseAcceleration = _velocityController.CalculateMaxAcceleration_WorldFrame(CurrentVelocity_WorldFrame);
+                return CalculateStoppingDistance(maxReverseAcceleration, CurrentVelocity_WorldFrame.Length());
             }
 
             public double CalculateStoppingDistance(double acceleration, double velocity) {
-                double mass = STUVelocityController.ShipMass;
-                double maxReverseAcceleration = acceleration;
-                double dx = (velocity * velocity) / (2 * maxReverseAcceleration); // kinematic equation for "how far would I travel if I slammed on the brakes right now?"
+                double dx = (velocity * velocity) / (2 * acceleration); // kinematic equation for "how far would I travel if I slammed on the brakes right now?"
                 return dx;
+            }
+
+            public bool DetectCollisionCourseWithPlanet()
+            {
+                return Vector3D.Dot(CurrentVelocity_WorldFrame, ShipController.GetNaturalGravity()) > GetCurrentSurfaceAltitude();
             }
 
             /// <summary>
@@ -155,7 +155,7 @@ namespace IngameScript {
                 Vector3D referencePos, 
                 STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
             {
-                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, referencePos, desiredVelocity);
+                return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, referencePos, desiredVelocity, overrideMode);
             }
 
             /// <summary>

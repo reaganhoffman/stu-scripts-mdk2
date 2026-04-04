@@ -1,4 +1,5 @@
 ﻿using Sandbox.Game;
+using Sandbox.Game.Entities;
 using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
@@ -158,7 +159,7 @@ namespace IngameScript {
                 //    $"Center of Mass: \n{CBT.RemoteControl.CenterOfMass}");
 
                 // use this line to print random shit to the screen during testing
-                // CBT.AddToLogQueue($"{CBT.FlightSeat.RotationIndicator}");
+                // CBT.AddToLogQueue($"dot(CVWF, Gravity): {Vector3D.Dot(CBT.FlightController.CurrentVelocity_WorldFrame, CBT.FlightController.ShipController.GetNaturalGravity())}");
 
 
             } catch (Exception e) {
@@ -346,8 +347,8 @@ namespace IngameScript {
                             break;
 
                         case "TOGGLE":
-                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null)
-                                CBT.PCM.TogglePowerClass(PowerControlModule.GetPowerClassByName(predicate));
+                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null)
+                                PowerControlModule.TogglePowerGroup(PowerControlModule.GetPowerGroupByName(predicate));
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -358,8 +359,8 @@ namespace IngameScript {
                             }
                             break;
                         case "ENABLE":
-                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null)
-                                CBT.PCM.EnablePowerClass(PowerControlModule.GetPowerClassByName(predicate));
+                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null)
+                                PowerControlModule.EnablePowerGroup(PowerControlModule.GetPowerGroupByName(predicate));
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -374,8 +375,8 @@ namespace IngameScript {
                             }
                             break;
                         case "DISABLE":
-                            if (PowerControlModule.GetPowerClassByName(predicate).Class != null) // if 'predicate' cannot be found, GetPowerClassByName returns a new PowerClass, which has null values
-                                CBT.PCM.DisablePowerClass(PowerControlModule.GetPowerClassByName(predicate)); 
+                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null) // if 'predicate' cannot be found, GetPowerClassByName returns a new PowerClass, which has null values
+                                PowerControlModule.DisablePowerGroup(PowerControlModule.GetPowerGroupByName(predicate)); 
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -391,28 +392,68 @@ namespace IngameScript {
                             }
                             break;
 
+                        case "GPS":
+                            switch (predicate)
+                            {
+                                case "REFRESH":
+                                    CBT.RefreshSavedWaypoints();
+                                    break;
+                                default:
+                                    foreach (var savedWaypoint in CBT.SavedWaypoints)
+                                    {
+                                        if (savedWaypoint.Name == predicate)
+                                            CBT.QueueGotoAndStopManeuver(savedWaypoint.Location);
+                                    }
+                                    break;
+                            }
+                            break;
+
                         case "POWER":
                             switch (predicate)
                             {
                                 case "LOW":
-                                    CBT.PCM.GoToLowPowerMode();
+                                    PowerControlModule.GoToLowPowerMode();
                                     break;
-                                case "RESUME":
-                                    CBT.PCM.RestoreFromLowPowerMode();
+                                case "RESTORE":
+                                    PowerControlModule.RestoreFromLowPowerMode();
                                     break;
                                 case "ALL":
-                                    foreach (var powerClass in PowerControlModule.PowerClasses)
+                                    foreach (var powerClass in PowerControlModule.PowerGroups)
                                     {
-                                        CBT.PCM.EnablePowerClass(powerClass);
+                                        PowerControlModule.EnablePowerGroup(powerClass);
                                     }
                                     break;
-                                default:
+                                case "REFRESH":
+                                    PowerControlModule.RefreshGroupMembership(CBT.AllFunctionalBlocks.ToList());
+                                    break;
+                                default: // "POWER L" toggles the state of the Life support power class. "POWER L1" explicitly turns it on, "POWER L0" explicitly off.
                                     bool foundOne = false;
-                                    foreach (var powerClass in PowerControlModule.PowerClasses)
+                                    foreach (var powerClass in PowerControlModule.PowerGroups)
                                     {
-                                        if (powerClass.Class == predicate) 
-                                        { 
-                                            CBT.PCM.TogglePowerClass(powerClass); 
+                                        if (powerClass.Name.Substring(0,1) == predicate.Substring(0,1)) 
+                                        {
+                                            string modifier = "";
+                                            try
+                                            {
+                                                modifier = predicate.Substring(1, 1);
+                                            }
+                                            catch
+                                            {
+                                                modifier = "-";
+                                            }
+                                            switch (modifier)
+                                            {
+                                                case "0":
+                                                    PowerControlModule.DisablePowerGroup(powerClass);
+                                                    break;
+                                                case "1":
+                                                    PowerControlModule.EnablePowerGroup(powerClass);
+                                                    break;
+                                                default:
+                                                    PowerControlModule.TogglePowerGroup(powerClass);
+                                                    break;
+                                            }
+
                                             foundOne = true;
                                         }
                                     }
@@ -540,6 +581,24 @@ namespace IngameScript {
                                     CBT.UserInputGangwayState = CBTGangway.GangwayStates.Unknown;
                                     CBTGangway.GangwayHinge1.Torque = 0;
                                     CBTGangway.GangwayHinge2.Torque = 0;
+                                    break;
+                                default:
+                                    PrintParseError(subject, predicate);
+                                    break;
+                            }
+                            break;
+                        case "RAMP":
+                            switch (predicate)
+                            {
+                                case "OPEN":
+                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN));
+                                    break;
+                                case "CLOSE":
+                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
+                                    break;
+                                case "TOGGLE":
+                                    if (CBT.RampShouldBeClosed) CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN));
+                                    else CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);

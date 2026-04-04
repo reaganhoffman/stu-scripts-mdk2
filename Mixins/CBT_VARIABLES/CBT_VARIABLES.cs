@@ -34,6 +34,8 @@ namespace IngameScript
             public const float PISTON_POSITION_TOLERANCE = 0.01f;
             public const float PISTON_TARGET_VELOCITY = 1.7f;
             public const float PISTON_NEUTRAL_DISTANCE = 4f;
+            public const float RAMP_HINGE_ANGLE_OPEN = 1.815142422f;
+            public const float RAMP_HINGE_ANGLE_CLOSED = 0f;
 
             public const double PLANETARY_DETECTION_BUFFER = 2000;
             //public const string PRIVATE_KEY = "";

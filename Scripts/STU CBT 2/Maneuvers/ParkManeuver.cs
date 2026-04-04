@@ -57,7 +57,7 @@ namespace IngameScript {
                     ManeuverQueue = thisManeuverQueue;
                     CBTGangway = cBTGangway;
                     if (FlightController.ShipController.GetNaturalGravity() == Vector3D.Zero) { ZeroG = true; }
-                    CBT.PushTOLStatusToBottomCameraScreens("Acquiring LZ Distance");
+                    CBT.PushTOLStatusToBottomCameraScreens("ACQUIRING \nLZ DISTANCE");
                 }
 
                 public override bool Init() {
@@ -169,6 +169,7 @@ namespace IngameScript {
                 void AskForConfirmation()
                 {
                     AddToLogQueue("Enter 'CONFIRM' to proceed with landing sequence.", STULogType.WARNING);
+                    PushTOLStatusToBottomCameraScreens($"CONFIRM \nLAND");
                     AskedForConfirmationAlready = true;
                 }
             }

@@ -115,6 +115,27 @@ namespace IngameScript {
                     ForwardController.ApplyThrust(vector.Z);
                 }
 
+                public double CalculateMaxAcceleration_WorldFrame(Vector3D worldDirection)
+                {
+                    // return the magnitude of the trust vector resulting from firing in the world direction specified
+                    // don't forget to account for gravity!
+
+                    // translate worldDirection to local direction and normalize in case user didn't pass in normalized direction vector
+                    Vector3D localDirection = Vector3D.Normalize(STUTransformationUtils.WorldDirectionToLocalDirection(ShipController, worldDirection));
+
+                    // account for gravity (???)
+                    localDirection = Vector3D.Normalize(localDirection + ShipController.GetNaturalGravity());
+
+                    // calculate the maximum thrust that the thrusters can output along this direction
+                    Vector3D maxThrust = new Vector3D(
+                        Math.Max(RightThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.X, LeftThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.X),
+                        Math.Max(UpThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.Y, DownThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.Y),
+                        Math.Max(ReverseThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.Z, ForwardThrusters.Aggregate(0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass * localDirection.Z)
+                        );
+
+                    return maxThrust.Length();
+                }
+
                 public float GetMaximumReverseAcceleration() {
                     return ReverseThrusters.Aggregate(0.0f, (acc, thruster) => acc + thruster.MaxEffectiveThrust) / ShipMass;
                 }
