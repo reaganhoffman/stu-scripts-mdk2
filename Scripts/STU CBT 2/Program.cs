@@ -612,14 +612,14 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "OPEN":
-                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN));
+                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(Runtime.UpdateFrequency, ManeuverQueue, CBT.HangarRotor,CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN, 1));
                                     break;
                                 case "CLOSE":
-                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
+                                    CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(Runtime.UpdateFrequency, ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
                                     break;
                                 case "TOGGLE":
-                                    if (CBT.RampShouldBeClosed) CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN));
-                                    else CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
+                                    if (CBT.RampShouldBeClosed) CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(Runtime.UpdateFrequency, ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_OPEN, 1));
+                                    else CBT.ManeuverQueue.Enqueue(new CBT.MoveStator(Runtime.UpdateFrequency, ManeuverQueue, CBT.HangarRotor, CBT_VARIABLES.RAMP_HINGE_ANGLE_CLOSED));
                                     break;
                                 default:
                                     PrintParseError(subject, predicate);
@@ -903,6 +903,17 @@ namespace IngameScript {
         public static string BoolConverter(bool value) {
             if (value) { return "ON"; }
             else { return "OFF"; }
+        }
+
+        public static float UpdateFrequencyAsFractionOfSecond()
+        {
+            switch (CBT.Runtime.UpdateFrequency)
+            {
+                case UpdateFrequency.Update1: return 1 / 60;
+                case UpdateFrequency.Update10: return 10 / 60;
+                case UpdateFrequency.Update100: return 100 / 60;
+                default: return float.NaN;
+            }
         }
 
         public void HelloWorld()

@@ -1,23 +1,7 @@
-﻿using Sandbox.Game.Entities.Cube;
-using Sandbox.Game.EntityComponents;
-using Sandbox.Game.WorldEnvironment.Modules;
-using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using System;
-using System.Collections;
+﻿using Sandbox.ModAPI.Ingame;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
+using System.Runtime.CompilerServices;
 using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
 using VRageMath;
 
 namespace IngameScript
@@ -88,14 +72,11 @@ namespace IngameScript
                 {
                     if (IsPartOfPowerGroup(block, powerGroup.Name))
                     {
-                        CBT.AddToLogQueue($"setting block {block.CustomName} {BoolConverter(newState)}");
                         block.Enabled = newState; // set the block's enabled property to the opposite of the state of the power class in memory
                     }
                 }
 
-                CBT.AddToLogQueue($"power class is currently {BoolConverter(powerGroup.Enabled)}");
                 powerGroup.Enabled = newState; // toggle the state of the power class in memory
-                CBT.AddToLogQueue($"just set power class to {BoolConverter(powerGroup.Enabled)} in memory");
             }
 
             static public void EnablePowerGroup(PowerGroup powerGroup)
