@@ -1,17 +1,20 @@
 ﻿#define EXTENDED
 using Sandbox.ModAPI.Ingame;
+using System.Collections.Generic;
 
 namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
         public static AirlockControlModule ACM { get; set; }
+        List<IMyDoor> Doors { get; set; }
         
         public Program()
         {
-            ACM = new AirlockControlModule();
-            ACM.LoadAirlocks(GridTerminalSystem, Me, Runtime);
+            GridTerminalSystem.GetBlocksOfType<IMyDoor>(Doors);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            ACM = new AirlockControlModule();
+            ACM.LoadAirlocks(Doors, Runtime);
         }
 
         public void Main(string argument, UpdateType updateSource)

@@ -8,7 +8,7 @@ namespace IngameScript
 {
     public partial class Program
     {
-        public static class PowerControlModule
+        public class PowerControlModule
         {
             public struct PowerGroup
             {
@@ -18,7 +18,7 @@ namespace IngameScript
             }
 
 
-            public static PowerGroup[] PowerGroups { get; private set; } = new PowerGroup[] {
+            public PowerGroup[] PowerGroups { get; private set; } = new PowerGroup[] {
 
                 new PowerGroup{Name = "FLIGHT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "LIFE SUPPORT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
@@ -31,9 +31,9 @@ namespace IngameScript
                 new PowerGroup{Name = "LOW", Enabled = true, Blocks = new List<IMyFunctionalBlock>()}
             };
 
-            public static List<PowerGroup> PowerGroupsSaveState { get; set; } = new List<PowerGroup>();
+            public List<PowerGroup> PowerGroupsSaveState { get; set; } = new List<PowerGroup>();
 
-            public static void RefreshGroupMembership(List<IMyFunctionalBlock> blocks)
+            public void RefreshGroupMembership(List<IMyFunctionalBlock> blocks)
             {
                 // clear existing lists
                 foreach (var group in PowerGroups)
@@ -54,17 +54,21 @@ namespace IngameScript
                 }
             }
 
-            public static PowerGroup GetPowerGroupByName(string name)
+            public bool TryGetPowerGroup(string name, out PowerGroup powerGroup)
             {
                 foreach (var item in PowerGroups)
                 {
-                    if (item.Name == name.ToUpper())
-                        return item;
+                    if (string.Equals(name, item.Name, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        powerGroup = item;
+                        return true;
+                    }
                 }
-                return new PowerGroup();
+                powerGroup = default(PowerGroup);
+                return false;
             }
 
-            static public void TogglePowerGroup(PowerGroup powerGroup)
+            public void TogglePowerGroup(PowerGroup powerGroup)
             {
                 bool newState = !powerGroup.Enabled;
 
@@ -79,7 +83,7 @@ namespace IngameScript
                 powerGroup.Enabled = newState; // toggle the state of the power class in memory
             }
 
-            static public void EnablePowerGroup(PowerGroup powerGroup)
+            public void EnablePowerGroup(PowerGroup powerGroup)
             {
                 foreach (var block in powerGroup.Blocks)
                 {
@@ -88,7 +92,7 @@ namespace IngameScript
                 powerGroup.Enabled = true; // change the state of the PowerClass in memory
             }
 
-            static public void DisablePowerGroup(PowerGroup powerGroup)
+            public void DisablePowerGroup(PowerGroup powerGroup)
             {
                 if (powerGroup.Name == "LOW") return; // disallow blocks designated Low Power Mode to be turned off in software.
                 foreach (var block in powerGroup.Blocks)
@@ -98,7 +102,7 @@ namespace IngameScript
                 powerGroup.Enabled = false; // change the state of the PowerClass in memory
             }
 
-            static public void GoToLowPowerMode()
+            public void GoToLowPowerMode()
             {
                 PowerGroupsSaveState.Clear();
                 foreach (var powerGroup in PowerGroups)
@@ -108,7 +112,7 @@ namespace IngameScript
                 }
             }
 
-            static public void RestoreFromSaveState()
+            public void RestoreFromSaveState()
             {
                 foreach (var powerGroup in PowerGroupsSaveState)
                 {
@@ -117,7 +121,7 @@ namespace IngameScript
                 }
             }
 
-            static bool IsPartOfPowerGroup(IMyFunctionalBlock block, string group)
+            bool IsPartOfPowerGroup(IMyFunctionalBlock block, string group)
             {
                 MyIni ini = new MyIni();
 
