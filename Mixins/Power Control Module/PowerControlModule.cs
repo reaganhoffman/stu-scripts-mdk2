@@ -128,9 +128,7 @@ namespace IngameScript
                 MyIniParseResult result;
                 if (!ini.TryParse(block.CustomData, out result))
                 {
-                    // this will throw an exception if there is an error parsing the custom data
-                    // this is expected behavior (?) in the case that there is no text in the custom data
-                    // throw new Exception(result.ToString());
+                    // what is the behavior when TryParse fails? throws an exception? returns null? returns false?
                     return false;
                 }
 

@@ -23,4 +23,5 @@
     <AdditionalFiles Include="Instructions.readme" />
     <AdditionalFiles Include="thumb.png" />
   </ItemGroup>
+  <Import Project="..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems" Label="Shared" />
 </Project>

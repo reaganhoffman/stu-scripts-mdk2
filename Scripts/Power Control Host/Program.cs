@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using Sandbox.Game.EntityComponents;
-using Sandbox.Game.WorldEnvironment.Modules;
 using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using VRage;
-using VRage.Collections;
-using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
 
 namespace IngameScript
 {
@@ -25,6 +11,7 @@ namespace IngameScript
     {
         MyIni _ini { get; set; } = new MyIni();
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
+        List<IMyTerminalBlock> TerminalBlocks { get; set; }
         List<IMyFunctionalBlock> FunctionalBlocks { get; set; }
         static PowerControlModule PCM { get; set; }
 
@@ -33,13 +20,16 @@ namespace IngameScript
             try
             {
                 _ini.TryParse(Storage);
-                GridTerminalSystem.GetBlocksOfType<IMyFunctionalBlock>(FunctionalBlocks);
+                GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
+                Echo($"test: {FunctionalBlocks.Count}");
+                GridTerminalSystem.GetBlocks(TerminalBlocks);
+                Echo($"terminal blocks: {TerminalBlocks.Count}");
                 PCM = new PowerControlModule();
-                PCM.RefreshGroupMembership(FunctionalBlocks);
+                //PCM.RefreshGroupMembership(FunctionalBlocks);
             }
             catch (Exception e)
             {
-                Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
+                //Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
             }
         }
 
@@ -57,6 +47,8 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
+            Echo($"test: {FunctionalBlocks.Count}\n" +
+                $"terminal blocks: {TerminalBlocks.Count}");
             try
             {
                 CommandLineParser.TryParse(argument);
