@@ -9,27 +9,24 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        MyIni _ini { get; set; } = new MyIni();
+        MyIni _ini { get; set; }
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
-        List<IMyTerminalBlock> TerminalBlocks { get; set; }
-        List<IMyFunctionalBlock> FunctionalBlocks { get; set; }
+        List<IMyFunctionalBlock> FunctionalBlocks { get; set; } = new List<IMyFunctionalBlock>();
         static PowerControlModule PCM { get; set; }
 
         public Program()
         {
+            _ini = new MyIni();
             try
             {
                 _ini.TryParse(Storage);
                 GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
-                Echo($"test: {FunctionalBlocks.Count}");
-                GridTerminalSystem.GetBlocks(TerminalBlocks);
-                Echo($"terminal blocks: {TerminalBlocks.Count}");
-                PCM = new PowerControlModule();
-                //PCM.RefreshGroupMembership(FunctionalBlocks);
+                PCM = new PowerControlModule(Echo);
+                PCM.RefreshGroupMembership(FunctionalBlocks);
             }
             catch (Exception e)
             {
-                //Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
+                Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
             }
         }
 
@@ -47,15 +44,13 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
-            Echo($"test: {FunctionalBlocks.Count}\n" +
-                $"terminal blocks: {TerminalBlocks.Count}");
             try
             {
                 CommandLineParser.TryParse(argument);
                 if (CommandLineParser.Argument(0).ToUpper() != "POWER") return;
                 if (CommandLineParser.Switch("r") | CommandLineParser.Switch("R"))
                 {
-                    GridTerminalSystem.GetBlocksOfType<IMyFunctionalBlock>(FunctionalBlocks);
+                    GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
                     PCM.RefreshGroupMembership(FunctionalBlocks);
                     return;
                 }
@@ -76,11 +71,9 @@ namespace IngameScript
                         ProcessUserRequest(userRequestedPowerGroup, userRequestedState);
                         return;
                     }
-                    if (CommandLineParser.Switches.DefaultIfEmpty<string>().Equals(null))
+                    if (CommandLineParser.Switches.Count == 0)
                     {
-
-                        bool currentState = userRequestedPowerGroup.Enabled;
-                        ProcessUserRequest(userRequestedPowerGroup, !currentState);
+                        PCM.TogglePowerGroup(userRequestedPowerGroup);
                     }
                 }
                 else throw new Exception();

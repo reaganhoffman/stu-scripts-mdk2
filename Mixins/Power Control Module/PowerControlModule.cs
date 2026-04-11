@@ -1,4 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using VRage.Game.ModAPI.Ingame.Utilities;
@@ -10,6 +11,12 @@ namespace IngameScript
     {
         public class PowerControlModule
         {
+            Action<string> Echo { get; set; }
+            public PowerControlModule(Action<string> echo)
+            {
+                Echo = echo;
+            }
+            
             public struct PowerGroup
             {
                 public string Name;
@@ -71,16 +78,11 @@ namespace IngameScript
             public void TogglePowerGroup(PowerGroup powerGroup)
             {
                 bool newState = !powerGroup.Enabled;
-
-                foreach (var block in powerGroup.Blocks)
+                switch (newState)
                 {
-                    if (IsPartOfPowerGroup(block, powerGroup.Name))
-                    {
-                        block.Enabled = newState; // set the block's enabled property to the opposite of the state of the power class in memory
-                    }
+                    case true: EnablePowerGroup(powerGroup); return;
+                    case false: DisablePowerGroup(powerGroup); return;
                 }
-
-                powerGroup.Enabled = newState; // toggle the state of the power class in memory
             }
 
             public void EnablePowerGroup(PowerGroup powerGroup)
