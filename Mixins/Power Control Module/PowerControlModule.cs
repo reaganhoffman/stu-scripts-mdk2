@@ -1,6 +1,7 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
@@ -17,7 +18,7 @@ namespace IngameScript
                 Echo = echo;
             }
             
-            public struct PowerGroup
+            public class PowerGroup
             {
                 public string Name;
                 public bool Enabled;
@@ -28,14 +29,14 @@ namespace IngameScript
             public PowerGroup[] PowerGroups { get; private set; } = new PowerGroup[] {
 
                 new PowerGroup{Name = "FLIGHT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
-                new PowerGroup{Name = "LIFE SUPPORT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
+                new PowerGroup{Name = "LIFE-SUPPORT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "WEAPONS", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "EGRESS", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "PRODUCTION", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "COMFORT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "DECORATIVE", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "MISC", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
-                new PowerGroup{Name = "LOW", Enabled = true, Blocks = new List<IMyFunctionalBlock>()}
+                new PowerGroup{Name = "LOW", Enabled = false, Blocks = new List<IMyFunctionalBlock>()}
             };
 
             public List<PowerGroup> PowerGroupsSaveState { get; set; } = new List<PowerGroup>();
@@ -65,7 +66,7 @@ namespace IngameScript
             {
                 foreach (var item in PowerGroups)
                 {
-                    if (string.Equals(name, item.Name, System.StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(name, item.Name, StringComparison.OrdinalIgnoreCase))
                     {
                         powerGroup = item;
                         return true;
@@ -78,6 +79,7 @@ namespace IngameScript
             public void TogglePowerGroup(PowerGroup powerGroup)
             {
                 bool newState = !powerGroup.Enabled;
+                if (powerGroup.Name == "LOW") newState = powerGroup.Enabled; // low power mode exception (it's backwards)
                 switch (newState)
                 {
                     case true: EnablePowerGroup(powerGroup); return;
@@ -87,21 +89,28 @@ namespace IngameScript
 
             public void EnablePowerGroup(PowerGroup powerGroup)
             {
+                if (powerGroup.Name == "LOW") { GoToLowPowerMode(); return; } // treating "enabling" low power mode as GTLPM
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = true; // turn the block on 
                 }
+                Echo($"current power group: {powerGroup.Name}");
+                Echo($"current power group state: {powerGroup.Enabled}");
                 powerGroup.Enabled = true; // change the state of the PowerClass in memory
+                Echo($"power group state after enabling: {powerGroup.Enabled}");
             }
 
             public void DisablePowerGroup(PowerGroup powerGroup)
             {
-                if (powerGroup.Name == "LOW") return; // disallow blocks designated Low Power Mode to be turned off in software.
+                if (powerGroup.Name == "LOW") { RestoreFromSaveState(); return; } // treating "disabling" low power mode as RFSS
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = false; // turn the block off
-                } 
+                }
+                Echo($"current power group: {powerGroup.Name}");
+                Echo($"current power group state: {powerGroup.Enabled}");
                 powerGroup.Enabled = false; // change the state of the PowerClass in memory
+                Echo($"power group state after disabling: {powerGroup.Enabled}");
             }
 
             public void GoToLowPowerMode()
@@ -109,18 +118,31 @@ namespace IngameScript
                 PowerGroupsSaveState.Clear();
                 foreach (var powerGroup in PowerGroups)
                 {
-                    PowerGroupsSaveState.Add(powerGroup);
+                    if (powerGroup.Name == "LOW") continue; // low power mode is backwards compared to all the other power modes
+                    PowerGroupsSaveState.Add(new PowerGroup
+                    {
+                        Name = powerGroup.Name,
+                        Enabled = powerGroup.Enabled,
+                        Blocks = powerGroup.Blocks
+                    });
+
                     DisablePowerGroup(powerGroup);
                 }
+                PowerGroups[PowerGroups.Count()].Enabled = true; // and thus want to toggle low power mode 'on' when we go to low power mode
+                Echo($"save state after GTLPM: {PowerGroupsSaveState}");
             }
 
             public void RestoreFromSaveState()
             {
+                Echo($"save state before RFSS: {PowerGroupsSaveState}");
+                if (PowerGroupsSaveState.Count == 0) return;
                 foreach (var powerGroup in PowerGroupsSaveState)
                 {
-                    if (powerGroup.Enabled)
-                        EnablePowerGroup(powerGroup);
+                    if (powerGroup.Name == "LOW") continue; // low power mode is backwards compared to all the other power modes
+                    if (powerGroup.Enabled) EnablePowerGroup(powerGroup);
                 }
+                PowerGroupsSaveState.Clear();
+                PowerGroups[PowerGroups.Count()].Enabled = false; // and thus want to toggle low power mode 'off' when we restore from save state
             }
 
             bool IsPartOfPowerGroup(IMyFunctionalBlock block, string group)
