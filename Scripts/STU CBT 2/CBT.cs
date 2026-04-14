@@ -30,8 +30,6 @@ namespace IngameScript {
             public const float TimeStep = 1.0f / 6.0f;
             public static Phase CurrentPhase { get; set; } = Phase.Idle;
 
-            public static int PowerLevel { get; private set; }
-
             public struct BlockInfo
             {
                 public long Id;
@@ -124,7 +122,7 @@ namespace IngameScript {
             public static STUFlightController FlightController { get; set; }
             public static CBTDockingModule DockingModule { get; set; }
             public static AirlockControlModule ACM { get; set; }
-            //public static PowerControlModule PCM { get; set; }
+            public static PowerControlModule PCM { get; set; }
             public static CBTGangway Gangway { get; set; }
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
@@ -211,7 +209,7 @@ namespace IngameScript {
 
             public static List<Waypoint> SavedWaypoints { get; set; } = new List<Waypoint>();
 
-            public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, IMyGridProgramRuntimeInfo runtime) {
+            public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, string storage, IMyGridProgramRuntimeInfo runtime) {
                 ManeuverQueue = thisManeuverQueue;
                 Me = me;
                 InventoryEnumerator = inventoryEnumerator;
@@ -311,7 +309,7 @@ namespace IngameScript {
 
                 // instantiate power control module
                 AddToLogQueue("Initializing PCM");
-                PowerControlModule.RefreshGroupMembership(AllFunctionalBlocks.ToList());
+                PCM = new PowerControlModule(echo, storage);
                 AddToLogQueue("PCM Initialized", STULogType.OK);
 
                 // load waypoints saved in the PB's custom data

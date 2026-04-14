@@ -13,18 +13,16 @@ namespace IngameScript
         public class PowerControlModule
         {
             Action<string> Echo { get; set; }
-            public PowerControlModule(Action<string> echo)
-            {
-                Echo = echo;
-            }
-            
+            MyIni _ini = new MyIni();
+            public bool LowPowerModeActivated { get; private set; } = false;
+            public string PowerGroupsSaveState { get; private set; } = "";
+
             public class PowerGroup
             {
                 public string Name;
                 public bool Enabled;
                 public List<IMyFunctionalBlock> Blocks;
             }
-
 
             public PowerGroup[] PowerGroups { get; private set; } = new PowerGroup[] {
 
@@ -36,10 +34,14 @@ namespace IngameScript
                 new PowerGroup{Name = "COMFORT", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "DECORATIVE", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
                 new PowerGroup{Name = "MISC", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
-                new PowerGroup{Name = "LOW", Enabled = false, Blocks = new List<IMyFunctionalBlock>()}
             };
 
-            public List<PowerGroup> PowerGroupsSaveState { get; set; } = new List<PowerGroup>();
+            public PowerControlModule(Action<string> echo, string saveState)
+            {
+                Echo = echo;
+                LoadSaveState(saveState);
+                SaveCurrentState();
+            }
 
             public void RefreshGroupMembership(List<IMyFunctionalBlock> blocks)
             {
@@ -79,7 +81,6 @@ namespace IngameScript
             public void TogglePowerGroup(PowerGroup powerGroup)
             {
                 bool newState = !powerGroup.Enabled;
-                if (powerGroup.Name == "LOW") newState = powerGroup.Enabled; // low power mode exception (it's backwards)
                 switch (newState)
                 {
                     case true: EnablePowerGroup(powerGroup); return;
@@ -89,7 +90,6 @@ namespace IngameScript
 
             public void EnablePowerGroup(PowerGroup powerGroup)
             {
-                if (powerGroup.Name == "LOW") { GoToLowPowerMode(); return; } // treating "enabling" low power mode as GTLPM
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = true; // turn the block on 
@@ -102,7 +102,6 @@ namespace IngameScript
 
             public void DisablePowerGroup(PowerGroup powerGroup)
             {
-                if (powerGroup.Name == "LOW") { RestoreFromSaveState(); return; } // treating "disabling" low power mode as RFSS
                 foreach (var block in powerGroup.Blocks)
                 {
                     block.Enabled = false; // turn the block off
@@ -113,50 +112,72 @@ namespace IngameScript
                 Echo($"power group state after disabling: {powerGroup.Enabled}");
             }
 
+            public void AllOn()
+            {
+                foreach (var group in PowerGroups)
+                {
+                    EnablePowerGroup(group);
+                }
+                SaveCurrentState();
+            }
+
             public void GoToLowPowerMode()
             {
-                PowerGroupsSaveState.Clear();
-                foreach (var powerGroup in PowerGroups)
-                {
-                    if (powerGroup.Name == "LOW") continue; // low power mode is backwards compared to all the other power modes
-                    PowerGroupsSaveState.Add(new PowerGroup
-                    {
-                        Name = powerGroup.Name,
-                        Enabled = powerGroup.Enabled,
-                        Blocks = powerGroup.Blocks
-                    });
-
-                    DisablePowerGroup(powerGroup);
-                }
-                PowerGroups[PowerGroups.Count()].Enabled = true; // and thus want to toggle low power mode 'on' when we go to low power mode
+                SaveCurrentState();
+                foreach (var powerGroup in PowerGroups) DisablePowerGroup(powerGroup);
+                LowPowerModeActivated = true;
                 Echo($"save state after GTLPM: {PowerGroupsSaveState}");
             }
 
-            public void RestoreFromSaveState()
+            public void SaveCurrentState()
             {
-                Echo($"save state before RFSS: {PowerGroupsSaveState}");
-                if (PowerGroupsSaveState.Count == 0) return;
-                foreach (var powerGroup in PowerGroupsSaveState)
+                _ini.Clear();
+                PowerGroupsSaveState = "";
+                foreach (var powerGroup in PowerGroups)
                 {
-                    if (powerGroup.Name == "LOW") continue; // low power mode is backwards compared to all the other power modes
-                    if (powerGroup.Enabled) EnablePowerGroup(powerGroup);
+                    _ini.Set("POWER", powerGroup.Name, powerGroup.Enabled);
                 }
-                PowerGroupsSaveState.Clear();
-                PowerGroups[PowerGroups.Count()].Enabled = false; // and thus want to toggle low power mode 'off' when we restore from save state
+                PowerGroupsSaveState = _ini.ToString();
+                Echo($"PowerGroupsSaveState:\n{PowerGroupsSaveState}");
+            }
+                        
+            public void LoadSaveState(string saveState)
+            {
+                _ini.Clear();
+                MyIniParseResult result;
+                _ini.TryParse(saveState, out result); // not checking whether this fails (yet)
+                Echo($"LoadSaveState result: {result.ToString()}");
+
+                List<MyIniKey> keys = new List<MyIniKey>();
+                _ini.GetKeys("POWER", keys); // still holding off on error checking
+                foreach (var key in keys)
+                {
+                    PowerGroup powerGroup;
+                    if (!TryGetPowerGroup(key.Name, out powerGroup))
+                    {
+                        AllOn();
+                        Echo($"Error getting value in LoadSaveState. turning all blocks on.");
+                        return; // fail secure in case the ini wasn't written properly
+                    }
+                    ;
+                    bool savedState = _ini.Get(key).ToBoolean();
+                    switch (savedState)
+                    {
+                        case true: EnablePowerGroup(powerGroup); break;
+                        case false: DisablePowerGroup(powerGroup); break;
+                    }
+                }
+
+                LowPowerModeActivated = false;
             }
 
             bool IsPartOfPowerGroup(IMyFunctionalBlock block, string group)
             {
-                MyIni ini = new MyIni();
-
+                _ini.Clear();
                 MyIniParseResult result;
-                if (!ini.TryParse(block.CustomData, out result))
-                {
-                    // what is the behavior when TryParse fails? throws an exception? returns null? returns false?
-                    return false;
-                }
+                if (!_ini.TryParse(block.CustomData, out result)) return false;
 
-                return ini.Get("POWER", $"{group}").ToBoolean();
+                return _ini.Get("POWER", $"{group}").ToBoolean();
             }
 
         }

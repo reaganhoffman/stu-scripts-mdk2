@@ -40,13 +40,6 @@ namespace IngameScript {
         public Program() {
             // read from Storage
             _ini.TryParse(Storage);
-            PowerControlModule.PowerGroupsSaveState.Clear();
-            foreach (var group in PowerControlModule.PowerGroups)
-            {
-                PowerControlModule.PowerGroupsSaveState.Add(new PowerControlModule.PowerGroup { Name = group.Name, Blocks = group.Blocks, Enabled = _ini.Get("POWER", group.Name).ToBoolean() } );
-            }
-            PowerControlModule.RestoreFromSaveState();
-
             
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
@@ -54,7 +47,7 @@ namespace IngameScript {
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
             GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(AllBatteries);
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Runtime);
+            CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Storage, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
             CBT.ResetAutopilot();
@@ -69,7 +62,7 @@ namespace IngameScript {
         {
             _ini.Clear();
 
-            foreach (var group in PowerControlModule.PowerGroups)
+            foreach (var group in CBT.PCM.PowerGroups)
             {
                 _ini.Set("POWER", group.Name, group.Enabled);
             }
@@ -295,6 +288,7 @@ namespace IngameScript {
                     }
                         
                     float predicateAsFloat;
+                    PowerControlModule.PowerGroup powerGroup;
                     switch (subject) {
                         case "TEST":
                             CBT.AddToLogQueue($"{CBT.ACM.GetAirlocks()}");
@@ -368,8 +362,8 @@ namespace IngameScript {
                             break;
 
                         case "TOGGLE":
-                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null)
-                                PowerControlModule.TogglePowerGroup(PowerControlModule.GetPowerGroupByName(predicate));
+                            if (CBT.PCM.TryGetPowerGroup(predicate, out powerGroup))
+                                CBT.PCM.TogglePowerGroup(powerGroup);
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -380,8 +374,8 @@ namespace IngameScript {
                             }
                             break;
                         case "ENABLE":
-                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null)
-                                PowerControlModule.EnablePowerGroup(PowerControlModule.GetPowerGroupByName(predicate));
+                            if (CBT.PCM.TryGetPowerGroup(predicate, out powerGroup))
+                                CBT.PCM.EnablePowerGroup(powerGroup);
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -396,8 +390,8 @@ namespace IngameScript {
                             }
                             break;
                         case "DISABLE":
-                            if (PowerControlModule.GetPowerGroupByName(predicate).Name != null) // if 'predicate' cannot be found, GetPowerClassByName returns a new PowerClass, which has null values
-                                PowerControlModule.DisablePowerGroup(PowerControlModule.GetPowerGroupByName(predicate)); 
+                            if (CBT.PCM.TryGetPowerGroup(predicate, out powerGroup))
+                                CBT.PCM.DisablePowerGroup(powerGroup); 
                             switch (predicate)
                             {
                                 case "AIRLOCK":
@@ -433,25 +427,22 @@ namespace IngameScript {
                             switch (predicate)
                             {
                                 case "LOW":
-                                    PowerControlModule.GoToLowPowerMode();
+                                    CBT.PCM.GoToLowPowerMode();
                                     break;
                                 case "RESTORE":
-                                    PowerControlModule.RestoreFromSaveState();
+                                    CBT.PCM.LoadSaveState(CBT.PCM.PowerGroupsSaveState);
                                     break;
                                 case "ALL":
-                                    foreach (var powerClass in PowerControlModule.PowerGroups)
-                                    {
-                                        PowerControlModule.EnablePowerGroup(powerClass);
-                                    }
+                                    CBT.PCM.AllOn();
                                     break;
                                 case "REFRESH":
-                                    PowerControlModule.RefreshGroupMembership(CBT.AllFunctionalBlocks.ToList());
+                                    CBT.PCM.RefreshGroupMembership(CBT.AllFunctionalBlocks.ToList());
                                     break;
                                 default: // "POWER L" toggles the state of the Life support power class. "POWER L1" explicitly turns it on, "POWER L0" explicitly off.
                                     bool foundOne = false;
-                                    foreach (var powerClass in PowerControlModule.PowerGroups)
+                                    foreach (var group in CBT.PCM.PowerGroups)
                                     {
-                                        if (powerClass.Name.Substring(0,1) == predicate.Substring(0,1)) 
+                                        if (group.Name.Substring(0,1) == predicate.Substring(0,1)) 
                                         {
                                             string modifier = "";
                                             try
@@ -465,13 +456,13 @@ namespace IngameScript {
                                             switch (modifier)
                                             {
                                                 case "0":
-                                                    PowerControlModule.DisablePowerGroup(powerClass);
+                                                    CBT.PCM.DisablePowerGroup(group);
                                                     break;
                                                 case "1":
-                                                    PowerControlModule.EnablePowerGroup(powerClass);
+                                                    CBT.PCM.EnablePowerGroup(group);
                                                     break;
                                                 default:
-                                                    PowerControlModule.TogglePowerGroup(powerClass);
+                                                    CBT.PCM.TogglePowerGroup(group);
                                                     break;
                                             }
 
