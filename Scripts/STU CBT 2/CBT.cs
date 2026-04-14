@@ -310,6 +310,7 @@ namespace IngameScript {
                 // instantiate power control module
                 AddToLogQueue("Initializing PCM");
                 PCM = new PowerControlModule(echo, storage);
+                PCM.RefreshGroupMembership(AllFunctionalBlocks.ToList());
                 AddToLogQueue("PCM Initialized", STULogType.OK);
 
                 // load waypoints saved in the PB's custom data
