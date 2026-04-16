@@ -420,7 +420,7 @@ namespace IngameScript {
                 CreateLogBroadcast(message, STULogType.OK);
             }
 
-            private static void CreateLogBroadcast(string message, string type) {
+            private static void CreateLogBroadcast(string message, STULogType type) {
                 s_logBroadcaster.Log(new STULog {
                     Sender = LIGMA_VARIABLES.LIGMA_VEHICLE_NAME,
                     Message = message,

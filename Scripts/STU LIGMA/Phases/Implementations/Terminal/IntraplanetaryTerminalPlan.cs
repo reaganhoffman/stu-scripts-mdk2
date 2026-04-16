@@ -1,4 +1,5 @@
-﻿
+﻿using VRageMath;
+
 namespace IngameScript {
     partial class Program {
         public partial class LIGMA {
