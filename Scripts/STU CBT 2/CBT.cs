@@ -309,7 +309,7 @@ namespace IngameScript {
 
                 // instantiate power control module
                 AddToLogQueue("Initializing PCM");
-                PCM = new PowerControlModule(echo, storage);
+                PCM = new PowerControlModule(storage);
                 PCM.RefreshGroupMembership(AllFunctionalBlocks.ToList());
                 AddToLogQueue("PCM Initialized", STULogType.OK);
 

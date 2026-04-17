@@ -12,7 +12,6 @@ namespace IngameScript
     {
         public class PowerControlModule
         {
-            Action<string> Echo { get; set; }
             MyIni _ini = new MyIni();
             public bool LowPowerModeActivated { get; private set; } = false;
             public string PowerGroupsSaveState { get; private set; } = "";
@@ -36,9 +35,8 @@ namespace IngameScript
                 new PowerGroup{Name = "MISC", Enabled = true, Blocks = new List<IMyFunctionalBlock>()},
             };
 
-            public PowerControlModule(Action<string> echo, string saveState)
+            public PowerControlModule(string saveState)
             {
-                Echo = echo;
                 LoadSaveState(saveState);
                 SaveCurrentState();
             }
@@ -94,10 +92,7 @@ namespace IngameScript
                 {
                     block.Enabled = true; // turn the block on 
                 }
-                Echo($"current power group: {powerGroup.Name}");
-                Echo($"current power group state: {powerGroup.Enabled}");
                 powerGroup.Enabled = true; // change the state of the PowerClass in memory
-                Echo($"power group state after enabling: {powerGroup.Enabled}");
             }
 
             public void DisablePowerGroup(PowerGroup powerGroup)
@@ -106,10 +101,7 @@ namespace IngameScript
                 {
                     block.Enabled = false; // turn the block off
                 }
-                Echo($"current power group: {powerGroup.Name}");
-                Echo($"current power group state: {powerGroup.Enabled}");
                 powerGroup.Enabled = false; // change the state of the PowerClass in memory
-                Echo($"power group state after disabling: {powerGroup.Enabled}");
             }
 
             public void AllOn()
@@ -126,7 +118,6 @@ namespace IngameScript
                 SaveCurrentState();
                 foreach (var powerGroup in PowerGroups) DisablePowerGroup(powerGroup);
                 LowPowerModeActivated = true;
-                Echo($"save state after GTLPM: {PowerGroupsSaveState}");
             }
 
             public void SaveCurrentState()
@@ -138,7 +129,6 @@ namespace IngameScript
                     _ini.Set("POWER", powerGroup.Name, powerGroup.Enabled);
                 }
                 PowerGroupsSaveState = _ini.ToString();
-                Echo($"PowerGroupsSaveState:\n{PowerGroupsSaveState}");
             }
                         
             public void LoadSaveState(string saveState)
@@ -146,7 +136,6 @@ namespace IngameScript
                 _ini.Clear();
                 MyIniParseResult result;
                 _ini.TryParse(saveState, out result); // not checking whether this fails (yet)
-                Echo($"LoadSaveState result: {result.ToString()}");
 
                 List<MyIniKey> keys = new List<MyIniKey>();
                 _ini.GetKeys("POWER", keys); // still holding off on error checking
@@ -156,7 +145,6 @@ namespace IngameScript
                     if (!TryGetPowerGroup(key.Name, out powerGroup))
                     {
                         AllOn();
-                        Echo($"Error getting value in LoadSaveState. turning all blocks on.");
                         return; // fail secure in case the ini wasn't written properly
                     }
                     ;
