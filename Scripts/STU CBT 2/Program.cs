@@ -16,6 +16,7 @@ namespace IngameScript {
         MyIni _ini = new MyIni();
         CBT CBTShip { get; set; }
         STUMasterLogBroadcaster Broadcaster { get; set; }
+        STUMasterLogBroadcaster LIGMABroadcaster { get; set; }
         IMyBroadcastListener Listener { get; set; }
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
@@ -42,6 +43,7 @@ namespace IngameScript {
             _ini.TryParse(Storage);
             
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
+            LIGMABroadcaster = new STUMasterLogBroadcaster("LIGMA", IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
             GridTerminalSystem.GetBlocks(AllTerminalBlocks);
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
@@ -843,6 +845,20 @@ namespace IngameScript {
                                     break;
                                 default: PrintParseError(subject, predicate); break;
                             }
+                            break;
+                        case "LIGMA":
+                            if (CurrentManeuver is CBT.AcquireTarget)
+                            {
+                                var _currentManeuver = CurrentManeuver as CBT.AcquireTarget;
+                                switch (predicate)
+                                {
+                                    case "CONFIRM": LIGMABroadcaster.Log(new STULog(CBT_VARIABLES.CBT_VEHICLE_NAME, "", STULogType.OK, _currentManeuver.SerializedHitInfo)); break;
+                                    case "CANCEL": CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Closeout; break;
+                                    case "ACQUIRE": CurrentManeuver.CurrentInternalState = STUStateMachine.InternalStates.Init; break;
+                                    default: PrintParseError(subject, predicate); break;
+                                }
+                            }
+                            else if (predicate == "ACQUIRE") { ManeuverQueue.Enqueue(new CBT.AcquireTarget(CBTShip, ManeuverQueue)); }
                             break;
                         #endregion
                         #region Networking

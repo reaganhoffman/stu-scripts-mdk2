@@ -24,13 +24,19 @@ namespace IngameScript
     {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         STUMasterLogBroadcaster Broadcaster { get; set; }
+        STUMasterLogBroadcaster LIGMAUnicaster { get; set; }
+        IMyBroadcastListener Listener { get; set; }
         MyCommandLine CommandLine { get; set; }
         MyCommandLine WirelessMessageCommandLine { get; set; }
         MyIni _ini { get; set; }
+        string BALLS_STATION_NAME { get; set; }
         Queue<STUStateMachine> ManeuverQueue { get; set; }
         static STUStateMachine CurrentManeuver { get; set; }
+        Dictionary<string, Dictionary<string, Action>> CommandIndex { get; set; }
 
         static BALLS _balls { get; set; }
+        Dictionary<string, double> RequiredComponents { get; set; } = new Dictionary<string, double>();
+        
 
         
 
@@ -38,12 +44,34 @@ namespace IngameScript
         {
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
+            if (_ini.TryParse(Me.CustomData))
+            {
+                try
+                {
+                    List<MyIniKey> keys = new List<MyIniKey>();
+                    _ini.GetKeys(keys);
+                    MyIniKey key = keys.Find(name => name.ToString() == "BALLS_STATION_NAME");
+                    BALLS_STATION_NAME = _ini.Get(key).ToString();
+                }
+                catch (Exception e)
+                {
+                    Echo($"could not find BALLS_STATION_NAME in custom data");
+                    BALLS_STATION_NAME = "";
+                }
+                
+            }
+
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            Broadcaster = new STUMasterLogBroadcaster("test channel", IGC, TransmissionDistance.AntennaRelay);
+            Broadcaster = new STUMasterLogBroadcaster(BALLS_STATION_NAME, IGC, TransmissionDistance.AntennaRelay);
+            LIGMAUnicaster = new STUMasterLogBroadcaster("LIGMA-1", IGC, TransmissionDistance.AntennaRelay);
+            Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
             CommandLine = new MyCommandLine();
             WirelessMessageCommandLine = new MyCommandLine();
             _ini = new MyIni();
             _balls = new BALLS(GridTerminalSystem, Runtime, IGC, Me, "");
+
+            RequiredComponents.Add("Steel Plates", 5);
+            RequiredComponents.Add("Gyroscope", 5);
         }
 
         public void Save()
@@ -55,19 +83,65 @@ namespace IngameScript
         {
             InventoryEnumerator.EnumerateInventories();
 
-            // handle command line
+            HandleCommand(argument);
 
-            // handle wireless message
+            if (Listener.HasPendingMessage) { HandleCommand(Listener.AcceptMessage().ToString()); }
 
             switch (BALLS.CurrentState)
             {
-                case BALLS.State.Idle:
-                    // check if any targets came in
+                case BALLS.State.Active:
+                    CurrentManeuver.ExecuteStateMachine();
+                    if (!CheckResources()) BALLS.CurrentState = BALLS.State.MissingResources;
                     break;
-                case BALLS.State.Executing:
-                    // do ya thing
+                case BALLS.State.Standby:
+                    // wait to be reactivated
+                    break;
+                case BALLS.State.MissingResources:
+                    Broadcaster.Log(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.ERROR));
+                    if (CheckResources()) BALLS.CurrentState = BALLS.State.Standby;
                     break;
             }
+        }
+
+        public void HandleCommand(string command)
+        {
+            if (CommandLine.TryParse(command))
+            {
+                switch (CommandLine.Argument(0).ToUpper())
+                {
+                    case "ACTIVATE": BALLS.CurrentState = BALLS.State.Active; break;
+                    case "STANDBY": BALLS.CurrentState = BALLS.State.Standby; break;
+                    case "TARGET": HandleArguments(CommandLine); break;
+                }
+            }
+        }
+
+        public void HandleArguments(MyCommandLine commandLine)
+        {
+            string parentCommand = commandLine.Argument(0).ToUpper();
+            Dictionary<string, Action> subcommands;
+            if ( CommandIndex.TryGetValue(parentCommand, out subcommands))
+            {
+                for (int i = 1; i < commandLine.ArgumentCount; i++)
+                {
+                    Action subcommand;
+                    if (subcommands.TryGetValue(commandLine.Argument(i), out subcommand))
+                    {
+                        subcommand();
+                    }
+                }
+            }
+        }
+
+        public bool CheckResources()
+        {
+            // check if we have enough resources for a missile
+            foreach (var item in RequiredComponents)
+            {
+                double currentItemCount;
+                if (InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount) & currentItemCount < item.Value) return false;
+            }
+            return true;
         }
     }
 }

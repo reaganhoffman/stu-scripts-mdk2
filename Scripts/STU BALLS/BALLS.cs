@@ -1,4 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
+using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,12 @@ namespace IngameScript
         {
             public enum State
             {
-                Idle,
-                Executing
+                Active,
+                Standby,
+                MissingResources
             }
 
-            public static State CurrentState { get; set; } = State.Idle;
+            public static State CurrentState { get; set; } = State.Active;
             
             public static IMyGridTerminalSystem Grid { get; set; }
             public static IMyGridProgramRuntimeInfo RuntimeInfo { get; set; }
@@ -33,8 +35,14 @@ namespace IngameScript
             public static List<IMyTerminalBlock> AllTerminalBlocks { get; private set; }
             public static IMyRadioAntenna Antenna { get; private set; }
             public static IMyMotorStator GantryBase { get; private set; }
+            public static IMyShipMergeBlock MergeBlock { get; private set; }
+            public static IMyShipConnector Connector { get; private set; }
             public static IMyProjector Projector { get; private set; }
             public static List<IMyShipWelder> Welders { get; private set; }
+
+            public static long LIGMA_EntityID { get; set; }
+            public static bool LIGMA_Ready { get; private set; }
+            public static IMyGasTank[] LIGMA_FuelTanks { get; private set; }
             
 
 
@@ -57,8 +65,22 @@ namespace IngameScript
 
                 Antenna = HWLoader.LoadBlockByName<IMyRadioAntenna>("Antenna");
                 GantryBase = HWLoader.LoadBlockByName<IMyMotorStator>("LIGMA Gantry Rotor");
+                MergeBlock = HWLoader.LoadBlockByName<IMyShipMergeBlock>("Merge Block");
+                Connector = HWLoader.LoadBlockByName<IMyShipConnector>("Connector");
                 Projector = HWLoader.LoadBlockByName<IMyProjector>("Projector");
                 Welders = HWLoader.LoadAllBlocksOfType<IMyShipWelder>().ToList();
+            }
+
+            public static void GetLIGMAEntityID()
+            {
+
+            }
+
+            public static bool TryGetLIGMAFuelTanks()
+            {
+                IMyGasTank[] _tanks = HWLoader.LoadAllBlocksOfTypeWithSubtypeId<IMyGasTank>("SmallHydrogenTankSmall");
+                if (_tanks.Length == 0) return false;
+                else LIGMA_FuelTanks = _tanks; return true;
             }
 
             

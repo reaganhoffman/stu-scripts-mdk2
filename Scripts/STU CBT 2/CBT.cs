@@ -566,6 +566,14 @@ namespace IngameScript {
                     item.TOLStatus = status;
                 }
             }
+
+            public static void PushLIGMAStatusToBottomCameraScreens(string status)
+            {
+                foreach (var item in BottomCameraChannel)
+                {
+                    item.LIGMAStatus = status;
+                }
+            }
             #endregion
 
             #region Block Loading

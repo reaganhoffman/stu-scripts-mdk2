@@ -28,6 +28,7 @@ namespace IngameScript
             double ALT { get; set; }
             double StoppingDistance { get; set; }
             public string TOLStatus { get; set; }
+            public string LIGMAStatus { get; set; }
             string GangwayStatus { get; set; }
             string RampStatus { get; set; }
             string CCStatus { get; set; }
@@ -97,6 +98,7 @@ namespace IngameScript
                 if (CBT.FlightController.DetectCollisionCourseWithPlanet())
                     deltaStopColor = Color.Yellow;
                 frame.Add(BuildTextSprite($"ΔSTOP " + $"{StoppingDistance,5}", ScreenWidth - GetTextSpriteWidth($"ΔSTOP{StoppingDistance,5}"), CharHeight * 5, deltaStopColor));
+                frame.Add(BuildTextSprite($"{LIGMAStatus}", ScreenWidth / 2, CharHeight * 7, cl));
                 frame.Add(BuildTextSprite($"{TOLStatus}", 0, CharHeight * 7, cl));
                 Color gangwayColor = cl;
                 if (GangwayStatus == "UNKNOWN")

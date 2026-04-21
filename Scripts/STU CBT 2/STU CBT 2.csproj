@@ -39,4 +39,5 @@
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\PID\PID.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems" Label="Shared" />
+  <Import Project="..\..\..\stu-scripts\Shared Projects\Raycasting\STU Raycaster\STU_Raycaster.projitems" Label="Shared" />
 </Project>

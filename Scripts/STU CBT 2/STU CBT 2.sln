@@ -33,6 +33,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PID", "..\..\Mixins\PID\PID
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Power Control Module", "..\..\Mixins\Power Control Module\Power Control Module.shproj", "{27DEBC59-5914-46CC-92CC-8CE67EDD69F5}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Raycaster", "..\..\..\stu-scripts\Shared Projects\Raycasting\STU Raycaster\STU Raycaster.shproj", "{B77AA568-7B92-49E3-B6C3-61FA11E47EC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -64,6 +66,7 @@ Global
 		..\..\Mixins\PID\PID.projitems*{8a3cdcc5-4b55-4d87-a415-698a0e1ff06f}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{9543d945-4f12-4cd2-9b70-938ae33c98c7}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{a2c2a7b0-3894-43f4-8eb5-71bfc87be730}*SharedItemsImports = 13
+		..\..\..\stu-scripts\Shared Projects\Raycasting\STU Raycaster\STU_Raycaster.projitems*{b77aa568-7b92-49e3-b6c3-61fa11e47ec0}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems*{c606c84c-c957-4859-be77-23907a2b1b72}*SharedItemsImports = 13
 		..\..\Mixins\Airlock Control Module\Airlock_Control_Module.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\CBT_VARIABLES\CBT_VARIABLES.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
@@ -79,5 +82,6 @@ Global
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\PID\PID.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
+		..\..\..\stu-scripts\Shared Projects\Raycasting\STU Raycaster\STU_Raycaster.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal
