@@ -54,10 +54,15 @@ namespace IngameScript
                 {
                     Echo($"{e.Message}\n{e.StackTrace}");
                 }
-                
+            }
+            else
+            {
+                Echo($"Malformed configuration in this PB's custom data. Terminating script.");
+                Runtime.UpdateFrequency = UpdateFrequency.None;
+                return;
             }
 
-            InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
+                InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Broadcaster = new STUMasterLogBroadcaster(BALLS_STATION_NAME, IGC, TransmissionDistance.AntennaRelay);
             LIGMAUnicaster = new STUMasterLogBroadcaster("LIGMA-1", IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
