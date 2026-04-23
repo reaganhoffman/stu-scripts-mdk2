@@ -31,10 +31,13 @@ namespace IngameScript
             public static AirlockControlModule ACM { get; private set; }
             public static PowerControlModule PCM { get; private set; }
             public static List<STULog> Logs { get; private set; }
+            public static LogScreen MainScreen { get; private set; }
+            public static StatusScreen SmallScreen { get; private set; }
+            public static Queue<STULog> LogQueue { get; private set; }
 
             public static List<IMyTerminalBlock> AllTerminalBlocks { get; private set; }
             public static IMyRadioAntenna Antenna { get; private set; }
-            public static IMyMotorStator GantryBase { get; private set; }
+            public static IMyMotorStator GantryStator { get; private set; }
             public static IMyShipMergeBlock MergeBlock { get; private set; }
             public static IMyShipConnector Connector { get; private set; }
             public static IMyProjector Projector { get; private set; }
@@ -63,13 +66,22 @@ namespace IngameScript
                 ACM = new AirlockControlModule();
                 PCM = new PowerControlModule(pcmSaveState);
 
+                MainScreen = new LogScreen(PB, 0);
+                SmallScreen = new StatusScreen(PB, 1, "Monospace", 3);
+
                 Antenna = HWLoader.LoadBlockByName<IMyRadioAntenna>("Antenna");
-                GantryBase = HWLoader.LoadBlockByName<IMyMotorStator>("LIGMA Gantry Rotor");
-                MergeBlock = HWLoader.LoadBlockByName<IMyShipMergeBlock>("Merge Block");
-                Connector = HWLoader.LoadBlockByName<IMyShipConnector>("Connector");
+                GantryStator = HWLoader.LoadBlockByName<IMyMotorStator>("LIGMA Gantry Rotor");
+                MergeBlock = HWLoader.LoadBlockByName<IMyShipMergeBlock>("Small Merge Block");
+                Connector = HWLoader.LoadBlockByName<IMyShipConnector>("Small Connector");
                 Projector = HWLoader.LoadBlockByName<IMyProjector>("Projector");
                 Welders = HWLoader.LoadAllBlocksOfType<IMyShipWelder>().ToList();
             }
+
+            public static void AddToLogQueue(string message, STULogType logType = STULogType.INFO)
+            {
+                MainScreen.Logs.Enqueue(new STULog("BALLS", message, logType));
+            }
+
 
             public static void GetLIGMAEntityID()
             {

@@ -43,14 +43,8 @@ namespace IngameScript
                 {
                     if (tank.FilledRatio < 1) atLeastOneNotFull = true;
                 }
-                if (!atLeastOneNotFull)
-                {
-                    // send launch command to ligma
-                    
-                    return true;
-                }
-
-                return false;
+                if (atLeastOneNotFull) return false;
+                else return true;
             }
         }
     }

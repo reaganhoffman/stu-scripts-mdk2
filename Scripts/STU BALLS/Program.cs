@@ -28,7 +28,7 @@ namespace IngameScript
         IMyBroadcastListener Listener { get; set; }
         MyCommandLine CommandLine { get; set; }
         MyCommandLine WirelessMessageCommandLine { get; set; }
-        MyIni _ini { get; set; }
+        MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
         Queue<STUStateMachine> ManeuverQueue { get; set; }
         static STUStateMachine CurrentManeuver { get; set; }
@@ -48,15 +48,11 @@ namespace IngameScript
             {
                 try
                 {
-                    List<MyIniKey> keys = new List<MyIniKey>();
-                    _ini.GetKeys(keys);
-                    MyIniKey key = keys.Find(name => name.ToString() == "BALLS_STATION_NAME");
-                    BALLS_STATION_NAME = _ini.Get(key).ToString();
+                    BALLS_STATION_NAME = _ini.Get("CONFIG", "BALLS_STATION_NAME").ToString();
                 }
                 catch (Exception e)
                 {
-                    Echo($"could not find BALLS_STATION_NAME in custom data");
-                    BALLS_STATION_NAME = "";
+                    Echo($"{e.Message}\n{e.StackTrace}");
                 }
                 
             }
@@ -67,8 +63,8 @@ namespace IngameScript
             Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
             CommandLine = new MyCommandLine();
             WirelessMessageCommandLine = new MyCommandLine();
-            _ini = new MyIni();
             _balls = new BALLS(GridTerminalSystem, Runtime, IGC, Me, "");
+            BALLS.CurrentState = BALLS.State.Standby;
 
             RequiredComponents.Add("Steel Plates", 5);
             RequiredComponents.Add("Gyroscope", 5);
@@ -91,16 +87,19 @@ namespace IngameScript
             {
                 case BALLS.State.Active:
                     CurrentManeuver.ExecuteStateMachine();
-                    if (!CheckResources()) BALLS.CurrentState = BALLS.State.MissingResources;
+                    //if (!HaveEnoughResources()) BALLS.CurrentState = BALLS.State.MissingResources;
                     break;
                 case BALLS.State.Standby:
                     // wait to be reactivated
                     break;
                 case BALLS.State.MissingResources:
                     Broadcaster.Log(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.ERROR));
-                    if (CheckResources()) BALLS.CurrentState = BALLS.State.Standby;
+                    //if (HaveEnoughResources()) BALLS.CurrentState = BALLS.State.Standby;
                     break;
             }
+
+            BALLS.MainScreen.WriteWrappableLogs(BALLS.MainScreen.Logs);
+            BALLS.SmallScreen.Refresh();
         }
 
         public void HandleCommand(string command)
@@ -133,7 +132,7 @@ namespace IngameScript
             }
         }
 
-        public bool CheckResources()
+        public bool HaveEnoughResources()
         {
             // check if we have enough resources for a missile
             foreach (var item in RequiredComponents)
