@@ -88,10 +88,16 @@ namespace IngameScript
 
             if (Listener.HasPendingMessage) { HandleCommand(Listener.AcceptMessage().ToString()); }
 
+            if (ManeuverQueue.Count > 0) { CurrentManeuver = ManeuverQueue.Dequeue(); }
+
             switch (BALLS.CurrentState)
             {
                 case BALLS.State.Active:
-                    CurrentManeuver.ExecuteStateMachine();
+                    if (ManeuverQueue.Count > 0)
+                    {
+                        CurrentManeuver = ManeuverQueue.Dequeue();
+                        CurrentManeuver.ExecuteStateMachine();
+                    }
                     //if (!HaveEnoughResources()) BALLS.CurrentState = BALLS.State.MissingResources;
                     break;
                 case BALLS.State.Standby:
