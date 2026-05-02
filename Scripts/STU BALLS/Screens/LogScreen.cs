@@ -11,9 +11,16 @@ namespace IngameScript
         {
             public Queue<STULog> Logs { get; set; }
 
-            public LogScreen(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
+            public LogScreen(IMyTerminalBlock block, int displayIndex, float fontSize = 1, string font = "Monospace") : base(block, displayIndex, font, fontSize)
             {
                 Logs = new Queue<STULog>();
+            }
+
+            public void Refresh()
+            {
+                StartFrame();
+                WriteWrappableLogs(Logs);
+                EndAndPaintFrame();
             }
         }
     }

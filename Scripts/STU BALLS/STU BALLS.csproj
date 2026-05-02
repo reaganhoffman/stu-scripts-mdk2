@@ -12,7 +12,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.2.2">
+    <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.2.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -31,4 +31,5 @@
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems" Label="Shared" />
 </Project>

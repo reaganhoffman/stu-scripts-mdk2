@@ -10,9 +10,12 @@ namespace IngameScript
         {
             float FontSize { get; set; }
 
-            public StatusScreen(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base (block, displayIndex, font, fontSize)
+            BALLS _BALLS { get; set; }
+
+            public StatusScreen(BALLS balls, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base (block, displayIndex, font, fontSize)
             {
                 FontSize = fontSize;
+                _BALLS = balls;
             }
 
             public void Refresh()
@@ -21,9 +24,9 @@ namespace IngameScript
                 MySprite status = new MySprite()
                 {
                     Type = SpriteType.TEXT,
-                    Data = BALLS.CurrentState.ToString().ToUpper(),
+                    Data = _BALLS.CurrentState.ToString().ToUpper(),
                     Color = VRageMath.Color.White,
-                    Position = TopLeft + new Vector2((ScreenWidth - GetTextSpriteWidth(BALLS.CurrentState.ToString())) / 2, (ScreenHeight - GetTextSpriteHeight(BALLS.CurrentState.ToString())) / 2),
+                    Position = TopLeft + new Vector2((ScreenWidth - GetTextSpriteWidth(_BALLS.CurrentState.ToString())) / 2, (ScreenHeight - GetTextSpriteHeight(_BALLS.CurrentState.ToString())) / 2),
                     FontId = "Monospace",
                     RotationOrScale = FontSize
                 };

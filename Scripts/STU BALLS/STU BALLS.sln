@@ -21,6 +21,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Hardware Loading Utils", ".
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU LIGMA Variables", "..\..\Mixins\LIGMA\STU LIGMA Variables\STU LIGMA Variables.shproj", "{2813E30E-AC2C-4B54-855E-744D846644F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -40,11 +42,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{27debc59-5914-46cc-92cc-8ce67edd69f5}*SharedItemsImports = 13
+		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{2813e30e-ac2c-4b54-855e-744d846644f5}*SharedItemsImports = 13
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{4fb19e00-bd67-4421-ad35-d02f6c4c181b}*SharedItemsImports = 13
 		..\..\Mixins\Airlock Control Module\Airlock_Control_Module.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
 		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
+		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
 		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{56608538-0deb-4f2d-b22c-95e2612c25e4}*SharedItemsImports = 5

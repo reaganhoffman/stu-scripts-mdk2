@@ -1,40 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using Sandbox.Game.EntityComponents;
+﻿using System.Collections.Generic;
 using Sandbox.ModAPI.Ingame;
-using Sandbox.ModAPI.Interfaces;
-using SpaceEngineers.Game.ModAPI.Ingame;
-using VRage;
-using VRage.Collections;
 using VRage.Game;
-using VRage.Game.Components;
-using VRage.Game.GUI.TextPanel;
-using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.Definitions;
-using VRageMath;
 
 namespace IngameScript
 {
-    public partial class Program : MyGridProgram
+    partial class Program : MyGridProgram
     {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         STUMasterLogBroadcaster Broadcaster { get; set; }
         STUMasterLogBroadcaster LIGMAUnicaster { get; set; }
         IMyBroadcastListener Listener { get; set; }
+        IMyBroadcastListener TelemetryListener { get; set; }
+        IMyBroadcastListener LIGMALogListener { get; set; }
         MyCommandLine CommandLine { get; set; }
         MyCommandLine WirelessMessageCommandLine { get; set; }
         MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
         Queue<STUStateMachine> ManeuverQueue { get; set; }
         static STUStateMachine CurrentManeuver { get; set; }
-        Dictionary<string, Dictionary<string, Action>> CommandIndex { get; set; }
 
-        static BALLS _balls { get; set; }
+        BALLS _BALLS { get; set; }
         Dictionary<string, double> RequiredComponents { get; set; } = new Dictionary<string, double>();
         
 
@@ -46,14 +32,7 @@ namespace IngameScript
 
             if (_ini.TryParse(Me.CustomData))
             {
-                try
-                {
-                    BALLS_STATION_NAME = _ini.Get("CONFIG", "BALLS_STATION_NAME").ToString();
-                }
-                catch (Exception e)
-                {
-                    Echo($"{e.Message}\n{e.StackTrace}");
-                }
+                BALLS_STATION_NAME = _ini.Get("CONFIG", "BALLS_STATION_NAME").ToString("");
             }
             else
             {
@@ -62,16 +41,23 @@ namespace IngameScript
                 return;
             }
 
-                InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
+            _BALLS = new BALLS(GridTerminalSystem, Runtime, IGC, Me, "");
+            _BALLS.AddToLogQueue("Initializing subsystems...");
+
+            InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Broadcaster = new STUMasterLogBroadcaster(BALLS_STATION_NAME, IGC, TransmissionDistance.AntennaRelay);
             LIGMAUnicaster = new STUMasterLogBroadcaster("LIGMA-1", IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
+            TelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
+            LIGMALogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER);
             CommandLine = new MyCommandLine();
             WirelessMessageCommandLine = new MyCommandLine();
-            _balls = new BALLS(GridTerminalSystem, Runtime, IGC, Me, "");
-            BALLS.CurrentState = BALLS.State.Standby;
+            ManeuverQueue = new Queue<STUStateMachine>();
+            _BALLS.CurrentState = BALLS.State.Standby;
 
-            RequiredComponents.Add("Steel Plates", 5);
+            _BALLS.AddToLogQueue("Done.", STULogType.OK);
+
+            RequiredComponents.Add("Steel Plate", 5);
             RequiredComponents.Add("Gyroscope", 5);
         }
 
@@ -88,9 +74,14 @@ namespace IngameScript
 
             if (Listener.HasPendingMessage) { HandleCommand(Listener.AcceptMessage().ToString()); }
 
+            if (LIGMALogListener.HasPendingMessage)
+            {
+                _BALLS.AddToLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
+            }
+
             if (ManeuverQueue.Count > 0) { CurrentManeuver = ManeuverQueue.Dequeue(); }
 
-            switch (BALLS.CurrentState)
+            switch (_BALLS.CurrentState)
             {
                 case BALLS.State.Active:
                     if (ManeuverQueue.Count > 0)
@@ -109,8 +100,7 @@ namespace IngameScript
                     break;
             }
 
-            BALLS.MainScreen.WriteWrappableLogs(BALLS.MainScreen.Logs);
-            BALLS.SmallScreen.Refresh();
+            BALLS.Update(_BALLS);
         }
 
         public void HandleCommand(string command)
@@ -119,26 +109,9 @@ namespace IngameScript
             {
                 switch (CommandLine.Argument(0).ToUpper())
                 {
-                    case "ACTIVATE": BALLS.CurrentState = BALLS.State.Active; break;
-                    case "STANDBY": BALLS.CurrentState = BALLS.State.Standby; break;
-                    case "TARGET": HandleArguments(CommandLine); break;
-                }
-            }
-        }
-
-        public void HandleArguments(MyCommandLine commandLine)
-        {
-            string parentCommand = commandLine.Argument(0).ToUpper();
-            Dictionary<string, Action> subcommands;
-            if ( CommandIndex.TryGetValue(parentCommand, out subcommands))
-            {
-                for (int i = 1; i < commandLine.ArgumentCount; i++)
-                {
-                    Action subcommand;
-                    if (subcommands.TryGetValue(commandLine.Argument(i), out subcommand))
-                    {
-                        subcommand();
-                    }
+                    case "ACTIVATE": _BALLS.CurrentState = BALLS.State.Active; break;
+                    case "STANDBY": _BALLS.CurrentState = BALLS.State.Standby; break;
+                    default: break;
                 }
             }
         }
@@ -146,10 +119,13 @@ namespace IngameScript
         public bool HaveEnoughResources()
         {
             // check if we have enough resources for a missile
+            Dictionary<MyDefinitionBase, int> remainingBlocks;
+            remainingBlocks = _BALLS.Projector.RemainingBlocksPerType;
             foreach (var item in RequiredComponents)
             {
                 double currentItemCount;
-                if (InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount) & currentItemCount < item.Value) return false;
+                InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount);
+                if (currentItemCount < item.Value) return false;
             }
             return true;
         }

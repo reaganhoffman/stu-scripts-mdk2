@@ -14,22 +14,29 @@ namespace IngameScript
             public override string Name => "Construct LIGMA";
 
             public long LIGMA_EntityID;
+
+            BALLS _balls { get; set; }
+
+            public ConstructLIGMA(BALLS balls)
+            {
+                _balls = balls;
+            }
             
             public override bool Init()
             {
-                BALLS.Projector.Enabled = true;
-                BALLS.MergeBlock.Enabled = true;
-                BALLS.Connector.Enabled = true;
-                BALLS.Connector.Connect();
-                foreach (var welder in BALLS.Welders) { welder.Enabled = true; }
+                _balls.Projector.Enabled = true;
+                _balls.MergeBlock.Enabled = true;
+                _balls.Connector.Enabled = true;
+                _balls.Connector.Connect();
+                foreach (var welder in _balls.Welders) { welder.Enabled = true; }
                 return true;
             }
 
             public override bool Run()
             {
-                if (BALLS.Projector.BuildableBlocksCount == 0)
+                if (_balls.Projector.BuildableBlocksCount == 0)
                 {
-                    foreach (var welder in BALLS.Welders) { welder.Enabled = false; }
+                    foreach (var welder in _balls.Welders) { welder.Enabled = false; }
                     return true;
                 }
                 else return false;
@@ -37,7 +44,7 @@ namespace IngameScript
 
             public override bool Closeout()
             {
-                BALLS.TryGetLIGMAFuelTanks();
+                _balls.TryGetLIGMAFuelTanks();
                 bool atLeastOneNotFull = false;
                 foreach (var tank in BALLS.LIGMA_FuelTanks)
                 {
