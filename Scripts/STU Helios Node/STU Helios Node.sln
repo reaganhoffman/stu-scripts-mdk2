@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Helios Node", "STU Helios Node.csproj", "{8AA34492-F925-4874-9390-E3F170852B36}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Log", "..\..\Mixins\Logging\STU Log\STU Log.shproj", "{6EE22094-1878-45BC-805C-D32278F9C704}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Master Log Broadcaster", "..\..\Mixins\Logging\STU Master Log Broadcaster\STU Master Log Broadcaster.shproj", "{4CAC373A-9512-4083-B2F8-27AB57997CC4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STUInventoryEnumerator", "..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.shproj", "{9543D945-4F12-4CD2-9B70-938AE33C98C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8AA34492-F925-4874-9390-E3F170852B36}.Debug|x64.ActiveCfg = Debug|x64
+		{8AA34492-F925-4874-9390-E3F170852B36}.Debug|x64.Build.0 = Debug|x64
+		{8AA34492-F925-4874-9390-E3F170852B36}.Release|x64.ActiveCfg = Release|x64
+		{8AA34492-F925-4874-9390-E3F170852B36}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E9FC8F6-FFC4-4262-9EA9-833678EC6730}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
+		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{6ee22094-1878-45bc-805c-d32278f9c704}*SharedItemsImports = 13
+		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{8aa34492-f925-4874-9390-e3f170852b36}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{8aa34492-f925-4874-9390-e3f170852b36}*SharedItemsImports = 5
+		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{9543d945-4f12-4cd2-9b70-938ae33c98c7}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
