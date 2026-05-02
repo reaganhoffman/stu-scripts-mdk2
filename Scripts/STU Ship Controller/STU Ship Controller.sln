@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36127.28 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Ship Controller", "STU Ship Controller.csproj", "{9F8D5902-B071-4E97-B1A9-2EA41DBCC930}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F8D5902-B071-4E97-B1A9-2EA41DBCC930}.Debug|x64.ActiveCfg = Debug|x64
+		{9F8D5902-B071-4E97-B1A9-2EA41DBCC930}.Debug|x64.Build.0 = Debug|x64
+		{9F8D5902-B071-4E97-B1A9-2EA41DBCC930}.Release|x64.ActiveCfg = Release|x64
+		{9F8D5902-B071-4E97-B1A9-2EA41DBCC930}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {719D00B8-5D3C-4B3E-9EAF-ED4047A97C5C}
+	EndGlobalSection
+EndGlobal

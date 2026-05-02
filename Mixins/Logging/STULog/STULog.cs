@@ -1,6 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VRageMath;
 
 namespace IngameScript {
@@ -128,6 +128,14 @@ namespace IngameScript {
                 }
             }
 
+            /// <summary>
+            /// Creates a pipe-delineated CSV-like row using the Sender, Message, Type, and Metadata keys (in that order)
+            /// </summary>
+            /// <returns></returns>
+            public string ToCSV(string identifier = "n/a") {
+                return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", Metadata.Values.ToArray())}";
+            }
+
             public string Message { get; set; }
 
             public STULogType Type { get; set; }
@@ -138,4 +146,3 @@ namespace IngameScript {
 
     }
 }
-

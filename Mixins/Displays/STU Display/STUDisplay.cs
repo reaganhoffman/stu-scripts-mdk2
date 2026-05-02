@@ -1,7 +1,6 @@
 ﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.Text;
 using VRage.Game.GUI.TextPanel;
 using VRageMath;
@@ -28,7 +27,7 @@ namespace IngameScript {
             public float ScreenHeight { get; private set; }
             public float DefaultLineHeight { get; set; }
             public float CharacterWidth { get; private set; }
-            public int Lines { get; set; }
+            public int TotalLines { get; set; }
 
             IEnumerator<bool> ImageDrawerStateMachine { get; set; }
             public bool FinishedDrawingCustomImage { get; private set; }
@@ -69,8 +68,8 @@ namespace IngameScript {
                 Center = Viewport.Center;
                 ScreenWidth = Viewport.Width;
                 ScreenHeight = Viewport.Height;
-                DefaultLineHeight = GetDefaultLineHeight();
-                Lines = (int)(ScreenHeight / DefaultLineHeight);
+                DefaultLineHeight = GetTextDimensions("A").Y;
+                TotalLines = (int)(ScreenHeight / DefaultLineHeight);
                 NeedToCenterSprite = true;
                 FinishedDrawingCustomImage = false;
                 DisplayBlock = block as IMyTextPanel;
@@ -223,15 +222,8 @@ namespace IngameScript {
                 return Surface.MeasureStringInPixels(builder, fontID, scale).Y;
             }
 
-            private float GetDefaultLineHeight() {
-                StringBuilder builder = new StringBuilder();
-                return Surface.MeasureStringInPixels(builder.Append("A"), Surface.Font, Surface.FontSize).Y;
-            }
-
-            public MySprite BuildTextSprite(string text, float topLeftOffsetX, float topLeftOffsetY, Color color)
-            {
-                return new MySprite
-                {
+            public MySprite BuildTextSprite(string text, float topLeftOffsetX, float topLeftOffsetY, Color color) {
+                return new MySprite {
                     Type = SpriteType.TEXT,
                     Data = text,
                     Position = TopLeft + new Vector2(topLeftOffsetX, topLeftOffsetY),
@@ -241,17 +233,14 @@ namespace IngameScript {
                 };
             }
 
-            public void DrawCenteredMultilineString(string input, Color color, MySpriteDrawFrame frame)
-            {
+            public void DrawCenteredMultilineString(string input, Color color, MySpriteDrawFrame frame) {
                 string[] lines = input.Split('\n');
-                
-                for(int i=0; i<lines.Length; i++)
-                {
-                    frame.Add(new MySprite()
-                    {
+
+                for (int i = 0; i < lines.Length; i++) {
+                    frame.Add(new MySprite() {
                         Type = SpriteType.TEXT,
                         Data = lines[i],
-                        Position = TopLeft + new Vector2((ScreenWidth / 2) - (GetTextWidth(lines[i]) / 2) - CharacterWidth, GetDefaultLineHeight()*i),
+                        Position = TopLeft + new Vector2((ScreenWidth / 2) - (GetTextDimensions(lines[i]).X / 2) - CharacterWidth, DefaultLineHeight * i),
                         Color = color,
                         FontId = Surface.Font,
                         RotationOrScale = Surface.FontSize
@@ -468,49 +457,57 @@ namespace IngameScript {
             }
 
             public void WriteWrappableLogs(Queue<STULog> logs, Func<STULog, string> logFormatter = null) {
-                // If there are no logs, don't bother writing anything
-                if (logs.Count == 0) {
+                if (logs.Count == 0)
                     return;
-                }
-                Cursor = TopLeft;
-                if (logFormatter == null) {
+
+                if (logFormatter == null)
                     logFormatter = DefaultLogFormatter;
-                }
-                // Count the number of lines the logs will take up
+
+                Cursor = TopLeft;
+
+                Queue<int> logLineCounts = new Queue<int>();
                 int logLines = 0;
+
                 foreach (STULog log in logs) {
-                    logLines += GetLinesConsumed(logFormatter(log));
+                    int linesConsumed = GetLinesConsumed(logFormatter(log));
+                    logLineCounts.Enqueue(linesConsumed);
+                    logLines += linesConsumed;
                 }
 
-                // Dequeue logs until the number of lines is less than the number of lines the display can show
-                while (logLines > Lines) {
-                    STULog log = logs.Dequeue();
-                    logLines -= GetLinesConsumed(logFormatter(log));
+                while (logLines > TotalLines && logs.Count > 0) {
+                    logs.Dequeue();
+                    logLines -= logLineCounts.Dequeue();
                 }
 
                 foreach (STULog log in logs) {
                     StringBuilder logSegment = new StringBuilder();
-                    foreach (char c in logFormatter(log)) {
+                    string formatted = logFormatter(log);
+
+                    foreach (char c in formatted) {
+                        if (c == '\n') {
+                            CreateLogSprite(log, logSegment);
+                            GoToNextLine();
+                            logSegment.Clear();
+                            continue;
+                        }
+
                         logSegment.Append(c);
-                        if (GetTextWidth(logSegment) >= ScreenWidth) {
-                            // Remove the last character from the segment
+
+                        if (GetTextDimensions(logSegment).X > ScreenWidth) {
                             logSegment.Remove(logSegment.Length - 1, 1);
                             CreateLogSprite(log, logSegment);
                             GoToNextLine();
                             logSegment.Clear();
-                            // Be sure to re-add the character that was removed, excepting whitespace
-                            if (c != ' ') {
+
+                            if (c != ' ')
                                 logSegment.Append(c);
-                            }
                         }
                     }
 
-                    // Add the last segment
                     CreateLogSprite(log, logSegment);
                     GoToNextLine();
                 }
             }
-
             private string DefaultLogFormatter(STULog log) {
                 return $" > {log.Sender}: {log.Message}";
             }
@@ -526,18 +523,38 @@ namespace IngameScript {
                 });
             }
 
-            private float GetTextWidth(StringBuilder segment) {
-                return Surface.MeasureStringInPixels(segment, Surface.Font, Surface.FontSize).X;
+            private Vector2 GetTextDimensions(StringBuilder builder) {
+                return Surface.MeasureStringInPixels(builder, Surface.Font, Surface.FontSize);
             }
 
-            private float GetTextWidth(string s) {
-                return GetTextWidth(new StringBuilder().Append(s));
+            private Vector2 GetTextDimensions(string s) {
+                StringBuilder builder = new StringBuilder().Append(s);
+                return GetTextDimensions(builder);
             }
 
             private int GetLinesConsumed(string text) {
-                return (int)Math.Ceiling(GetTextWidth(text) / ScreenWidth);
-            }
+                text = text.Replace("\r\n", "\n").Replace("\r", "\n");
 
+                float charWidth = GetTextDimensions("A").X;
+                int charsPerLine = (int)Math.Floor(ScreenWidth / charWidth);
+
+                if (charsPerLine <= 0)
+                    return 0;
+
+                int linesConsumed = 0;
+                string[] segments = text.Split('\n');
+
+                foreach (string segment in segments) {
+                    if (segment.Length == 0) {
+                        // blank line caused by consecutive newlines, leading newline, or trailing newline
+                        linesConsumed++;
+                    } else {
+                        linesConsumed += (int)Math.Ceiling((double)segment.Length / charsPerLine);
+                    }
+                }
+
+                return linesConsumed;
+            }
         }
     }
 }
