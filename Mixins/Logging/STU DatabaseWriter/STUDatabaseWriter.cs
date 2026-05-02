@@ -8,13 +8,19 @@ namespace IngameScript {
             private string _entityId;
             private IMyIntergridCommunicationSystem _igc;
 
-            public STUDatabaseWriter(long databaseId, IMyIntergridCommunicationSystem igc, string entityId) {
+            public STUDatabaseWriter(long databaseId, IMyIntergridCommunicationSystem igc, long entityId) {
                 _databaseId = databaseId;
+                _entityId = entityId.ToString();
+                _igc = igc;
             }
 
+            /// <summary>
+            /// Returns true if the log was successfully sent, not necessarily if it was successfully written to disk
+            /// </summary>
+            /// <param name="log"></param>
+            /// <returns></returns>
             public bool TryWriteToRemote(STULog log) {
-                _igc.SendUnicastMessage(_databaseId, _entityId, log.Serialize());
-                return false;
+                return _igc.SendUnicastMessage(_databaseId, _entityId, log.Serialize());
             }
 
         }

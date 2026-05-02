@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using VRageMath;
 
 namespace IngameScript {
@@ -133,7 +132,15 @@ namespace IngameScript {
             /// </summary>
             /// <returns></returns>
             public string ToCSV(string identifier = "n/a") {
-                return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", Metadata.Values.ToArray())}";
+                List<string> metadataList = new List<string>();
+                foreach (KeyValuePair<string, string> pair in Metadata) {
+                    metadataList.Add($"{pair.Key}={pair.Value}");
+                }
+                if (metadataList.Count > 0) {
+                    return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", metadataList.ToArray())}";
+                } else {
+                    return $"{identifier}|{Sender}|{Message}|{Type}";
+                }
             }
 
             public string Message { get; set; }
