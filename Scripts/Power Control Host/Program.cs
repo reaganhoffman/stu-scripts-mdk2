@@ -9,27 +9,29 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        MyIni _ini { get; set; } = new MyIni();
+        MyIni _ini { get; set; }
         MyCommandLine CommandLineParser { get; set; } = new MyCommandLine();
-        List<IMyTerminalBlock> TerminalBlocks { get; set; }
-        List<IMyFunctionalBlock> FunctionalBlocks { get; set; }
+        List<IMyFunctionalBlock> FunctionalBlocks { get; set; } = new List<IMyFunctionalBlock>();
         static PowerControlModule PCM { get; set; }
 
         public Program()
         {
+            _ini = new MyIni();
             try
             {
-                _ini.TryParse(Storage);
-                GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
-                Echo($"test: {FunctionalBlocks.Count}");
-                GridTerminalSystem.GetBlocks(TerminalBlocks);
-                Echo($"terminal blocks: {TerminalBlocks.Count}");
-                PCM = new PowerControlModule();
-                //PCM.RefreshGroupMembership(FunctionalBlocks);
+                _ini.TryParse(Storage);   
             }
             catch (Exception e)
             {
-                //Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
+                Echo($"{e.Message}\n{e.Source}\n{e.StackTrace}");
+            }
+            finally
+            {
+                GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
+                PCM = new PowerControlModule(Echo, _ini.ToString()); // attempt to load from the Storage string.
+                                                                     // The PowerControlModule constructor handles if the string is invalid
+                                                                     // by way of PowerControlModule.LoadSaveState().
+                PCM.RefreshGroupMembership(FunctionalBlocks);
             }
         }
 
@@ -47,65 +49,75 @@ namespace IngameScript
 
         public void Main(string argument, UpdateType updateSource)
         {
-            Echo($"test: {FunctionalBlocks.Count}\n" +
-                $"terminal blocks: {TerminalBlocks.Count}");
             try
             {
                 CommandLineParser.TryParse(argument);
-                if (CommandLineParser.Argument(0).ToUpper() != "POWER") return;
-                if (CommandLineParser.Switch("r") | CommandLineParser.Switch("R"))
+                if (CommandLineParser.Argument(0).ToUpper() != "POWER") return; // command has to start with POWER
+                
+                if (CommandLineParser.Switch("r") || CommandLineParser.Switch("R")) // check 'r' switch first, then continue
                 {
-                    GridTerminalSystem.GetBlocksOfType<IMyFunctionalBlock>(FunctionalBlocks);
+                    FunctionalBlocks = new List<IMyFunctionalBlock>();
+                    GridTerminalSystem.GetBlocksOfType(FunctionalBlocks);
                     PCM.RefreshGroupMembership(FunctionalBlocks);
-                    return;
                 }
+
+                if (CommandLineParser.ArgumentCount < 2) return; 
+
+                if (CommandLineParser.Argument(1).ToUpper() == "LOW") { HandleLowPowerModeRequest(); return; }
+                // if first argument is LOW, immediately process as a low power mode request and return.
+                if (CommandLineParser.Argument(1).ToUpper() == "ON") { PCM.AllOn(); return; }
+
                 PowerControlModule.PowerGroup userRequestedPowerGroup;
                 if (PCM.TryGetPowerGroup(CommandLineParser.Argument(1), out userRequestedPowerGroup))
                 {
-                    bool userRequestedState;
-                    if (CommandLineParser.Switches.Contains("e") | CommandLineParser.Switches.Contains("E"))
+                    if (Check("e"))
                     {
-                        userRequestedState = CommandLineParser.Switch("e") | CommandLineParser.Switch("E");
-                        ProcessUserRequest(userRequestedPowerGroup, userRequestedState);
+                        ProcessUserRequest(userRequestedPowerGroup, true);
                         return;
                     }
-                    if (CommandLineParser.Switches.Contains("d") | CommandLineParser.Switches.Contains("D"))
+                    if (Check("d"))
                     {
-                        userRequestedState = CommandLineParser.Switch("d") | CommandLineParser.Switch("D");
-                        userRequestedState = !userRequestedState;
-                        ProcessUserRequest(userRequestedPowerGroup, userRequestedState);
+                        ProcessUserRequest(userRequestedPowerGroup, false);
                         return;
                     }
-                    if (CommandLineParser.Switches.DefaultIfEmpty<string>().Equals(null))
+                    if (CommandLineParser.Switches.Count == 0)
                     {
-
-                        bool currentState = userRequestedPowerGroup.Enabled;
-                        ProcessUserRequest(userRequestedPowerGroup, !currentState);
+                        PCM.TogglePowerGroup(userRequestedPowerGroup);
                     }
                 }
-                else throw new Exception();
             }
-            catch
+            catch (Exception e)
             {
-                Echo($"Invalid command: \n'{argument}'");
+                Echo($"Invalid command: \n'{argument}'\n{e.Message}\n{e.StackTrace}\n{e.InnerException}");
             }
         }
 
         void ProcessUserRequest(PowerControlModule.PowerGroup powerGroup, bool desiredState = true)
         {
-            if (powerGroup.Name == "LOW")
-            {
-                switch (powerGroup.Enabled)
-                {
-                    case true: PCM.RestoreFromSaveState(); return;
-                    case false: PCM.GoToLowPowerMode(); return;
-                }
-            }
             switch (desiredState)
             {
                 case true: PCM.EnablePowerGroup(powerGroup); return;
                 case false: PCM.DisablePowerGroup(powerGroup); return;
             }
+        }
+
+        void HandleLowPowerModeRequest()
+        {
+            bool desiredLowPowerModeState = false;
+            if (Check("e")) desiredLowPowerModeState = true;
+            if (Check("d")) desiredLowPowerModeState = false;
+            if (!(Check("e") | Check("d"))) desiredLowPowerModeState = !PCM.LowPowerModeActivated;
+            Echo($"desiredLowPowerModestate: {desiredLowPowerModeState}");
+            switch (desiredLowPowerModeState)
+            {
+                case true: PCM.GoToLowPowerMode(); break;
+                case false: PCM.LoadSaveState(PCM.PowerGroupsSaveState); break;
+            }
+        }
+
+        bool Check(string @switch)
+        {
+            return CommandLineParser.Switch(@switch.ToLower()) || CommandLineParser.Switch(@switch.ToUpper());
         }
     }
 }

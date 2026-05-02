@@ -1,6 +1,4 @@
-﻿#if STUImage
-
-using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -117,4 +115,3 @@ namespace IngameScript
         }
     }
 }
-#endif

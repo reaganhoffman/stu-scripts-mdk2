@@ -202,6 +202,11 @@ namespace IngameScript {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity, overrideMode);
             }
 
+            public void HardStopGyros() { _orientationController.HardStopGyros(); }
+            public void SetVr(double rollSpeed) { _orientationController.SetVr(rollSpeed); }
+            public void SetVp(double pitchSpeed) { _orientationController.SetVp(pitchSpeed); }
+            public void SetVw(double yawSpeed) { _orientationController.SetVw(yawSpeed); }
+
             Vector3D GetWorldDirection(IMyTerminalBlock block, Base6Directions.Direction dir) {
                 switch (dir) {
                     case Base6Directions.Direction.Forward:
