@@ -22,7 +22,7 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class Assmeblies
+        public class Assemblies
         {
             public static Dictionary<string, int> LIGMA_MK_1 { get; set; } = new Dictionary<string, int>()
             {
