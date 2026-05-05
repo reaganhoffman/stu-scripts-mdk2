@@ -21,7 +21,8 @@ namespace IngameScript
         static STUStateMachine CurrentManeuver { get; set; }
 
         BALLS _BALLS { get; set; }
-        Dictionary<string, double> RequiredComponents { get; set; } = new Dictionary<string, double>();
+
+        bool IGNORE_OUT_OF_RESOURCES { get; set; } = false;
         
 
         
@@ -56,9 +57,6 @@ namespace IngameScript
             _BALLS.CurrentState = BALLS.State.Standby;
 
             _BALLS.AddToLogQueue("Done.", STULogType.OK);
-
-            RequiredComponents.Add("Steel Plate", 5);
-            RequiredComponents.Add("Gyroscope", 5);
         }
 
         public void Save()
@@ -81,22 +79,41 @@ namespace IngameScript
 
             if (ManeuverQueue.Count > 0) { CurrentManeuver = ManeuverQueue.Dequeue(); }
 
+            string currentState = "";
+            try
+            {
+                currentState = CurrentManeuver.CurrentInternalState.ToString();
+            }
+            catch
+            {
+                Echo("cannot get current maneuver's current internal state.");
+            }
+            finally
+            {
+                _BALLS.AddToLogQueue($"current internal state: {currentState}");
+            }
+
             switch (_BALLS.CurrentState)
             {
                 case BALLS.State.Active:
                     if (ManeuverQueue.Count > 0)
                     {
                         CurrentManeuver = ManeuverQueue.Dequeue();
-                        CurrentManeuver.ExecuteStateMachine();
+                        if (CurrentManeuver.ExecuteStateMachine()) ManeuverQueue.Enqueue(new ConstructLIGMA(_BALLS));
                     }
-                    //if (!HaveEnoughResources()) BALLS.CurrentState = BALLS.State.MissingResources;
+                    if (!HaveEnoughResources())
+                    {
+                        _BALLS.AddToLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
+                        Broadcaster.Log(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.ERROR));
+                        _BALLS.CurrentState = BALLS.State.MissingResources;
+                    }
                     break;
                 case BALLS.State.Standby:
+                    ManeuverQueue.Clear();
                     // wait to be reactivated
                     break;
                 case BALLS.State.MissingResources:
-                    Broadcaster.Log(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.ERROR));
-                    //if (HaveEnoughResources()) BALLS.CurrentState = BALLS.State.Standby;
+                    if (HaveEnoughResources()) _BALLS.CurrentState = BALLS.State.Standby;
                     break;
             }
 
@@ -109,8 +126,9 @@ namespace IngameScript
             {
                 switch (CommandLine.Argument(0).ToUpper())
                 {
-                    case "ACTIVATE": _BALLS.CurrentState = BALLS.State.Active; break;
+                    case "ACTIVATE": ManeuverQueue.Enqueue(new ConstructLIGMA(_BALLS)); _BALLS.CurrentState = BALLS.State.Active; break;
                     case "STANDBY": _BALLS.CurrentState = BALLS.State.Standby; break;
+                    case "IGNORE": _BALLS.AddToLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES; break;
                     default: break;
                 }
             }
@@ -118,14 +136,13 @@ namespace IngameScript
 
         public bool HaveEnoughResources()
         {
+            if (IGNORE_OUT_OF_RESOURCES) return true;
             // check if we have enough resources for a missile
-            Dictionary<MyDefinitionBase, int> remainingBlocks;
-            remainingBlocks = _BALLS.Projector.RemainingBlocksPerType;
-            foreach (var item in RequiredComponents)
+            foreach (var itemRequiredForLIGMA in Assmeblies.LIGMA_MK_1)
             {
                 double currentItemCount;
-                InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount);
-                if (currentItemCount < item.Value) return false;
+                InventoryEnumerator.MostRecentItemTotals.TryGetValue(itemRequiredForLIGMA.Key, out currentItemCount);
+                if (currentItemCount < itemRequiredForLIGMA.Value) return false;
             }
             return true;
         }

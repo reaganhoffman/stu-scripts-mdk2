@@ -7,18 +7,18 @@ namespace IngameScript {
     partial class Program {
         public class STUInventoryEnumerator {
 
-            const string c = "MyObjectBuilder_Component";
-            const string g = "MyObjectBuilder_GasProperties";
-            const string i = "MyObjectBuilder_Ingot";
-            const string o = "MyObjectBuilder_Ore";
-            const string co = "MyObjectBuilder_ConsumableItem";
-            const string d = "MyObjectBuilder_Datapad";
-            const string p = "MyObjectBuilder_Package";
-            const string po = "MyObjectBuilder_PhysicalObject";
-            const string pg = "MyObjectBuilder_PhysicalGunObject";
-            const string gc = "MyObjectBuilder_GasContainerObject";
-            const string oc = "MyObjectBuilder_OxygenContainerObject";
-            const string am = "MyObjectBuilder_AmmoMagazine";
+            public const string c = "MyObjectBuilder_Component";
+            public const string g = "MyObjectBuilder_GasProperties";
+            public const string i = "MyObjectBuilder_Ingot";
+            public const string o = "MyObjectBuilder_Ore";
+            public const string co = "MyObjectBuilder_ConsumableItem";
+            public const string d = "MyObjectBuilder_Datapad";
+            public const string p = "MyObjectBuilder_Package";
+            public const string po = "MyObjectBuilder_PhysicalObject";
+            public const string pg = "MyObjectBuilder_PhysicalGunObject";
+            public const string gc = "MyObjectBuilder_GasContainerObject";
+            public const string oc = "MyObjectBuilder_OxygenContainerObject";
+            public const string am = "MyObjectBuilder_AmmoMagazine";
 
             public static Dictionary<string, string> _subtypeToNameDict = new Dictionary<string, string>() {
                 // Components

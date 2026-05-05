@@ -25,11 +25,13 @@
   </ItemGroup>
   <Import Project="..\..\Mixins\Airlock Control Module\Airlock_Control_Module.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems" Label="Shared" />
-  <Import Project="..\..\Mixins\Logging\STU Log\STU_Log.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\BOM Assemblies\BOM_Assemblies.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
 </Project>

@@ -108,7 +108,6 @@ namespace IngameScript
                 else LIGMA_FuelTanks = _tanks; return true;
             }
 
-            
         }
     }
 }

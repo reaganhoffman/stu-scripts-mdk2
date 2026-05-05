@@ -27,7 +27,6 @@ namespace IngameScript
                 _balls.Projector.Enabled = true;
                 _balls.MergeBlock.Enabled = true;
                 _balls.Connector.Enabled = true;
-                _balls.Connector.Connect();
                 foreach (var welder in _balls.Welders) { welder.Enabled = true; }
                 return true;
             }
@@ -44,6 +43,7 @@ namespace IngameScript
 
             public override bool Closeout()
             {
+                _balls.Connector.Connect();
                 _balls.TryGetLIGMAFuelTanks();
                 bool atLeastOneNotFull = false;
                 foreach (var tank in BALLS.LIGMA_FuelTanks)
@@ -51,7 +51,8 @@ namespace IngameScript
                     if (tank.FilledRatio < 1) atLeastOneNotFull = true;
                 }
                 if (atLeastOneNotFull) return false;
-                else return true;
+                else if (_balls.MergeBlock.IsConnected == false) return true;
+                else return false;
             }
         }
     }
