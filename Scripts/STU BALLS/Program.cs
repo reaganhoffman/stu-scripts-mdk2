@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Sandbox.ModAPI.Ingame;
 using VRage.Game;
+using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 
 namespace IngameScript
@@ -79,19 +81,19 @@ namespace IngameScript
 
             if (ManeuverQueue.Count > 0) { CurrentManeuver = ManeuverQueue.Dequeue(); }
 
-            string currentState = "";
-            try
-            {
-                currentState = CurrentManeuver.CurrentInternalState.ToString();
-            }
-            catch
-            {
-                Echo("cannot get current maneuver's current internal state.");
-            }
-            finally
-            {
-                _BALLS.AddToLogQueue($"current internal state: {currentState}");
-            }
+            //string currentState = "";
+            //try
+            //{
+            //    currentState = CurrentManeuver.CurrentInternalState.ToString();
+            //}
+            //catch
+            //{
+            //    Echo("cannot get current maneuver's current internal state.");
+            //}
+            //finally
+            //{
+            //    _BALLS.AddToLogQueue($"current internal state: {currentState}");
+            //}
 
             switch (_BALLS.CurrentState)
             {
@@ -129,6 +131,7 @@ namespace IngameScript
                     case "ACTIVATE": ManeuverQueue.Enqueue(new ConstructLIGMA(_BALLS)); _BALLS.CurrentState = BALLS.State.Active; break;
                     case "STANDBY": _BALLS.CurrentState = BALLS.State.Standby; break;
                     case "IGNORE": _BALLS.AddToLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES; break;
+                    case "TEST": Test(); break;
                     default: break;
                 }
             }
@@ -137,14 +140,44 @@ namespace IngameScript
         public bool HaveEnoughResources()
         {
             if (IGNORE_OUT_OF_RESOURCES) return true;
+
             // check if we have enough resources for a missile
-            foreach (var itemRequiredForLIGMA in Assmeblies.LIGMA_MK_1)
+            foreach (var item in GetComponentsNeededInRemainingBlocks())
             {
                 double currentItemCount;
-                InventoryEnumerator.MostRecentItemTotals.TryGetValue(itemRequiredForLIGMA.Key, out currentItemCount);
-                if (currentItemCount < itemRequiredForLIGMA.Value) return false;
+                InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount);
+                if (currentItemCount < item.Value) return false;
             }
             return true;
+        }
+
+        void Test()
+        {
+            foreach (var item in _BALLS.Projector.RemainingBlocksPerType)
+            {
+                _BALLS.AddToLogQueue($"{item.Key.ToString()}, {item.Value}");
+            }
+        }
+
+        public Dictionary<string, int> GetComponentsNeededInRemainingBlocks()
+        {
+            Dictionary<string, int> remainingComponents = new Dictionary<string, int>();
+            foreach (var block in _BALLS.Projector.RemainingBlocksPerType) // loop through all blocks of the blueprint that have yet to be welded
+            {
+                Dictionary<string, int> thisBlockBOM = CBOM.GetPartBOM(block.ToString(), CBOM.Size.Small); // retrieve the BOM of each block (e.g. a PB requires some steel plates, some computers, whatever) in the form of a dictionary
+                foreach (var component in thisBlockBOM) // loop through this dictionary, and add each of its component/count pairs to the running-total-return-value dictionary
+                {
+                    if (remainingComponents.ContainsKey(component.Key))
+                    {
+                        remainingComponents[component.ToString()] += component.Value;
+                    }
+                    else
+                    {
+                        remainingComponents.Add(component.Key, component.Value);
+                    }
+                }
+            }
+            return remainingComponents;
         }
     }
 }

@@ -35,6 +35,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Power Control Module", "..\
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Raycaster", "..\..\..\stu-scripts\Shared Projects\Raycasting\STU Raycaster\STU Raycaster.shproj", "{B77AA568-7B92-49E3-B6C3-61FA11E47EC0}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -53,6 +55,7 @@ Global
 		SolutionGuid = {7541B96B-300B-4EC8-AB2D-BBB940940297}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Logging\STULog\STULog.projitems*{1eba5aff-373f-4112-bee3-15b74121539e}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{23e2d3a8-97cd-4e45-889c-1798f06f4240}*SharedItemsImports = 13
 		..\..\Mixins\Power Control Module\Airlock_Control_Module.projitems*{27debc59-5914-46cc-92cc-8ce67edd69f5}*SharedItemsImports = 13
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
@@ -76,8 +79,8 @@ Global
 		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
-		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
 		..\..\Mixins\PID\PID.projitems*{d1d1968c-30b1-4344-9887-90d4fe0142ec}*SharedItemsImports = 5
