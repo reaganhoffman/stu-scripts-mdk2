@@ -73,7 +73,6 @@ namespace IngameScript
                     {
                         // ensure we have access to the thrusters, gyros, and dampeners are on
                         SetAutopilotControl(true, true, true);
-                        ResetUserInputVelocities();
                         CancelCruiseControl();
                         
                         foreach (var mp in HangarMagPlate) { mp.Enabled = true; } // lock hangar mag plates

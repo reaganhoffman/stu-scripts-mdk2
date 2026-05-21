@@ -15,6 +15,7 @@ namespace IngameScript
             public enum State
             {
                 Active,
+                Building,
                 Standby,
                 MissingResources
             }
@@ -27,6 +28,12 @@ namespace IngameScript
             public IMyProgrammableBlock PB { get; set; }
 
             static HWLoader HWLoader { get; set; }
+
+            STUMasterLogBroadcaster Broadcaster { get; set; }
+            public Queue<STULog> BroadcasterQueue { get; set; } = new Queue<STULog>();
+            STUMasterLogBroadcaster LIGMAUnicaster { get; set; }
+            public Queue<STULog> LIGMAUnicasterQueue { get; set; } = new Queue<STULog>();
+            public string BALLS_STATION_NAME { get; private set; }
 
             public AirlockControlModule ACM { get; private set; }
             public PowerControlModule PCM { get; private set; }
@@ -54,12 +61,14 @@ namespace IngameScript
                 IMyGridProgramRuntimeInfo runtime, 
                 IMyIntergridCommunicationSystem igc, 
                 IMyProgrammableBlock pb, 
+                string balls_station_name,
                 string pcmSaveState)
             {
                 Grid = grid;
                 RuntimeInfo = runtime;
                 IGC = igc;
                 PB = pb;
+                BALLS_STATION_NAME = balls_station_name;
 
                 CurrentState = State.Standby;
 
@@ -77,17 +86,31 @@ namespace IngameScript
                 Connector = HWLoader.LoadBlockByName<IMyShipConnector>("Small Connector");
                 Projector = HWLoader.LoadBlockByName<IMyProjector>("Projector");
                 Welders = HWLoader.LoadAllBlocksOfType<IMyShipWelder>().ToList();
+
+                Broadcaster = new STUMasterLogBroadcaster(BALLS_STATION_NAME, IGC, TransmissionDistance.AntennaRelay);
+                LIGMAUnicaster = new STUMasterLogBroadcaster("LIGMA-1", IGC, TransmissionDistance.AntennaRelay);
             }
 
-            public static void Update(BALLS thisBALLS)
+
+            public void Update()
             {
-                thisBALLS.MainScreen.Refresh();
-                thisBALLS.SmallScreen.Refresh();
+                MainScreen.Refresh();
+                SmallScreen.Refresh();
+                try
+                {
+                    Broadcaster.Log(BroadcasterQueue.Dequeue());
+                }
+                catch { }
+                try
+                {
+                    LIGMAUnicaster.Log(LIGMAUnicasterQueue.Dequeue());
+                }
+                catch { }
             }
 
             public void AddToLogQueue(string message, STULogType logType = STULogType.INFO)
             {
-                MainScreen.Logs.Enqueue(new STULog("BALLS", message, logType));
+                MainScreen.Logs.Enqueue(new STULog(BALLS_STATION_NAME, message, logType));
             }
 
             public void AddToLogQueue(STULog log)

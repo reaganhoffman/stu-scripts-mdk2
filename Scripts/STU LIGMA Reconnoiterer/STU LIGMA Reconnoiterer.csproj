@@ -29,4 +29,5 @@
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
 </Project>

@@ -21,7 +21,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU LIGMA Variables", "..\..\Mixins\LIGMA\STU LIGMA Variables\STU LIGMA Variables.shproj", "{2813E30E-AC2C-4B54-855E-744D846644F5}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "BOM Assemblies", "..\..\Mixins\BOM Assemblies\BOM Assemblies.shproj", "{3B7378AE-49BA-48D2-9472-5CDB4AC859A3}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Assemblies", "..\..\Mixins\BOM Assemblies\Assemblies.shproj", "{3B7378AE-49BA-48D2-9472-5CDB4AC859A3}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
 EndProject

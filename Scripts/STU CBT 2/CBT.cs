@@ -1,22 +1,9 @@
-﻿using EmptyKeys.UserInterface.Generated.WorkshopBrowserView_Bindings;
-using Sandbox.Game.Screens;
-using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.ModAPI.Ingame;
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Management.Instrumentation;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Activation;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using VRage.Game.ModAPI.Ingame.Utilities;
-using VRage.Game.ObjectBuilders.VisualScripting;
-using VRage.Game.VisualScripting;
 using VRageMath;
 
 namespace IngameScript {
@@ -38,13 +25,6 @@ namespace IngameScript {
             }
 
             public static List<BlockInfo> CBTBlocks { get; private set; } = new List<BlockInfo>();
-
-            public static float UserInputForwardVelocity { get; set; } = 0;
-            public static float UserInputRightVelocity { get; set; } = 0;
-            public static float UserInputUpVelocity { get; set; } = 0;
-            public static float UserInputRollVelocity { get; set; } = 0;
-            public static float UserInputPitchVelocity { get; set; } = 0;
-            public static float UserInputYawVelocity { get; set; } = 0;
 
             public static CBTGangway.GangwayStates UserInputGangwayState { get; set; }
 
@@ -77,10 +57,7 @@ namespace IngameScript {
                     _headingControlActivated = value;
                 }
             }
-            public static bool AltitudeControlActivated { get; private set; } = false;
-            public static float AltitudeControlHeight { get; private set; } = 0f;
             public static bool ShipIsLevel { get; private set; } = false;
-            public static bool ShipIsHovering { get; private set; } = false;
 
             // prepare the program by declaring all the different blocks we are going to use
             public static IMyGridTerminalSystem CBTGrid { get; set; }
@@ -126,6 +103,7 @@ namespace IngameScript {
             public static CBTGangway Gangway { get; set; }
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
+            public static STUMasterLogBroadcaster LIGMABroadcaster { get; set; }
             public static STUInventoryEnumerator InventoryEnumerator { get; set; }
             #region Hardware
             // power level 0:
@@ -144,9 +122,6 @@ namespace IngameScript {
             public static IMyCryoChamber[] CryoPods { get; set; }
             public static IMyLandingGear[] LandingGear { get; set; }
             public static IMyDoor[] Doors { get; set; }
-            public static IMyMotorStator RearHinge1 { get; set; }
-            public static IMyMotorStator RearHinge2 { get; set; }
-            public static IMyPistonBase RearPiston { get; set; }
             public static IMyMotorStator GangwayHinge1 { get; set; }
             public static IMyMotorStator GangwayHinge2 { get; set; }
             public static IMyMotorStator HangarRotor { get; set; }
@@ -209,11 +184,23 @@ namespace IngameScript {
 
             public static List<Waypoint> SavedWaypoints { get; set; } = new List<Waypoint>();
 
-            public CBT(Queue<STUStateMachine> thisManeuverQueue, Action<string> Echo, STUInventoryEnumerator inventoryEnumerator, STUMasterLogBroadcaster broadcaster, IMyGridTerminalSystem grid, IMyProgrammableBlock me, string storage, IMyGridProgramRuntimeInfo runtime) {
+            public CBT(
+                Queue<STUStateMachine> thisManeuverQueue, 
+                Action<string> Echo, 
+                STUInventoryEnumerator inventoryEnumerator, 
+                STUMasterLogBroadcaster broadcaster, 
+                STUMasterLogBroadcaster ligmaBroadcaster,
+                IMyGridTerminalSystem grid, 
+                IMyProgrammableBlock me, 
+                string storage, 
+                IMyGridProgramRuntimeInfo runtime
+                ) 
+            {
                 ManeuverQueue = thisManeuverQueue;
                 Me = me;
                 InventoryEnumerator = inventoryEnumerator;
                 Broadcaster = broadcaster;
+                LIGMABroadcaster = ligmaBroadcaster;
                 Runtime = runtime;
                 CBTGrid = grid;
                 echo = Echo;
@@ -685,7 +672,6 @@ namespace IngameScript {
                 CancelAttitudeControl();
                 CancelCruiseControl();
                 CancelHeadingControl();
-                ResetUserInputVelocities();
                 foreach (var gyro in CBT.FlightController.AllGyroscopes)
                 {
                     gyro.Pitch = 0;
@@ -703,22 +689,6 @@ namespace IngameScript {
 
                 SetAutopilotControl(false, false, true);
             }
-            
-            public static int GetAutopilotState() {
-                int autopilotState = 0;
-                if (FlightController.HasThrusterControl) { autopilotState += 1; }
-                if (FlightController.HasGyroControl) { autopilotState += 2; }
-                if (!RemoteControl.DampenersOverride) { autopilotState += 4; }
-                // 0 = no autopilot
-                // 1 = thrusters only
-                // 2 = gyros only
-                // 3 = thrusters and gyros
-                // 4 = dampeners only
-                // 5 = thrusters and dampeners
-                // 6 = gyros and dampeners
-                // 7 = all three
-                return autopilotState;
-            }
 
             public static void SetAutopilotControl(bool thrusters, bool gyroscopes, bool dampeners_enabled) {
                 if (thrusters) { FlightController.ReinstateThrusterControl(); } else { FlightController.RelinquishThrusterControl(); }
@@ -726,14 +696,6 @@ namespace IngameScript {
                 RemoteControl.DampenersOverride = dampeners_enabled;
             }
 
-            public static void ResetUserInputVelocities() {
-                UserInputForwardVelocity = 0;
-                UserInputRightVelocity = 0;
-                UserInputUpVelocity = 0;
-                UserInputRollVelocity = 0;
-                UserInputPitchVelocity = 0;
-                UserInputYawVelocity = 0;
-            }
 
             public static bool LevelToHorizon()
             {

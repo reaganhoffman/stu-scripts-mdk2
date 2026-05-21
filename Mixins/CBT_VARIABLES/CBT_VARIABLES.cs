@@ -26,6 +26,7 @@ namespace IngameScript
         {
             public const string CBT_VEHICLE_NAME = "CBT";
             public const string CBT_BROADCAST_CHANNEL = "CBT";
+            public const string GOOCH_NETWORK_CHANNEL = "GOOCH";
             public const string TEA_KEY = "SaladTossersUnited";
 
             public const float HINGE_ANGLE_TOLERANCE = 0.0077f;

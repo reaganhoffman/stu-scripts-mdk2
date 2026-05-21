@@ -21,8 +21,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Galactic Map", "..\..\M
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Image", "..\..\Mixins\Displays\STU Image\STU Image.shproj", "{7D53F862-DF1C-4FC4-92F8-49568E15C32B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Log", "..\..\Mixins\Logging\STU Log\STU Log.shproj", "{6EE22094-1878-45BC-805C-D32278F9C704}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Master Log Broadcaster", "..\..\Mixins\Logging\STU Master Log Broadcaster\STU Master Log Broadcaster.shproj", "{4CAC373A-9512-4083-B2F8-27AB57997CC4}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU State Machine", "..\..\Mixins\Misc\STU State Machine\STU State Machine.shproj", "{4FB19E00-BD67-4421-AD35-D02F6C4C181B}"
@@ -62,7 +60,6 @@ Global
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{4fb19e00-bd67-4421-ad35-d02f6c4c181b}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
 		..\..\Mixins\CBT_VARIABLES\CBT_VARIABLES.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
-		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{6ee22094-1878-45bc-805c-d32278f9c704}*SharedItemsImports = 13
 		..\..\Mixins\Airlock Control Module\Airlock_Control_Module.projitems*{7760ba51-8c8d-41d2-a9de-649c33d7aa89}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{7d53f862-df1c-4fc4-92f8-49568e15c32b}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{83207d78-9012-4ea3-ac3f-5fea6193e59a}*SharedItemsImports = 13

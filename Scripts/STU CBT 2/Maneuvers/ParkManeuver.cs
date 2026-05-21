@@ -71,7 +71,6 @@ namespace IngameScript {
                     {
                         // ensure we have access to the thrusters, gyros, and dampeners are on
                         SetAutopilotControl(true, true, true);
-                        ResetUserInputVelocities();
                         CancelCruiseControl();
                         CameraHinge.TargetVelocityRPM = Math.Abs(CameraHinge.TargetVelocityRPM) * -1; // point camera downwards
 

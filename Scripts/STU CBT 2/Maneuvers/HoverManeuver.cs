@@ -11,7 +11,6 @@ namespace IngameScript {
                 public override bool Init() {
                     // ensure we have access to the thrusters, gyros, and dampeners are on
                     SetAutopilotControl(true, true, true);
-                    ResetUserInputVelocities();
                     return true;
                 }
 
@@ -32,7 +31,6 @@ namespace IngameScript {
                     // relinquish control of the thrusters and gyros, keep dampeners on 
                     SetAutopilotControl(false, false, true);
 
-                    CBT.ResetUserInputVelocities();
                     return true;
                 }
             }

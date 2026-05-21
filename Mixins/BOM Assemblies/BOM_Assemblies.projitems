@@ -10,6 +10,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CBOM.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Assemblies.cs" />
   </ItemGroup>
 </Project>

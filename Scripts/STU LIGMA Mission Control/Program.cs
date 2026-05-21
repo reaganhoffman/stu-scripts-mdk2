@@ -439,7 +439,7 @@ namespace IngameScript
             }
         }
 
-        void CreateHQLog(string message, string type)
+        void CreateHQLog(string message, STULogType type)
         {
             STULog log = new STULog
             {

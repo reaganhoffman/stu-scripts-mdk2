@@ -43,13 +43,13 @@ namespace IngameScript {
             _ini.TryParse(Storage);
             
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
-            LIGMABroadcaster = new STUMasterLogBroadcaster("LIGMA", IGC, TransmissionDistance.AntennaRelay);
+            LIGMABroadcaster = new STUMasterLogBroadcaster("BALLS-1", IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
             GridTerminalSystem.GetBlocks(AllTerminalBlocks);
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);
             GridTerminalSystem.GetBlocksOfType<IMyBatteryBlock>(AllBatteries);
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, GridTerminalSystem, Me, Storage, Runtime);
+            CBTShip = new CBT(ManeuverQueue, Echo, InventoryEnumerator, Broadcaster, LIGMABroadcaster, GridTerminalSystem, Me, Storage, Runtime);
             CBT.SetAutopilotControl(true, true, false);
 
             CBT.ResetAutopilot();
@@ -804,6 +804,19 @@ namespace IngameScript {
                                 catch (InvalidOperationException ex)
                                 {
                                     Echo("Tried to change PilotConfirmation to TRUE when the current maneuver does not contain such a property: " + ex.Message);
+                                }
+                                break;
+                            }
+                            else if (CurrentManeuver is CBT.AcquireTarget)
+                            {
+                                var _currentManeuver = (CBT.AcquireTarget)CurrentManeuver;
+                                try
+                                {
+                                    _currentManeuver.PilotConfirmation = true;
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    Echo("PilotConfirmation does not exist in the current maneuver: " + ex.Message);
                                 }
                                 break;
                             }

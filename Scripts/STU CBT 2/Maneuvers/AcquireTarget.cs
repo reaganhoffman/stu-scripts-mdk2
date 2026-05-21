@@ -1,8 +1,5 @@
-﻿using Sandbox.Game.Replication;
-using Sandbox.ModAPI.Ingame;
-using System;
+﻿using Sandbox.ModAPI.Ingame;
 using System.Collections.Generic;
-using VRageMath;
 
 namespace IngameScript
 {
@@ -12,12 +9,14 @@ namespace IngameScript
         {
             public class AcquireTarget : STUStateMachine
             {
-                public override string Name => "Xmit Target";
+                public override string Name => "Reconnoiterer";
                 static CBT ThisCBT { get; set; }
                 Queue<STUStateMachine> ManeuverQueue { get; set; }
-                private bool InitialRaycastState { get; set; }
+                bool InitialRaycastState { get; set; }
                 public MyDetectedEntityInfo Raycast { get; set; }
                 public Dictionary<string, string> SerializedHitInfo { get; set; }
+                public bool PilotConfirmation { get; set; } = false;
+                float TOLscreenRefreshTick { get; set; }
 
 
                 public AcquireTarget(CBT thisCBT, Queue<STUStateMachine> thisManeuverQueue)
@@ -48,14 +47,33 @@ namespace IngameScript
 
                 public override bool Run()
                 {
+                    PushTOLStatusToBottomCameraScreens("CONFIRM\nTARGET\nCOORDINATES?");
+                    if (PilotConfirmation)
+                    {
+                        CBT.LIGMABroadcaster.Log(new STULog()
+                        {
+                            Message = "UpdateTargetData",
+                            Sender = CBT_VARIABLES.CBT_VEHICLE_NAME,
+                            Type = STULogType.INFO,
+                            Metadata = SerializedHitInfo
+                        });
+                        PushTOLStatusToBottomCameraScreens("SENT");
+                        TOLscreenRefreshTick = CBT.Runtime.LifetimeTicks + 6;
+                        return true;
+                    }
                     return false;
                 }
 
                 public override bool Closeout()
                 {
-                    Camera.EnableRaycast = InitialRaycastState;
-                    PushLIGMAStatusToBottomCameraScreens("");
-                    return true;
+                    if (CBT.Runtime.LifetimeTicks >= TOLscreenRefreshTick)
+                    {
+                        Camera.EnableRaycast = InitialRaycastState;
+                        PushLIGMAStatusToBottomCameraScreens("");
+                        PushTOLStatusToBottomCameraScreens("");
+                        return true;
+                    }
+                    return false;
                 }
             }
         }
