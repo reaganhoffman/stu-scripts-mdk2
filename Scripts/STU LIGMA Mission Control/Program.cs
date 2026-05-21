@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
-using static VRage.Game.MyObjectBuilder_BehaviorTreeDecoratorNode;
 
 namespace IngameScript
 {
