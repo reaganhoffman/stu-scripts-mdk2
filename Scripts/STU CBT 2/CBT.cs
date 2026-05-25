@@ -104,6 +104,7 @@ namespace IngameScript {
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster Broadcaster { get; set; }
             public static STUMasterLogBroadcaster LIGMABroadcaster { get; set; }
+            public static IMyProgrammableBlock OrchestratorPB { get; set; }
             public static STUInventoryEnumerator InventoryEnumerator { get; set; }
             #region Hardware
             // power level 0:
@@ -299,6 +300,9 @@ namespace IngameScript {
                 PCM = new PowerControlModule(storage);
                 PCM.RefreshGroupMembership(AllFunctionalBlocks.ToList());
                 AddToLogQueue("PCM Initialized", STULogType.OK);
+
+                // get orchestrator pb
+                OrchestratorPB = LoadBlockByName<IMyProgrammableBlock>("CBT LIGMA Orchestrator PB");
 
                 // load waypoints saved in the PB's custom data
                 RefreshSavedWaypoints();

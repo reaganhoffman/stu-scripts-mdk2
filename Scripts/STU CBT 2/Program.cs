@@ -43,7 +43,7 @@ namespace IngameScript {
             _ini.TryParse(Storage);
             
             Broadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
-            LIGMABroadcaster = new STUMasterLogBroadcaster("BALLS-1", IGC, TransmissionDistance.AntennaRelay);
+            LIGMABroadcaster = new STUMasterLogBroadcaster(CBT_VARIABLES.CBT_LIGMA_BROADCAST_CHANNEL, IGC, TransmissionDistance.AntennaRelay);
             Listener = IGC.RegisterBroadcastListener(CBT_VARIABLES.CBT_BROADCAST_CHANNEL);
             GridTerminalSystem.GetBlocks(AllTerminalBlocks);
             GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllTanks);

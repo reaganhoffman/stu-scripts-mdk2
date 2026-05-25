@@ -1,9 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35919.96 d17.13
+VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU CLAM", "STU CLAM.csproj", "{1553EB68-D02B-440C-947B-783D75D97402}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Master Log Broadcaster", "..\..\Mixins\Logging\STU Master Log Broadcaster\STU Master Log Broadcaster.shproj", "{4CAC373A-9512-4083-B2F8-27AB57997CC4}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU LIGMA Variables", "..\..\Mixins\LIGMA\STU LIGMA Variables\STU LIGMA Variables.shproj", "{2813E30E-AC2C-4B54-855E-744D846644F5}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Draw Mapper", "..\..\Mixins\Displays\STU Display Draw Mapper\STU Display Draw Mapper.shproj", "{23E2D3A8-97CD-4E45-889C-1798F06F4240}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Type", "..\..\Mixins\Displays\STU Display Type\STU Display Type.shproj", "{A2C2A7B0-3894-43F4-8EB5-71BFC87BE730}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,5 +33,19 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {950A3A93-1654-4C27-82BB-4F245FE03DFA}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{1553eb68-d02b-440c-947b-783d75d97402}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{1eba5aff-373f-4112-bee3-15b74121539e}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{23e2d3a8-97cd-4e45-889c-1798f06f4240}*SharedItemsImports = 13
+		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{2813e30e-ac2c-4b54-855e-744d846644f5}*SharedItemsImports = 13
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{a2c2a7b0-3894-43f4-8eb5-71bfc87be730}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

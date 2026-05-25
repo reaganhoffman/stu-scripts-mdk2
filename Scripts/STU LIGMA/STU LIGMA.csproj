@@ -30,7 +30,6 @@
   <Import Project="..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Image\STU_Image.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems" Label="Shared" />
-  <Import Project="..\..\Mixins\Logging\STU Log\STU_Log.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems" Label="Shared" />

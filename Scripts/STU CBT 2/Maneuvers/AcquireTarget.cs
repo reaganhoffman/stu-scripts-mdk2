@@ -58,7 +58,7 @@ namespace IngameScript
                             Metadata = SerializedHitInfo
                         });
                         PushTOLStatusToBottomCameraScreens("SENT");
-                        TOLscreenRefreshTick = CBT.Runtime.LifetimeTicks + 6;
+                        TOLscreenRefreshTick = CBT.Runtime.LifetimeTicks + 60;
                         return true;
                     }
                     return false;

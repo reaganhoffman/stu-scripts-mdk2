@@ -18,6 +18,8 @@ namespace IngameScript
 
         public Dictionary<string, Action> ProgramCommands = new Dictionary<string, Action>(StringComparer.OrdinalIgnoreCase);
 
+        public string FIRING_GROUP { get; private set; } = "GOOCH";
+
         public Program()
         {
 

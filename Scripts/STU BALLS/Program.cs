@@ -119,7 +119,9 @@ namespace IngameScript
                         ConstructionStateMachine.CurrentInternalState = STUStateMachine.InternalStates.Done;
                         _BALLS.CurrentState = BALLS.State.Active;
                         break;
-                    case "STANDBY": 
+                    case "STANDBY":
+                        ConstructionStateMachine.CurrentInternalState = STUStateMachine.InternalStates.Done;
+                        foreach (var welder in _BALLS.Welders) { welder.Enabled = false; }
                         _BALLS.CurrentState = BALLS.State.Standby; 
                         break;
                     case "IGNORE": 

@@ -31,7 +31,6 @@ namespace IngameScript
 
             STUMasterLogBroadcaster Broadcaster { get; set; }
             public Queue<STULog> BroadcasterQueue { get; set; } = new Queue<STULog>();
-            STUMasterLogBroadcaster LIGMAUnicaster { get; set; }
             public Queue<STULog> LIGMAUnicasterQueue { get; set; } = new Queue<STULog>();
             public string BALLS_STATION_NAME { get; private set; }
 
@@ -88,7 +87,6 @@ namespace IngameScript
                 Welders = HWLoader.LoadAllBlocksOfType<IMyShipWelder>().ToList();
 
                 Broadcaster = new STUMasterLogBroadcaster(BALLS_STATION_NAME, IGC, TransmissionDistance.AntennaRelay);
-                LIGMAUnicaster = new STUMasterLogBroadcaster("LIGMA-1", IGC, TransmissionDistance.AntennaRelay);
             }
 
 
@@ -98,14 +96,14 @@ namespace IngameScript
                 SmallScreen.Refresh();
                 try
                 {
-                    Broadcaster.Log(BroadcasterQueue.Dequeue());
+                    if (BroadcasterQueue.Count > 0)
+                    {
+                        Broadcaster.Log(BroadcasterQueue.Dequeue());
+                    }
                 }
-                catch { }
-                try
-                {
-                    LIGMAUnicaster.Log(LIGMAUnicasterQueue.Dequeue());
-                }
-                catch { }
+                catch (Exception e)
+                { 
+                    AddToLogQueue($"Failed to dequeue pending broadcast log:\n{e}"); }
             }
 
             public void AddToLogQueue(string message, STULogType logType = STULogType.INFO)
