@@ -51,7 +51,7 @@ namespace IngameScript
 
             public long LIGMA_EntityID { get; set; }
             public bool LIGMA_Ready { get; private set; }
-            public static IMyGasTank[] LIGMA_FuelTanks { get; private set; }
+            public IMyGasTank[] LIGMA_FuelTanks { get; private set; }
             
 
 

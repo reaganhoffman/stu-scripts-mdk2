@@ -24,7 +24,7 @@ namespace IngameScript
 
         BALLS _BALLS { get; set; }
 
-        bool IGNORE_OUT_OF_RESOURCES { get; set; } = false;
+        public static bool IGNORE_OUT_OF_RESOURCES { get; private set; } = false;
         
 
         public Program()

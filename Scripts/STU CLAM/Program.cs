@@ -329,6 +329,8 @@ namespace IngameScript
                     _idleMissiles.Enqueue(missile.Value);
                 }
             }
+            Echo($"Idle missiles count: {_idleMissiles.Count.ToString()}");
+            Echo($"Targets count: {_targets.Count.ToString()}");
             while (_targets.Count > 0 && _idleMissiles.Count > 0)
             {
                 var target = _targets.Dequeue();

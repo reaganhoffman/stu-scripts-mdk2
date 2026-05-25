@@ -165,6 +165,13 @@ namespace IngameScript {
             } finally {
                 LIGMA.UpdateMeasurements();
                 LIGMA.SendTelemetry();
+
+                Echo($"Telemetry:");
+                Dictionary<string, string> telemetry = LIGMA.GetTelemetryDictionary();
+                foreach (var item in telemetry)
+                {
+                    Echo($"{item.ToString()}");
+                }
             }
 
         }

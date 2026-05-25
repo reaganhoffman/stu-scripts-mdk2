@@ -63,6 +63,7 @@ namespace IngameScript {
             /// </summary>
             public static double PowerCapacity { get; set; }
 
+            #region mdk preserve
             public enum Phase {
                 Idle,
                 Launch,
@@ -70,6 +71,7 @@ namespace IngameScript {
                 Descent,
                 Terminal,
             }
+            #endregion
 
             public LIGMA(STUMasterLogBroadcaster telemetryBroadcaster,
                          STUMasterLogBroadcaster logBroadcaster,
