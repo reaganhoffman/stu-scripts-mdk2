@@ -46,7 +46,7 @@ namespace IngameScript {
                 _flightController.ReinstateGyroControl();
                 _flightController.ReinstateThrusterControl();
                 RunState = RunStates.ORIENT_AGAINST_JOB_PLANE;
-                Silos = GetSilos(_jobSite, _jobPlane, 3, _flightController.RemoteControl);
+                Silos = GetSilos(_jobSite, _jobPlane, 3, _flightController.ShipController);
                 return true;
             }
 

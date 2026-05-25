@@ -23,10 +23,11 @@
     <AdditionalFiles Include="Instructions.readme" />
     <AdditionalFiles Include="thumb.png" />
   </ItemGroup>
-  <Import Project="..\..\Mixins\Logging\STU Log\STU_Log.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Auto Miner\STU Auto Miner Variables\STU_Auto_Miner_Variables.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Image\STU_Image.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Raycasting\STU Raycaster\STU_Raycaster.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STU DatabaseWriter\STU_DatabaseWriter.projitems" Label="Shared" />
 </Project>

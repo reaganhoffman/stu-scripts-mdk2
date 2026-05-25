@@ -30,6 +30,9 @@ namespace IngameScript {
 
         Dictionary<string, MiningDroneData> _tempIncomingDroneTelemetryData = new Dictionary<string, MiningDroneData>();
 
+        STUDatabaseWriter _databaseWriter;
+        string _databaseId;
+
         public Program() {
 
             _ini = new MyIni();
@@ -46,7 +49,11 @@ namespace IngameScript {
             _mainSubscribers = DiscoverMainSubscribers();
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
-            ParseStorage(Storage);
+            ParseConfiguration(Storage);
+
+            if (!String.IsNullOrEmpty(_databaseId)) {
+                _databaseWriter = new STUDatabaseWriter(_databaseId, IGC, Me.EntityId);
+            }
         }
 
         public void Main(string argument) {
@@ -132,6 +139,7 @@ namespace IngameScript {
                 MyIGCMessage message = _droneTelemetryListener.AcceptMessage();
                 try {
                     _tempIncomingLog = STULog.Deserialize(message.Data.ToString());
+                    _databaseWriter.TryWriteToRemote(_tempIncomingLog);
 
                     // Check if Metadata is not null and contains the key "MinerDroneData"
                     if (!_tempIncomingLog.Metadata.ContainsKey("MinerDroneData")) {
@@ -139,7 +147,7 @@ namespace IngameScript {
                         continue; // Skip processing this message
                     }
 
-                    // Proceed to deserialize the drone data
+                    // Deserialize the drone data
                     MiningDroneData drone = MiningDroneData.Deserialize(_tempIncomingLog.Metadata["MinerDroneData"]);
 
                     if (_tempIncomingDroneTelemetryData.ContainsKey(drone.Id)) {
@@ -255,9 +263,10 @@ namespace IngameScript {
             }
         }
 
-        void ParseStorage(string storage) {
+        void ParseConfiguration(string storage) {
             _ini.TryParse(storage);
             _jobQueue = DeserializeJobQueue(_ini.Get("HQ_STORAGE", "JobQueue").ToString(""));
+            _databaseId = _ini.Get("Configuration", "DatabaseID").ToString("");
             Echo(_jobQueue.Count.ToString());
         }
 
