@@ -358,7 +358,7 @@ namespace IngameScript {
             }
         }
 
-        void CreateHQLog(string message, string type) {
+        void CreateHQLog(string message, STULogType type) {
             STULog log = new STULog {
                 Sender = LIGMA_VARIABLES.LIGMA_HQ_NAME,
                 Message = message,
