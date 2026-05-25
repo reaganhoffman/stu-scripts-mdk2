@@ -131,10 +131,12 @@ namespace IngameScript {
             /// Creates a pipe-delineated CSV-like row using the Sender, Message, Type, and Metadata keys (in that order)
             /// </summary>
             /// <returns></returns>
-            public string ToCSV(string identifier = "n/a") {
+            public string ToPSV(string identifier = "n/a") {
                 List<string> metadataList = new List<string>();
-                foreach (KeyValuePair<string, string> pair in Metadata) {
-                    metadataList.Add($"{pair.Key}={pair.Value}");
+                if (Metadata != null) {
+                    foreach (KeyValuePair<string, string> pair in Metadata) {
+                        metadataList.Add($"{pair.Key}={pair.Value}");
+                    }
                 }
                 if (metadataList.Count > 0) {
                     return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", metadataList.ToArray())}";

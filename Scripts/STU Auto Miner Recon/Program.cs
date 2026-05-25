@@ -67,7 +67,7 @@ namespace IngameScript {
 
         }
 
-        void CreateLog(string message, string type) {
+        void CreateLog(string message, STULogType type) {
             foreach (var lcd in LogSubscribers) {
                 lcd.FlightLogs.Enqueue(
                    new STULog() {

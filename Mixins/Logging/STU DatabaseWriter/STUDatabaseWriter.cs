@@ -1,4 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
+using System;
 
 namespace IngameScript {
     partial class Program {
@@ -10,6 +11,16 @@ namespace IngameScript {
 
             public STUDatabaseWriter(long databaseId, IMyIntergridCommunicationSystem igc, long entityId) {
                 _databaseId = databaseId;
+                _entityId = entityId.ToString();
+                _igc = igc;
+            }
+
+            public STUDatabaseWriter(string databaseId, IMyIntergridCommunicationSystem igc, long entityId) {
+                long parsedDatabasedID;
+                if (!long.TryParse(databaseId, out parsedDatabasedID)) {
+                    throw new Exception("Error parsing database ID");
+                }
+                _databaseId = parsedDatabasedID;
                 _entityId = entityId.ToString();
                 _igc = igc;
             }

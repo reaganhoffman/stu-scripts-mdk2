@@ -1,4 +1,5 @@
 ﻿using Sandbox.ModAPI.Ingame;
+using System.Collections.Generic;
 
 namespace IngameScript {
     public partial class Program : MyGridProgram {
@@ -17,7 +18,10 @@ namespace IngameScript {
             log.Sender = "Tester";
             log.Type = STULogType.INFO;
             log.Message = "Hi";
-            writer.TryWriteToRemote(log);
+            log.Metadata = new Dictionary<string, string>();
+            log.Metadata.Add("Test", "test value");
+            Echo(Runtime.LastRunTimeMs.ToString());
+            Echo(writer.TryWriteToRemote(log).ToString());
         }
     }
 }

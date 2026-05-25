@@ -22,12 +22,14 @@ namespace IngameScript {
         double _cruiseVelocity;
         double _ascendVelocity;
         double _descendVelocity;
+        string _databaseId;
         bool _debug;
 
         IMyUnicastListener _droneListener;
 
         static STUMasterLogBroadcaster s_telemetryBroadcaster { get; set; }
         static STUMasterLogBroadcaster s_logBroadcaster { get; set; }
+        static STUDatabaseWriter s_databaseWriter { get; set; }
         STUFlightController _flightController { get; set; }
         STURaycaster _raycaster { get; set; }
         IMyRemoteControl _remoteControl { get; set; }
@@ -81,6 +83,15 @@ namespace IngameScript {
                 _errorReason = "";
                 ParseMinerConfiguration(Me.CustomData);
                 _minerId = Me.EntityId.ToString();
+
+                // database configuration
+                if (!String.IsNullOrEmpty(_databaseId)) {
+                    long databaseId;
+                    if (!long.TryParse(_databaseId, out databaseId)) {
+                        throw new Exception($"Failed to parse database ID: {_databaseId.ToString()}");
+                    }
+                    s_databaseWriter = new STUDatabaseWriter(databaseId, IGC, Me.EntityId);
+                }
 
                 // Get blocks needed for various systems
                 _statusLights = GetStatusLights();
@@ -138,6 +149,7 @@ namespace IngameScript {
             _cruiseAltitude = _ini.Get("MinerConfiguration", "CruiseAltitude").ToDouble(100);
             _ascendVelocity = _ini.Get("MinerConfiguration", "AscendVelocity").ToDouble(5);
             _descendVelocity = _ini.Get("MinerConfiguration", "DescendVelocity").ToDouble(-5);
+            _databaseId = _ini.Get("MinerConfiguration", "DatabaseID").ToString("");
             _debug = _ini.Get("MinerConfiguration", "Debug").ToBoolean(false);
         }
 
@@ -644,16 +656,14 @@ namespace IngameScript {
         // Broadcast utilities
         #region
         static void CreateBroadcast(string message, STULogType type) {
-            s_logBroadcaster.Log(new STULog() {
+            STULog outgoingLog = new STULog() {
                 Message = message,
                 Type = type,
-                Sender = _minerName,
-            });
-            _logScreen.FlightLogs.Enqueue(new STULog() {
-                Message = message,
-                Type = type,
-                Sender = _minerName,
-            });
+                Sender = _minerName
+            };
+            s_logBroadcaster.Log(outgoingLog);
+            _logScreen.FlightLogs.Enqueue(outgoingLog);
+            s_databaseWriter?.TryWriteToRemote(outgoingLog);
         }
 
         static void CreateOkBroadcast(string message) {
