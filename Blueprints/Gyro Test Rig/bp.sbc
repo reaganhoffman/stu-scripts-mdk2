@@ -1,0 +1,774 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShipBlueprints>
+    <ShipBlueprint xsi:type="MyObjectBuilder_ShipBlueprintDefinition">
+      <Id Type="MyObjectBuilder_ShipBlueprintDefinition" Subtype="Gyro Test Rig" />
+      <DisplayName>ethanjevvell</DisplayName>
+      <CubeGrids>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>115939973790761334</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="110876.60075835728" y="133070.10461769087" z="5841335.6218318306" />
+            <Forward x="0.530501962" y="-0.4632711" z="0.7098926" />
+            <Up x="0.396795183" y="0.8757497" z="0.274983734" />
+            <Orientation>
+              <X>0.1458275</X>
+              <Y>0.913061142</Y>
+              <Z>0.202137291</Z>
+              <W>-0.322791278</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Small</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>SmallBlockArmorBlock</SubtypeName>
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>78399776845936217</EntityId>
+              <Min x="0" y="0" z="1" />
+              <BlockOrientation Forward="Backward" Up="Down" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>2</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>SmallBlockArmorBlock</SubtypeName>
+              <Min x="1" y="0" z="0" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>SmallBlockArmorBlock</SubtypeName>
+              <Min x="1" y="0" z="1" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Gyro">
+              <SubtypeName>SmallBlockGyro</SubtypeName>
+              <EntityId>92191915558787366</EntityId>
+              <Min x="0" y="1" z="0" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <GyroOverride>true</GyroOverride>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_BatteryBlock">
+              <SubtypeName>SmallBlockSmallBatteryBlock</SubtypeName>
+              <EntityId>87530592719708457</EntityId>
+              <Min x="1" y="1" z="0" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <CurrentStoredPower>0.05</CurrentStoredPower>
+              <ProducerEnabled>true</ProducerEnabled>
+              <MaxStoredPower>0</MaxStoredPower>
+              <SemiautoEnabled>false</SemiautoEnabled>
+              <OnlyDischargeEnabled>false</OnlyDischargeEnabled>
+              <ChargeMode>0</ChargeMode>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MyProgrammableBlock">
+              <SubtypeName>SmallProgrammableBlock</SubtypeName>
+              <EntityId>95620753685999949</EntityId>
+              <Min x="1" y="1" z="1" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyMultiTextPanelComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_MultiTextPanelComponent">
+                      <TextPanelsContents>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                        </MySerializedTextPanelData>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                        </MySerializedTextPanelData>
+                      </TextPanelsContents>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <Program>/*
+ * R e a d m e
+ * -----------
+ * 
+ * In this file you can include any instructions or other comments you want to have injected onto the 
+ * top of your final script. You can safely delete this file if you do not want any such comments.
+ */
+
+bool halt = false;
+
+public IMyGyro Gyro;
+
+public Vector3D UP = new Vector3D(111754.91, 132105.46, 5841669.28);
+public Vector3D RIGHT = new Vector3D(111766.69, 132116.41, 5841675.86);
+public Vector3D BACK = new Vector3D(111760.83, 132105.97, 5841682.11);
+public Vector3D BIG_TEST = new Vector3D(110880.11, 133085.78, 5841330.01);
+
+Vector3D gyroForwardVec = new Vector3D();
+Vector3D gyroUpVec = new Vector3D();
+Vector3D gyroRightVec = new Vector3D();
+
+Vector3D gyroForwardVecAbs = new Vector3D();
+Vector3D gyroUpVecAbs = new Vector3D();
+Vector3D gyroRightVecAbs = new Vector3D();
+
+double smoothingFactor = 0.75;
+
+public Program()
+{
+
+    Gyro = GridTerminalSystem.GetBlockWithName("Gyroscope") as IMyGyro;
+
+}
+
+public void Save()
+{
+
+}
+
+public void Main(string argument, UpdateType updateSource)
+{
+    Runtime.UpdateFrequency = UpdateFrequency.Update10;
+
+    // gather measurements about the world and the gyro
+    Vector3D gyroPosition = Gyro.GetPosition();
+    Vector3D targetPosition = BIG_TEST;
+    Vector3D directionVectorAbsolute = targetPosition - gyroPosition;
+    Vector3D directionVectorNormalized = Vector3D.Normalize(targetPosition - gyroPosition);
+
+    Echo($"gyroPosition: {gyroPosition}\n" +
+        $"targetPosition: {targetPosition}\n" +
+        $"directionVectorAbs: {directionVectorAbsolute}\n" +
+        $"directionVectorNorm: {directionVectorNormalized}\n");
+
+    // get gyro's forward, up, and right vectors w.r.t the gyro itself
+    gyroForwardVec = Base6DirectionToVector3(Gyro.Orientation.Forward);
+    gyroUpVec = Base6DirectionToVector3(Gyro.Orientation.Up);
+    gyroRightVec = CalculateRightVector();
+    Echo($"gyroForwardVec: {gyroForwardVec}\n" +
+        $"gyroUpVec: {gyroUpVec}\n" +
+        $"gyroRightVec: {gyroRightVec}\n");
+    // basically just a lookup table. see Base6DirectionToVector3. values do not update on code iterations.
+
+    // get the absolute orientation of each vector. here "absolute" means w.r.t. the world origin.
+    gyroForwardVecAbs = Vector3D.TransformNormal(gyroForwardVec, Gyro.WorldMatrix);
+    gyroUpVecAbs = Vector3D.TransformNormal(gyroUpVec, Gyro.WorldMatrix);
+    gyroRightVecAbs = Vector3D.TransformNormal(gyroRightVec, Gyro.WorldMatrix);
+
+    // messing around with the Base6Directions class
+    Base6Directions.Direction gyroForwardDir = Base6Directions.GetDirection(gyroForwardVec);
+    Base6Directions.Direction gyroUpDir = Base6Directions.GetDirection(gyroUpVec);
+    Base6Directions.Direction gyroRightDir = Base6Directions.GetDirection(gyroRightVec);
+
+    Echo($"gyroForwardDir: {gyroForwardDir}\n" +
+        $"gyroUpDir: {gyroUpDir}\n" +
+        $"gyroRightDir: {gyroRightDir}\n");
+
+    double yawAngle = CalculateYawAngle(gyroForwardVecAbs, gyroUpVec, directionVectorNormalized);
+    double pitchAngle = CalculatePitchAngle(gyroForwardVecAbs, gyroRightVec, directionVectorNormalized);
+    double rollAngle = CalculateRollAngle(gyroUpVecAbs, gyroForwardVecAbs, new Vector3D(1,1,1));
+    Echo($"yawAngle = {yawAngle}\n" +
+        $"pitchAngle = {pitchAngle}\n" +
+        $"rollAngle = {rollAngle}\n");
+
+    Roll(Gyro, rollAngle * smoothingFactor);
+    //Pitch(Gyro, pitchAngle * smoothingFactor);
+    //Yaw(Gyro, yawAngle * smoothingFactor);
+
+    if (Math.Abs(rollAngle) &lt; 0.01) { Roll(Gyro, 0); }
+    //if (Math.Abs(pitchAngle) &lt; 0.01) { Pitch(Gyro, 0); }
+    //if (Math.Abs(yawAngle) &lt; 0.01) { Yaw(Gyro, 0); }
+
+    //Orient(rollAngle, pitchAngle, yawAngle);
+
+    //Roll(Gyro, rollAngle * smoothingFactor * 0.5);
+    //if (Math.Abs(rollAngle) &lt; 0.01) { Roll(Gyro, 0); }
+
+    if (argument.Contains("reset"))
+    {
+        Reset(Gyro);
+    }
+
+    //if (argument.Substring(0, 1) == "r")
+    //{ Roll(Gyro, float.Parse(argument.Substring(1, argument.Length - 1))); }
+
+    //if (argument.Substring(0, 1) == "p")
+    //{ Pitch(Gyro, float.Parse(argument.Substring(1, argument.Length - 1))); }
+
+    //if (argument.Substring(0, 1) == "y")
+    //{ Yaw(Gyro, float.Parse(argument.Substring(1, argument.Length - 1))); }
+
+    if (halt) {
+        Echo("Program halting...");
+        Runtime.UpdateFrequency = UpdateFrequency.None;
+        Reset(Gyro);
+    }
+}
+
+public void Orient(double roll, double pitch, double yaw)
+{
+    Roll(Gyro, roll * smoothingFactor * -1);
+    if (roll == 0)
+    {
+        Pitch(Gyro, pitch * smoothingFactor);
+        Yaw(Gyro, pitch*smoothingFactor);
+    }
+}
+
+public double CalculateYawAngle(Vector3D gyroForward, Vector3D gyroUp, Vector3D directionVector)
+{
+    // project gyro's directional vectors onto the horizontal plane by removing the up component
+    Vector3D forwardHorizontal = Vector3D.Reject(gyroForward, gyroUp);
+    Vector3D targetHorizontal = Vector3D.Reject(directionVector, gyroUp);
+
+    // calculate the angle
+    double angle = Math.Acos(Vector3D.Dot(forwardHorizontal, targetHorizontal) / (forwardHorizontal.Length() * targetHorizontal.Length()));
+
+    // determine direction of rotation using cross product
+    if (Vector3D.Cross(forwardHorizontal, targetHorizontal).Dot(gyroUp) &lt; 0 )
+    {
+        angle = -angle;
+    }
+
+    return angle;
+}
+
+public double CalculatePitchAngle(Vector3D gyroForward, Vector3D gyroRight, Vector3D directionVector)
+{
+    // project the gyro's forward direction and the target drection onto a plane defined by
+    // the gyro's right vector, i.e., the plane perpendicular to the right vector (the plane on which
+    // we rotate to achieve pitch
+    Vector3D forwardOnPlane = Vector3D.Reject(gyroForward, gyroRight);
+    Vector3D targetOnPlane = Vector3D.Reject(directionVector, gyroRight);
+
+    // Normalize vectors to only consider directions, i.e. disregard distance
+    // Normalize() essentially makes the magnitude 1 (? - this was my own thought, not GPT)
+    forwardOnPlane.Normalize();
+    targetOnPlane.Normalize();
+
+    // calculate the angle between the two vectors
+    double angle = Math.Acos(Vector3D.Dot(forwardOnPlane, targetOnPlane));
+
+    // determine the direction of the pitch using cross product
+    // If the cross product in the direction of gyroRight is negative, invert the angle
+    if (Vector3D.Cross(forwardOnPlane, targetOnPlane).Dot(gyroRight) &lt; 0)
+    {
+        angle = -angle;
+    }
+
+    return angle;
+}
+
+public double CalculateRollAngle(Vector3D gyroUp, Vector3D gyroForward, Vector3D referenceUp)
+{
+    // project the gyro's up vector and the reference up vector onto a plane defined by gyroForward
+    Vector3D gyroUpOnPlane = Vector3D.Reject(gyroUp, gyroForward);
+    Vector3D referenceUpOnPlane = Vector3D.Reject(referenceUp, gyroForward);
+
+    // normalize to only consider directions
+    gyroUpOnPlane.Normalize();
+    referenceUpOnPlane.Normalize();
+
+    // calculate the angle between the two vectors
+    double angle = Math.Acos(Vector3D.Dot(gyroUpOnPlane, referenceUpOnPlane));
+
+    // determine the direction of the roll using cross product
+    // if the cross product in the direction of gyroForward is negative, invert the angle
+    if (Vector3D.Cross(gyroUpOnPlane, referenceUpOnPlane).Dot(referenceUp) &lt; 0)
+    {
+        angle = -angle;
+    }
+
+    return angle;
+}
+public void Reset(IMyGyro gyro)
+{
+    Echo("resetting gyro moments to 0");
+    gyro.GyroOverride = true;
+    gyro.Pitch = 0;
+    gyro.Roll = 0;
+    gyro.Yaw = 0;
+    halt = true;
+}
+
+public void Pitch(IMyGyro gyro, double pitchSpeed)
+{
+    Echo($"pitching at a speed of {pitchSpeed}");
+    gyro.Pitch = (float)pitchSpeed;
+}
+
+public void Roll(IMyGyro gyro, double rollSpeed)
+{
+    Echo($"rolling at a speed of {rollSpeed}");
+    gyro.Roll = (float)rollSpeed;
+}
+
+public void Yaw(IMyGyro gyro, double yawSpeed)
+{
+    Echo($"yawing at a speed of {yawSpeed}");
+    gyro.Yaw = (float)yawSpeed;
+}
+
+public Vector3 Base6DirectionToVector3(Base6Directions.Direction direction)
+{
+    switch (direction)
+    {
+        case Base6Directions.Direction.Forward:
+            return new Vector3(0, 0, 1);
+        case Base6Directions.Direction.Backward:
+            return new Vector3(0, 0, -1);
+        case Base6Directions.Direction.Left:
+            return new Vector3(-1, 0, 0);
+        case Base6Directions.Direction.Right:
+            return new Vector3(1, 0, 0);
+        case Base6Directions.Direction.Up:
+            return new Vector3(0, 1, 0);
+        case Base6Directions.Direction.Down:
+            return new Vector3(0, -1, 0);
+        default:
+            throw new ArgumentException("Invalid Base6Direction value");
+    }
+}
+
+public Vector3 CalculateRightVector()
+{
+    MyBlockOrientation blockOrientation = Gyro.Orientation;
+
+    // extract Forward and Up directions as Base6Directions
+    Base6Directions.Direction forwardDirection = blockOrientation.Forward;
+    Base6Directions.Direction upDirection = blockOrientation.Up;
+
+    // convert to Vector3
+    Vector3 forwardVector = Base6DirectionToVector3(forwardDirection);
+    Vector3 upVector = Base6DirectionToVector3(upDirection);
+
+    // calculate Right vector using cross product
+    Vector3 rightVector = Vector3.Cross(forwardVector, upVector);
+    return rightVector;
+}
+
+public class GyroMotionFSM
+{
+    public enum State
+    {
+        idle,
+        roll,
+        pitch,
+        yaw,
+        done
+    }
+
+    public State currentState;
+
+    public IMyGyro Gyro;
+
+    public Vector3D TargetVector;
+
+    public GyroMotionFSM(IMyGyro gyro, Vector3D targetVector)
+    {
+        Gyro = gyro;
+        currentState = State.idle;
+        TargetVector = targetVector;
+    }
+
+    public void Update()
+    {
+        switch (currentState)
+        {
+            case State.idle:
+                HandleIdle(); break;
+            case State.roll:
+                HandleRoll(); break;
+            case State.pitch:
+                HandlePitch(); break;
+            case State.yaw:
+                HandleYaw(); break;
+            case State.done:
+                HandleDone(); break;
+        }
+    }
+
+    public void HandleIdle()
+    {
+        if (TargetVector != new Vector3D())
+        {
+            currentState = State.roll;
+            return;
+        }
+    }
+
+    public void HandleRoll()
+    {
+
+    }
+
+    public void HandlePitch()
+    {
+
+    }
+
+    public void HandleYaw()
+    {
+
+    }
+
+    public void HandleDone()
+    {
+        Gyro.Roll = 0;
+        Gyro.Pitch = 0;
+        Gyro.Yaw = 0;
+        TargetVector = new Vector3D();
+        currentState = State.done;
+    }
+}</Program>
+              <Storage />
+              <DefaultRunArgument />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>115181314885296556</EntityId>
+              <Min x="1" y="2" z="0" />
+              <BlockOrientation Forward="Up" Up="Backward" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>90473571849111800</EntityId>
+              <Min x="2" y="0" z="0" />
+              <BlockOrientation Forward="Right" Up="Down" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>3</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>131749892629154945</EntityId>
+              <Min x="1" y="0" z="-2" />
+              <BlockOrientation Forward="Forward" Up="Down" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>4</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>130992885171606034</EntityId>
+              <Min x="1" y="-2" z="0" />
+              <BlockOrientation Forward="Down" Up="Backward" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>5</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>126170581776258440</EntityId>
+              <Min x="-2" y="0" z="0" />
+              <BlockOrientation Forward="Left" Up="Backward" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>6</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_RadioAntenna">
+              <SubtypeName>SmallBlockRadioAntenna</SubtypeName>
+              <EntityId>132613171618538911</EntityId>
+              <Min x="0" y="0" z="-2" />
+              <ColorMaskHSV x="0.122222222" y="0.05" z="0.46" />
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <BroadcastRadius>5000</BroadcastRadius>
+              <ShowShipName>false</ShowShipName>
+              <EnableBroadcasting>true</EnableBroadcasting>
+              <AttachedPB>0</AttachedPB>
+              <IgnoreAllied>false</IgnoreAllied>
+              <IgnoreOther>true</IgnoreOther>
+              <HudText />
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <DisplayName>Gyro Test Rig</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>0</LocalCoordSys>
+          <TargetingTargets />
+        </CubeGrid>
+      </CubeGrids>
+      <EnvironmentType>None</EnvironmentType>
+      <WorkshopId>0</WorkshopId>
+      <OwnerSteamId>76561198121463026</OwnerSteamId>
+      <Points>0</Points>
+    </ShipBlueprint>
+  </ShipBlueprints>
+</Definitions>

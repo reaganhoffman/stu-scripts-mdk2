@@ -1,0 +1,1652 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShipBlueprints>
+    <ShipBlueprint xsi:type="MyObjectBuilder_ShipBlueprintDefinition">
+      <Id Type="MyObjectBuilder_ShipBlueprintDefinition" Subtype="LIGMA-GOOCH Node" />
+      <DisplayName>ethanjevvell</DisplayName>
+      <DLC>Contact</DLC>
+      <DLC>Automatons</DLC>
+      <DLC>DecorativeBlocks3</DLC>
+      <CubeGrids>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>82788508684111103</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="-51592.71435303436" y="-74659.819294429792" z="-49020.049473362422" />
+            <Forward x="-0.115400866" y="0.797244549" z="-0.5925233" />
+            <Up x="-0.400842" y="-0.583159566" z="-0.7065768" />
+            <Orientation>
+              <X>0.142991439</X>
+              <Y>-0.428125978</Y>
+              <Z>0.8781419</Z>
+              <W>0.158519551</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Small</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_BatteryBlock">
+              <SubtypeName>SmallBlockBatteryBlock</SubtypeName>
+              <EntityId>82788508684111104</EntityId>
+              <Min x="-1" y="0" z="-1" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <CurrentStoredPower>1</CurrentStoredPower>
+              <ProducerEnabled>true</ProducerEnabled>
+              <MaxStoredPower>0</MaxStoredPower>
+              <SemiautoEnabled>false</SemiautoEnabled>
+              <OnlyDischargeEnabled>false</OnlyDischargeEnabled>
+              <ChargeMode>0</ChargeMode>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_BatteryBlock">
+              <SubtypeName>SmallBlockBatteryBlock</SubtypeName>
+              <EntityId>107432496215876345</EntityId>
+              <Min x="-1" y="2" z="-1" />
+              <BlockOrientation Forward="Forward" Up="Down" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>3</NumberInGrid>
+              <Enabled>true</Enabled>
+              <CurrentStoredPower>1</CurrentStoredPower>
+              <ProducerEnabled>true</ProducerEnabled>
+              <MaxStoredPower>0</MaxStoredPower>
+              <SemiautoEnabled>false</SemiautoEnabled>
+              <OnlyDischargeEnabled>false</OnlyDischargeEnabled>
+              <ChargeMode>0</ChargeMode>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_RadioAntenna">
+              <SubtypeName>SmallBlockCompactRadioAntennaReskin</SubtypeName>
+              <EntityId>72317289213071584</EntityId>
+              <Min x="-1" y="3" z="2" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <BroadcastRadius>5000</BroadcastRadius>
+              <ShowShipName>false</ShowShipName>
+              <EnableBroadcasting>true</EnableBroadcasting>
+              <AttachedPB>0</AttachedPB>
+              <IgnoreAllied>false</IgnoreAllied>
+              <IgnoreOther>true</IgnoreOther>
+              <HudText />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_TurretControlBlock">
+              <SubtypeName>SmallTurretControlBlock</SubtypeName>
+              <EntityId>92913016838143270</EntityId>
+              <Min x="0" y="1" z="2" />
+              <BlockOrientation Forward="Up" Up="Backward" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MySunTrackingComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_SunTrackingComponent">
+                      <SunTrackingEnabled>false</SunTrackingEnabled>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyMultiTextPanelComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_MultiTextPanelComponent">
+                      <TextPanelsContents>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                        </MySerializedTextPanelData>
+                      </TextPanelsContents>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>false</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <CustomName>NODE CONTROLLER</CustomName>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <AzimuthId>99866694198502978</AzimuthId>
+              <ElevationId>107764286179086827</ElevationId>
+              <CameraId>86631288611612984</CameraId>
+              <ToolIds />
+              <VelocityMultiplierAzimuth>0.3</VelocityMultiplierAzimuth>
+              <VelocityMultiplierElevation>0.3</VelocityMultiplierElevation>
+              <PreviousControlledEntityId xsi:nil="true" />
+              <IsCorrect>true</IsCorrect>
+              <TargetingGroup />
+              <AngleDeviation>0.087222</AngleDeviation>
+              <DirectionBlockId>86631288611612984</DirectionBlockId>
+              <AreWeaponsMismatched>false</AreWeaponsMismatched>
+              <Toolbar>
+                <ToolbarType>Character</ToolbarType>
+                <SelectedSlot xsi:nil="true" />
+                <Slots />
+                <SlotsGamepad />
+              </Toolbar>
+              <AllowAI>false</AllowAI>
+              <Flags>
+                <TargetCharacters>false</TargetCharacters>
+                <TargetNeutrals>true</TargetNeutrals>
+              </Flags>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MyProgrammableBlock">
+              <SubtypeName>SmallProgrammableBlockReskin</SubtypeName>
+              <EntityId>85752217092153376</EntityId>
+              <Min x="1" y="2" z="2" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyMultiTextPanelComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_MultiTextPanelComponent">
+                      <TextPanelsContents>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                        </MySerializedTextPanelData>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                        </MySerializedTextPanelData>
+                      </TextPanelsContents>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <Program>/*
+ * R e a d m e
+ * -----------
+ * 
+ * In this file you can include any instructions or other comments you want to have injected onto the 
+ * top of your final script. You can safely delete this file if you do not want any such comments.
+ */
+
+
+const string GOOCH_NODE_LOG_CHANNEL = "gooch-node-log";
+const string GOOCH_NODE_TARGET_CHANNEL = "gooch-node-target";
+
+MyIni _ini;
+IMyTurretControlBlock _customTurrentController;
+
+IEnumerator&lt;bool&gt; _targetScanner;
+// For sending log messages to HQ
+STUMasterLogBroadcaster _logBroadcaster;
+// For streaming target telemetry
+STUMasterLogBroadcaster _targetBroadcaster;
+
+STULog _tempOutgoingLog = new STULog();
+MyDetectedEntityInfo _tempDetectedEntity;
+
+public Program() {
+
+    _ini = new MyIni();
+    _logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_GOOCH_LOG_BROADCASTER, IGC, TransmissionDistance.AntennaRelay);
+    _targetBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_GOOCH_TARGET_BROADCASTER, IGC, TransmissionDistance.AntennaRelay);
+    _customTurrentController = GridTerminalSystem.GetBlockWithName("NODE CONTROLLER") as IMyTurretControlBlock;
+    if (_customTurrentController == null) {
+        Echo("Custom Turret Controller not found");
+        return;
+    }
+
+    ConfigureTurretController(_customTurrentController, false);
+    Runtime.UpdateFrequency = UpdateFrequency.Update100;
+
+}
+
+public void Main() {
+
+    Echo("Scanning...");
+    ScanForTargets();
+
+}
+
+IEnumerable&lt;bool&gt; ScanCoroutine() {
+
+    while (true) {
+        _tempDetectedEntity = _customTurrentController.GetTargetedEntity();
+        if (!_tempDetectedEntity.IsEmpty()) {
+            Echo("TARGET LOCK -- TRANSMITTING");
+            StreamTargetData(_tempDetectedEntity);
+            Echo(_tempOutgoingLog.Metadata["Name"]);
+            Echo(_tempOutgoingLog.Metadata["Relationship"]);
+        }
+        yield return true;
+    }
+
+}
+
+void ScanForTargets() {
+    if (_targetScanner == null) {
+        _targetScanner = ScanCoroutine().GetEnumerator();
+    }
+    bool hasMore = _targetScanner.MoveNext();
+    if (hasMore) {
+        return;
+    } else {
+        _targetScanner.Dispose();
+        _targetScanner = null;
+    }
+}
+
+void ConfigureTurretController(IMyTurretControlBlock controller, bool debug = false) {
+    if (debug) {
+        controller.TargetFriends = true;
+    } else {
+        controller.TargetFriends = false;
+    }
+    controller.TargetLargeGrids = true;
+    controller.TargetSmallGrids = true;
+    controller.TargetStations = true;
+    controller.TargetNeutrals = true;
+    controller.TargetCharacters = false;
+    Echo("Config");
+}
+
+void StreamTargetData(MyDetectedEntityInfo targetData) {
+    _tempOutgoingLog = new STULog() {
+        Message = "",
+        Sender = Me.CustomName,
+        Type = STULogType.INFO,
+        Metadata = STURaycaster.GetHitInfoDictionary(targetData)
+    };
+    _targetBroadcaster.Log(_tempOutgoingLog);
+}
+
+public class STUImage {
+
+    public struct Pixel {
+        public float distanceVal;
+    }
+
+    private List&lt;List&lt;Pixel&gt;&gt; pixelArray;
+    private IEnumerator&lt;bool&gt; exportStateMachine;
+    private bool finishedExporting;
+
+    // Getters and setters
+    public List&lt;List&lt;Pixel&gt;&gt; PixelArray {
+        get { return pixelArray; }
+        set {
+            if (value.Count == 0) {
+                pixelArray = new List&lt;List&lt;Pixel&gt;&gt;() { };
+            } else {
+                int width = value[0].Count;
+                for (int i = 0; i &lt; width; i++) {
+                    if (value[i].Count != width) {
+                        throw new ArgumentException("All rows must have the same number of columns.");
+                    }
+                }
+            }
+        }
+    }
+    public uint Width {
+        get { return pixelArray != null &amp;&amp; pixelArray.Count &gt; 0 ? (uint)pixelArray[0].Count : 0; }
+    }
+    public uint Height {
+        get { return pixelArray != null &amp;&amp; pixelArray.Count &gt; 0 ? (uint)pixelArray.Count : 0; }
+    }
+    public IEnumerator&lt;bool&gt; ExportStateMachine {
+        get { return exportStateMachine; }
+        private set { exportStateMachine = value; }
+    }
+    public bool FinishedExporting {
+        get { return finishedExporting; }
+        private set { finishedExporting = value; }
+    }
+
+    public STUImage(List&lt;List&lt;Pixel&gt;&gt; image) {
+        pixelArray = image;
+    }
+
+    public STUImage() {
+        pixelArray = new List&lt;List&lt;Pixel&gt;&gt;() { };
+    }
+
+    public void ExportOverTime(IMyTerminalBlock outputBlock) {
+        if (ExportStateMachine != null) {
+            bool hasMoreSteps = ExportStateMachine.MoveNext();
+            if (!hasMoreSteps) {
+                ExportStateMachine.Dispose();
+                ExportStateMachine = null;
+            }
+        } else {
+            ExportStateMachine = RunExportCoroutine(outputBlock);
+        }
+    }
+
+    private IEnumerator&lt;bool&gt; RunExportCoroutine(IMyTerminalBlock outputBlock) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append('[');
+        for (int i = 0; i &lt; Height; i++) {
+            stringBuilder.Append('[');
+            for (int j = 0; j &lt; Width; j++) {
+                stringBuilder.Append(pixelArray[i][j].distanceVal);
+                stringBuilder.Append(",");
+            }
+            stringBuilder.Remove(stringBuilder.Length - 1, 1);
+            stringBuilder.Append("],");
+            stringBuilder.Append("\n");
+            yield return true;
+        }
+        stringBuilder.Append(']');
+        outputBlock.CustomData = stringBuilder.ToString();
+        FinishedExporting = true;
+    }
+
+}
+
+
+public static class STULogType {
+    public const string OK = "OK";
+    public const string ERROR = "ERROR";
+    public const string WARNING = "WARNING";
+    public const string INFO = "INFO";
+}
+
+/// &lt;summary&gt;
+        /// A custom Log object for use with the STU master logging system.
+        /// All three fields are required to be defind and non-empty to be valid.
+        /// &lt;/summary&gt;
+public class STULog {
+
+    private string message;
+    private string sender;
+    private string type;
+    private Dictionary&lt;string, string&gt; metadata;
+
+    private const string COMPONENT_DELIMITER = "\x1F";
+    private const string METADATA_DELIMITER = "\x1E";
+
+    public STULog() { }
+
+    public STULog(string sender, string message, string type, Dictionary&lt;string, string&gt; metadata = null) {
+        Sender = sender;
+        Message = message;
+        Type = type;
+        Metadata = metadata;
+    }
+
+    /// &lt;summary&gt;
+            /// Creates a new &lt;c&gt;STULog&lt;/c&gt; object. Be sure to surround in try-catch.
+            /// &lt;/summary&gt;
+            /// &lt;param name="s"&gt;&lt;/param&gt;
+            /// &lt;returns&gt;&lt;c&gt;STULog&lt;/c&gt;&lt;/returns&gt;
+            /// &lt;exception cref="ArgumentException"&gt;Thrown if deserialization fails.&lt;/exception&gt;"
+    public static STULog Deserialize(string s) {
+
+        string[] components = s.Split(new string[] { COMPONENT_DELIMITER }, StringSplitOptions.None);
+
+        string logType = components[2];
+        switch (components.Length) {
+            case 3:
+                // No metadata
+                return new STULog(components[0], components[1], logType);
+            case 4:
+                // Contains metadata
+                return new STULog(components[0], components[1], logType, ParseMetadata(components[3]));
+            default:
+                // Any other number of components is invalid
+                throw new ArgumentException($"Malformed log string; invalid number of components: {components.Length}.");
+        }
+
+    }
+
+    private static Dictionary&lt;string, string&gt; ParseMetadata(string metadataString) {
+        Dictionary&lt;string, string&gt; metadata = new Dictionary&lt;string, string&gt;();
+        string[] metadataKeyValuePairs = metadataString.Split(new string[] { METADATA_DELIMITER }, StringSplitOptions.None);
+
+        foreach (string pair in metadataKeyValuePairs) {
+            string[] keyValue = pair.Split('=');
+            string key = keyValue[0].Trim();
+            string value = keyValue[1].Trim();
+            metadata.Add(key, value);
+        }
+        return metadata;
+    }
+
+    public static Color GetColor(string type) {
+        switch (type) {
+            case STULogType.OK:
+                return Color.Green;
+            case STULogType.ERROR:
+                return Color.Red;
+            case STULogType.WARNING:
+                return Color.Yellow;
+            case STULogType.INFO:
+                return Color.White;
+            default:
+                return Color.White;
+        }
+    }
+
+    /// &lt;summary&gt;
+            /// Returns a string representation of a &lt;c&gt;Log&lt;/c&gt;, usually for transmission via IGC
+            /// &lt;/summary&gt;
+            /// &lt;returns&gt;string&lt;/returns&gt;
+    public string Serialize() {
+
+        if (Metadata == null) {
+            return string.Join(COMPONENT_DELIMITER, Sender, Message, Type);
+        }
+
+        string[] keyPairStrings = new string[Metadata.Keys.Count];
+        int i = 0;
+        foreach (KeyValuePair&lt;string, string&gt; pair in Metadata) {
+            keyPairStrings[i] = $"{pair.Key}={pair.Value}";
+            i++;
+        }
+        return string.Join(COMPONENT_DELIMITER, Sender, Message, Type, string.Join(METADATA_DELIMITER, keyPairStrings));
+    }
+
+    // GETTERS AND SETTERS //
+
+    public string Sender {
+        get {
+            return sender;
+        }
+        set {
+            if (string.IsNullOrEmpty(value)) {
+                throw new ArgumentException("Sender cannot be an empty string");
+            } else {
+                sender = value;
+            }
+        }
+    }
+
+    public string Message {
+        get {
+            return message;
+        }
+        set {
+            message = value;
+        }
+    }
+
+    public string Type {
+        get {
+            return type;
+        }
+        set {
+            type = value;
+        }
+    }
+
+    public Dictionary&lt;string, string&gt; Metadata {
+        get {
+            return metadata;
+        }
+        set {
+            metadata = value;
+        }
+    }
+
+}
+
+public class STUMasterLogBroadcaster {
+    public string Channel { get; set; }
+    public IMyIntergridCommunicationSystem Broadcaster { get; set; }
+    public TransmissionDistance Distance { get; set; }
+
+    public STUMasterLogBroadcaster(string channel, IMyIntergridCommunicationSystem IGC, TransmissionDistance distance) {
+        Channel = channel;
+        Broadcaster = IGC;
+        Distance = distance;
+    }
+
+    /// &lt;summary&gt;
+            /// Broadcasts a log message to the channel specified in the constructor.
+            /// &lt;/summary&gt;
+            /// &lt;param name="log"&gt;An STULog object&lt;/param&gt;
+            /// &lt;param name="key"&gt;Optional: a passphrase to be used in the Tiny Encryption Algorithm.
+            /// `key` must be at least 16 characters long.
+            /// Your solution must have the CUCKS project loaded&lt;/param&gt;
+    public void Log(STULog log, string key = null) {
+        string export = log.Serialize();
+        if (key != null &amp;&amp; key.Length &gt;= 16) {
+            try {
+                export = Encrypt(log.Serialize(), key);
+            } catch {
+                throw new Exception($"TEA encryption unsuccessful: STUMasterLogBroadcaster.Log(STULog {log}, string {key}");
+            }
+        }
+        Broadcaster.SendBroadcastMessage(Channel, export, Distance);
+    }
+
+    public void Ping() {
+        Broadcaster.SendBroadcastMessage(Channel, "PING", Distance);
+    }
+
+    public void encode(uint[] v, uint[] k) {
+        uint y = v[0];
+        uint z = v[1];
+        uint sum = 0;
+        uint delta = 0x9e3779b9;
+        uint n = 32;
+
+        while (n-- &gt; 0) {
+            y += (z &lt;&lt; 4 ^ z &gt;&gt; 5) + z ^ sum + k[sum &amp; 3];
+            sum += delta;
+            z += (y &lt;&lt; 4 ^ y &gt;&gt; 5) + y ^ sum + k[sum &gt;&gt; 11 &amp; 3];
+        }
+
+        v[0] = y;
+        v[1] = z;
+    }
+
+    public void decode(uint[] v, uint[] k) {
+        uint n = 32;
+        uint y = v[0];
+        uint z = v[1];
+        uint delta = 0x9e3779b9;
+        uint sum = delta &lt;&lt; 5;
+
+        while (n-- &gt; 0) {
+            z -= (y &lt;&lt; 4 ^ y &gt;&gt; 5) + y ^ sum + k[sum &gt;&gt; 11 &amp; 3];
+            y -= (z &lt;&lt; 4 ^ z &gt;&gt; 5) + z ^ sum + k[sum &amp; 3];
+            sum -= delta;
+        }
+
+        v[0] = y;
+        v[1] = z;
+    }
+
+    // totally auto generated, not sure if it works
+    public uint[] FormatKey(string key) {
+        uint[] formattedKey = new uint[4];
+        byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+        for (int i = 0; i &lt; 4; i++) {
+            formattedKey[i] = BitConverter.ToUInt32(keyBytes, i * 4);
+        }
+
+        return formattedKey;
+    }
+
+    public string Encrypt(string data, string key) {
+        uint[] formattedKey = FormatKey(key);
+
+        if (data.Length % 2 != 0)
+            data += '\0'; // Make sure array is even length
+        byte[] dataBytes = Encoding.ASCII.GetBytes(data);
+
+        string cipher = string.Empty;
+        uint[] tempData = new uint[2];
+        for (int i = 0; i &lt; dataBytes.Length; i += 2) {
+            tempData[0] = dataBytes[i];
+            tempData[1] = dataBytes[i + 1];
+            encode(tempData, formattedKey);
+            cipher += ConvertUIntToString(tempData[0]) + ConvertUIntToString(tempData[1]);
+        }
+
+        return cipher;
+    }
+
+    public string Decrypt(string data, string key) {
+        uint[] formattedKey = FormatKey(key);
+
+        int x = 0;
+        uint[] tempData = new uint[2];
+        byte[] dataBytes = new byte[data.Length / 8 * 2];
+        for (int i = 0; i &lt; data.Length; i += 8) {
+            tempData[0] = ConvertStringToUInt(data.Substring(i, 4));
+            tempData[1] = ConvertStringToUInt(data.Substring(i + 4, 4));
+            decode(tempData, formattedKey);
+            dataBytes[x++] = (byte)tempData[0];
+            dataBytes[x++] = (byte)tempData[1];
+        }
+
+        string decipheredString = Encoding.ASCII.GetString(dataBytes, 0, dataBytes.Length);
+
+        // Strip null characters
+        if (decipheredString[decipheredString.Length - 1] == '\0') {
+            decipheredString = decipheredString.Substring(0, decipheredString.Length - 1);
+        }
+
+        return decipheredString;
+
+    }
+
+    private string ConvertUIntToString(uint value) {
+        System.Text.StringBuilder output = new System.Text.StringBuilder();
+        output.Append((char)(value &amp; 0xFF));
+        output.Append((char)((value &gt;&gt; 8) &amp; 0xFF));
+        output.Append((char)((value &gt;&gt; 16) &amp; 0xFF));
+        output.Append((char)((value &gt;&gt; 24) &amp; 0xFF));
+        return output.ToString();
+    }
+
+    private uint ConvertStringToUInt(string input) {
+        uint output = 0;
+        output = ((uint)input[0]);
+        output += ((uint)input[1] &lt;&lt; 8);
+        output += ((uint)input[2] &lt;&lt; 16);
+        output += ((uint)input[3] &lt;&lt; 24);
+        return output;
+    }
+}
+
+
+public class STURaycaster {
+
+    private IMyCameraBlock camera;
+    private float raycastDistance = 10000;
+    private float raycastPitch = 0;
+    private float raycastYaw = 0;
+    private IEnumerator&lt;bool&gt; imageStateMachine;
+    private bool finishedTakingImage;
+    private STUImage image;
+
+    // Getters and Setters
+    public IMyCameraBlock Camera {
+        get { return camera; }
+        set { camera = value; }
+    }
+    public float RaycastDistance {
+        get { return raycastDistance; }
+        set { raycastDistance = value; }
+    }
+    public float RaycastPitch {
+        get { return raycastPitch; }
+        set { raycastPitch = MathHelper.Clamp(value, -45, 45); }
+    }
+    public float RaycastYaw {
+        get { return raycastYaw; }
+        set { raycastYaw = MathHelper.Clamp(value, -45, 45); }
+    }
+    public bool FinishedTakingImage {
+        get { return finishedTakingImage; }
+        private set { finishedTakingImage = value; }
+    }
+    public STUImage Image {
+        get { return image; }
+        private set { image = value; }
+    }
+    public IEnumerator&lt;bool&gt; ImageStateMachine {
+        get { return imageStateMachine; }
+        private set { imageStateMachine = value; }
+    }
+
+    public STURaycaster(IMyCameraBlock camera) {
+        Camera = camera;
+        Camera.EnableRaycast = true;
+        FinishedTakingImage = false;
+        Image = new STUImage();
+    }
+
+    /// &lt;summary&gt;
+            /// Fires a raycast from the camera and returns the hit entity info. Uses RaycastDistance, RaycastPitch, and RaycastYaw.
+            /// &lt;/summary&gt;
+            /// &lt;returns&gt;&lt;/returns&gt;
+            /// &lt;exception cref="Exception"&gt;&lt;/exception&gt;
+    public MyDetectedEntityInfo Raycast() {
+        if (!Camera.CanScan(RaycastDistance)) {
+            return default(MyDetectedEntityInfo);
+        }
+        return Camera.Raycast(RaycastDistance, RaycastPitch, RaycastYaw);
+    }
+
+    public void ToggleRaycast(bool on) {
+        Camera.EnableRaycast = on;
+    }
+
+    public void ToggleRaycast() {
+        Camera.EnableRaycast = !Camera.EnableRaycast;
+    }
+
+    /// &lt;summary&gt;
+            /// Runs a state machine to take an image over time. The image is stored in the Image property.
+            /// Poll the FinishedTakingImage property to check if the image is done before attempting to draw it with STUDisplay.DrawCustomImageOverTime()
+            /// The raycasting camera MUST be stationary, unless the resolution and distance are very small and can be executed in a single tick
+            /// &lt;/summary&gt;
+            /// &lt;param name="distance"&gt;&lt;/param&gt;
+            /// &lt;param name="fov"&gt;&lt;/param&gt;
+            /// &lt;param name="x"&gt;&lt;/param&gt;
+            /// &lt;param name="y"&gt;&lt;/param&gt;
+    public void TakeImageOverTime(float distance, float fov, uint x, uint y, Action&lt;string&gt; echo) {
+        if (ImageStateMachine != null &amp;&amp; !FinishedTakingImage) {
+            bool hasMoreSteps = ImageStateMachine.MoveNext();
+            if (!hasMoreSteps) {
+                ImageStateMachine.Dispose();
+                ImageStateMachine = null;
+                FinishedTakingImage = true;
+                // Disable raycasting to save performance and battery
+                Camera.EnableRaycast = false;
+            }
+        } else {
+            ImageStateMachine = RunImageCoroutine(distance, fov, x, y, echo);
+            Camera.EnableRaycast = true;
+        }
+    }
+
+    /// &lt;summary&gt;
+            /// Coroutine for taking an image over time. The image is stored in the Image property.
+            /// Uses perspective projection to mitigate the fisheye effect.
+            /// Not to be called directly.
+            /// &lt;/summary&gt;
+            /// &lt;param name="distance"&gt;&lt;/param&gt;
+            /// &lt;param name="fov"&gt;&lt;/param&gt;
+            /// &lt;param name="x"&gt;&lt;/param&gt;
+            /// &lt;param name="y"&gt;&lt;/param&gt;
+            /// &lt;returns&gt;&lt;/returns&gt;
+    IEnumerator&lt;bool&gt; RunImageCoroutine(float distance, float fov, uint x, uint y, Action&lt;string&gt; echo) {
+        // Ensure the camera is enabled
+        Camera.Enabled = true;
+        yield return false;
+
+        // Convert field of view from degrees to radians
+        float fov_rad = MathHelper.ToRadians(fov);
+
+        // Calculate aspect ratio
+        float aspectRatio = (float)x / y;
+
+        // Compute the vertical field of view based on the horizontal FOV and aspect ratio
+        float fov_y_rad = 2 * (float)Math.Atan(Math.Tan(fov_rad / 2) / aspectRatio);
+
+        // Precompute tangent values for efficiency
+        float tan_fov_x = (float)Math.Tan(fov_rad / 2);
+        float tan_fov_y = (float)Math.Tan(fov_y_rad / 2);
+
+        for (int r = 0; r &lt; y; r++) {
+            List&lt;STUImage.Pixel&gt; row = new List&lt;STUImage.Pixel&gt;();
+            for (int c = 0; c &lt; x; c++) {
+                // Wait until the camera can scan the distance
+                while (!Camera.CanScan(distance)) {
+                    yield return false;
+                }
+
+                // Compute normalized device coordinates (NDC) in the range [-1, 1]
+                float ndc_x = ((c + 0.5f) / x) * 2f - 1f; // Horizontal coordinate
+                float ndc_y = 1f - ((r + 0.5f) / y) * 2f; // Vertical coordinate (flipped for image coordinates)
+
+                Vector3 dir = new Vector3(
+                    ndc_x * tan_fov_x,
+                    ndc_y * tan_fov_y,
+                    1f // Assuming the camera looks along the positive Z-axis
+                );
+
+                // Normalize the direction vector
+                dir.Normalize();
+
+                // Compute yaw and pitch angles from the direction vector
+                float yaw_rad = (float)Math.Atan2(dir.X, dir.Z);
+                float pitch_rad = (float)Math.Asin(dir.Y);
+
+                // Convert yaw and pitch from radians to degrees
+                float currentYaw = MathHelper.ToDegrees(yaw_rad);
+                float currentPitch = MathHelper.ToDegrees(pitch_rad);
+
+                // Perform the raycast with the computed yaw and pitch angles
+                MyDetectedEntityInfo hit = Camera.Raycast(distance, currentPitch, currentYaw);
+
+                STUImage.Pixel pixel = new STUImage.Pixel {
+                    distanceVal = hit.IsEmpty() ? -1 : (float)Vector3D.Distance(hit.HitPosition.Value, Camera.GetPosition())
+                };
+
+                row.Add(pixel);
+
+            }
+            Image.PixelArray.Add(row);
+        }
+        Camera.Enabled = false;
+    }
+    /// &lt;summary&gt;
+            /// Returns a string with the hit info. Always check if a hit.IsEmpty() before using this.
+            /// &lt;/summary&gt;
+            /// &lt;param name="hit"&gt;&lt;/param&gt;
+    public string GetHitInfoString(MyDetectedEntityInfo hit) {
+        double distance = Vector3D.Distance((Vector3D)hit.HitPosition, Camera.GetPosition());
+        return $"Name: {hit.Name}\n" +
+            $"Type: {hit.Type}\n" +
+            $"Position: {hit.Position}\n" +
+            $"Velocity: {hit.Velocity}\n" +
+            $"Relationship: {hit.Relationship}\n" +
+            $"Distance: {distance}\n" +
+            $"Remaining Range: {Camera.AvailableScanRange}\n";
+        ;
+    }
+
+    public static Dictionary&lt;string, string&gt; GetHitInfoDictionary(MyDetectedEntityInfo hitInfo) {
+        var hitPos = hitInfo.HitPosition ?? Vector3D.Zero;
+        return new Dictionary&lt;string, string&gt;
+        {
+            { "Name", hitInfo.Name },
+            { "Type", hitInfo.Type.ToString() },
+            { "Position", hitInfo.Position.ToString() },
+            { "Velocity", hitInfo.Velocity.ToString() },
+            { "Size", hitInfo.BoundingBox.Size.ToString() },
+            { "Orientation", SerializeMatrixD(hitInfo.Orientation) },
+            { "HitPosition", hitInfo.HitPosition.ToString() },
+            { "TimeStamp", hitInfo.TimeStamp.ToString() },
+            { "Relationship", hitInfo.Relationship.ToString() },
+            { "BoundingBox", SerializeBoundingBoxD(hitInfo.BoundingBox)},
+            { "EntityId", hitInfo.EntityId.ToString() },
+        };
+    }
+
+    /// &lt;summary&gt;
+            /// Turns a hit info dictionary&lt;string, string&gt; into a MyDetectedEntityInfo. Always surround with try/catch.
+            /// &lt;/summary&gt;
+            /// &lt;param name="hitInfoDictionary"&gt;&lt;/param&gt;
+            /// &lt;returns&gt;&lt;/returns&gt;
+            /// &lt;exception cref="Exception"&gt;&lt;/exception&gt;
+    public static MyDetectedEntityInfo DeserializeHitInfo(Dictionary&lt;string, string&gt; hitInfoDictionary) {
+
+        Vector3 velocity;
+
+        try {
+            velocity = DeserializeVector3(hitInfoDictionary["Velocity"]);
+        } catch {
+            throw new Exception(hitInfoDictionary["Velocity"]);
+        }
+
+        Vector3D hitPosition;
+        bool parsedPosition = Vector3D.TryParse(hitInfoDictionary["Position"], out hitPosition);
+
+        if (!parsedPosition) {
+            throw new Exception($"ERR: V = {hitInfoDictionary["Velocity"]}, P = {hitInfoDictionary["Position"]}");
+        }
+
+        long entityId = long.Parse(hitInfoDictionary["EntityId"]);
+        string name = hitInfoDictionary["Name"];
+        MyDetectedEntityType type = (MyDetectedEntityType)Enum.Parse(typeof(MyDetectedEntityType), hitInfoDictionary["Type"]);
+        MatrixD orientation = DeserializeMatrixD(hitInfoDictionary["Orientation"]);
+        BoundingBoxD boundingBox = DeserializeBoundingBoxD(hitInfoDictionary["BoundingBox"]);
+        MyRelationsBetweenPlayerAndBlock relationship = (MyRelationsBetweenPlayerAndBlock)Enum.Parse(typeof(MyRelationsBetweenPlayerAndBlock), hitInfoDictionary["Relationship"]);
+        long timeStamp = long.Parse(hitInfoDictionary["TimeStamp"]);
+
+        return new MyDetectedEntityInfo(entityId, name, type, hitPosition, orientation, velocity, relationship, boundingBox, timeStamp);
+    }
+
+    private static string SerializeBoundingBoxD(BoundingBoxD boundingBox) {
+        return $"{boundingBox.Min.X},{boundingBox.Min.Y},{boundingBox.Min.Z}:{boundingBox.Max.X},{boundingBox.Max.Y},{boundingBox.Max.Z}";
+    }
+
+    private static BoundingBoxD DeserializeBoundingBoxD(string data) {
+        var parts = data.Split(':');
+        var minParts = parts[0].Split(',');
+        var maxParts = parts[1].Split(',');
+
+        Vector3D min = new Vector3D(
+            Convert.ToDouble(minParts[0]),
+            Convert.ToDouble(minParts[1]),
+            Convert.ToDouble(minParts[2])
+        );
+
+        Vector3D max = new Vector3D(
+            Convert.ToDouble(maxParts[0]),
+            Convert.ToDouble(maxParts[1]),
+            Convert.ToDouble(maxParts[2])
+        );
+
+        return new BoundingBoxD(min, max);
+    }
+
+    private static string SerializeMatrixD(MatrixD matrix) {
+        return string.Join(",",
+            matrix.M11, matrix.M12, matrix.M13, matrix.M14,
+            matrix.M21, matrix.M22, matrix.M23, matrix.M24,
+            matrix.M31, matrix.M32, matrix.M33, matrix.M34,
+            matrix.M41, matrix.M42, matrix.M43, matrix.M44);
+    }
+
+    private static MatrixD DeserializeMatrixD(string data) {
+        var elements = data.Split(',').Select(double.Parse).ToArray();
+
+        return new MatrixD(
+            elements[0], elements[1], elements[2], elements[3],
+            elements[4], elements[5], elements[6], elements[7],
+            elements[8], elements[9], elements[10], elements[11],
+            elements[12], elements[13], elements[14], elements[15]);
+    }
+
+    private static Vector3 DeserializeVector3(string vectorString) {
+        vectorString = vectorString.Replace("{", "");
+        vectorString = vectorString.Replace("}", "");
+        string[] vectorStringParts = vectorString.Split(' ');
+        double x = double.Parse(vectorStringParts[0].Split(':')[1]);
+        double y = double.Parse(vectorStringParts[1].Split(':')[1]);
+        double z = double.Parse(vectorStringParts[2].Split(':')[1]);
+        return new Vector3(x, y, z);
+    }
+}
+
+public static class LIGMA_VARIABLES {
+
+    public const string LIGMA_VEHICLE_NAME = "LIGMA-I";
+    public const string LIGMA_RECONNOITERER_NAME = "SDC-3";
+
+    public const string LIGMA_TELEMETRY_BROADCASTER = "LIGMA_TELEMETRY_BROADCASTER";
+    public const string LIGMA_LOG_BROADCASTER = "LIGMA_LOG_BROADCASTER";
+    public const string LIGMA_GOOCH_TARGET_BROADCASTER = "LIGMA_GOOCH_TARGET_BROADCASTER";
+    public const string LIGMA_GOOCH_LOG_BROADCASTER = "LIGMA_GOOCH_LOG_BROADCASTER";
+
+    public const string LIGMA_HQ_LOG_SUBSCRIBER_TAG = "LIGMA_HQ_LOG_SUBSCRIBER";
+    public const string LIGMA_HQ_TELEMETRY_BROADCASTER = "LIGMA_HQ_TELEMETRY_BROADCASTER";
+    public const string LIGMA_HQ_MAIN_SUBSCRIBER_TAG = "LIGMA_HQ_MAIN_SUBSCRIBER";
+    public const string LIGMA_HQ_NAME = "LIGMA_HQ";
+
+    public const double PLANETARY_DETECTION_BUFFER = 2000;
+
+    public static class COMMANDS {
+        public const string Launch = "Launch";
+        public const string Detonate = "Detonate";
+        public const string UpdateTargetData = "UpdateTargetData";
+        public const string Test = "Test";
+    }
+
+}</Program>
+              <Storage />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MotorStator">
+              <SubtypeName>SmallStator</SubtypeName>
+              <EntityId>99866694198502978</EntityId>
+              <Min x="0" y="4" z="0" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <TopBlockId>133959778370820357</TopBlockId>
+              <ShareInertiaTensor>false</ShareInertiaTensor>
+              <SafetyDetach>5</SafetyDetach>
+              <RotorEntityId xsi:nil="true" />
+              <WeldedEntityId xsi:nil="true" />
+              <TargetVelocity>0</TargetVelocity>
+              <MinAngle xsi:nil="true" />
+              <MaxAngle xsi:nil="true" />
+              <CurrentAngle>6.28318548</CurrentAngle>
+              <LimitsActive>false</LimitsActive>
+              <RotorLock>false</RotorLock>
+              <Torque>448000</Torque>
+              <BrakingTorque>0</BrakingTorque>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_DefensiveCombatBlock">
+              <SubtypeName>SmallDefensiveCombat</SubtypeName>
+              <EntityId>85026976946066610</EntityId>
+              <Min x="-1" y="2" z="2" />
+              <BlockOrientation Forward="Forward" Up="Right" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MySearchEnemyComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_SearchEnemyComponent">
+                      <TargetingLockOptions>2</TargetingLockOptions>
+                      <SubsystemsToDestroy />
+                      <TargetEntityId>0</TargetEntityId>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyAiBlockComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_AiBlockComponent">
+                      <IsActivated>false</IsActivated>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <FleeTrigger>Never</FleeTrigger>
+              <SelectedBeaconEntityId>0</SelectedBeaconEntityId>
+              <SelectedGpsHash xsi:nil="true" />
+              <WaypointZoneSize>250</WaypointZoneSize>
+              <LockTarget>true</LockTarget>
+              <CustomFleeCoordinates>
+                <X>0</X>
+                <Y>0</Y>
+                <Z>0</Z>
+              </CustomFleeCoordinates>
+              <UseCustomFleeCoordinates>false</UseCustomFleeCoordinates>
+              <CanTargetCharacters>false</CanTargetCharacters>
+              <Toolbar>
+                <ToolbarType>Character</ToolbarType>
+                <SelectedSlot xsi:nil="true" />
+                <Slots />
+                <SlotsGamepad />
+              </Toolbar>
+              <SelectedGpsHashNew xsi:nil="true" />
+              <FleeDistance>2500</FleeDistance>
+              <EvasiveManeuvers>true</EvasiveManeuvers>
+              <EvasiveManeuverAngle>0</EvasiveManeuverAngle>
+              <EvasiveManeuverIntervalRange>5</EvasiveManeuverIntervalRange>
+              <FleeMode>ToGpsOrBeacon</FleeMode>
+              <LastKnownEnemyPosition xsi:nil="true" />
+              <FleeMinHeightOnPlanets>-1</FleeMinHeightOnPlanets>
+              <PrevToolbarState xsi:nil="true" />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_SolarPanel">
+              <SubtypeName>SmallBlockColorableSolarPanel</SubtypeName>
+              <EntityId>78375220965022860</EntityId>
+              <Min x="2" y="-1" z="0" />
+              <BlockOrientation Forward="Forward" Up="Right" />
+              <ColorMaskHSV x="0.122222222" y="-0.1" z="0.26" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_SolarPanel">
+              <SubtypeName>SmallBlockColorableSolarPanel</SubtypeName>
+              <EntityId>79363225538725123</EntityId>
+              <Min x="-11" y="-1" z="0" />
+              <BlockOrientation Forward="Backward" Up="Left" />
+              <ColorMaskHSV x="0.122222222" y="-0.1" z="0.26" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>2</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>79730933009573364</EntityId>
+              <Min x="-1" y="-1" z="-1" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>5</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>134502957117895322</EntityId>
+              <Min x="1" y="-1" z="0" />
+              <BlockOrientation Forward="Backward" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>2</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>77540872996701136</EntityId>
+              <Min x="-1" y="4" z="1" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>3</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>104824499995605837</EntityId>
+              <Min x="0" y="4" z="-1" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>4</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>96943125155815930</EntityId>
+              <Min x="2" y="2" z="1" />
+              <BlockOrientation Forward="Up" Up="Forward" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>6</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_Thrust">
+              <SubtypeName>SmallBlockSmallThrust</SubtypeName>
+              <EntityId>124162436396272561</EntityId>
+              <Min x="-2" y="0" z="-1" />
+              <BlockOrientation Forward="Down" Up="Left" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyTimerComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_TimerComponent">
+                      <Repeat>true</Repeat>
+                      <TimeToEvent>0</TimeToEvent>
+                      <SetTimeMinutes>0</SetTimeMinutes>
+                      <TimerEnabled>true</TimerEnabled>
+                      <RemoveEntityOnTimer>false</RemoveEntityOnTimer>
+                      <TimerType>Frame100</TimerType>
+                      <FramesFromLastTrigger>0</FramesFromLastTrigger>
+                      <TimerTickInFrames>100</TimerTickInFrames>
+                      <IsSessionUpdateEnabled>false</IsSessionUpdateEnabled>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>8</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_RemoteControl">
+              <SubtypeName>SmallBlockRemoteControl</SubtypeName>
+              <EntityId>101512477777881312</EntityId>
+              <Min x="0" y="-1" z="0" />
+              <BlockOrientation Forward="Down" Up="Backward" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyAutopilotComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_AutopilotComponent">
+                      <AutoPilotEnabled>false</AutoPilotEnabled>
+                      <FlightMode>0</FlightMode>
+                      <CurrentWaypointIndex>-1</CurrentWaypointIndex>
+                      <Waypoints />
+                      <DockingModeEnabled>false</DockingModeEnabled>
+                      <CollisionAvoidance>false</CollisionAvoidance>
+                      <Direction>0</Direction>
+                      <AutopilotSpeedLimit>100</AutopilotSpeedLimit>
+                      <WaitForFreeWay>false</WaitForFreeWay>
+                      <WaypointThresholdDistance>0</WaypointThresholdDistance>
+                      <Coords />
+                      <Names />
+                      <LookAtPosition xsi:nil="true" />
+                      <FacingDirection>Forward</FacingDirection>
+                      <AlignToGravity>true</AlignToGravity>
+                      <MinHeightAboveTerrain>25</MinHeightAboveTerrain>
+                      <IsWorkAreaReturningToStart>false</IsWorkAreaReturningToStart>
+                      <WorkAreaStartForward>
+                        <X>0</X>
+                        <Y>0</Y>
+                        <Z>0</Z>
+                      </WorkAreaStartForward>
+                      <PitchAngle>0</PitchAngle>
+                      <RollAngle>0</RollAngle>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <UseSingleWeaponMode>false</UseSingleWeaponMode>
+              <Toolbar>
+                <ToolbarType>Character</ToolbarType>
+                <SelectedSlot xsi:nil="true" />
+                <Slots />
+                <SlotsGamepad />
+              </Toolbar>
+              <SelectedGunId xsi:nil="true" />
+              <BuildToolbar>
+                <ToolbarType>Character</ToolbarType>
+                <SelectedSlot xsi:nil="true" />
+                <Slots />
+                <SlotsGamepad />
+              </BuildToolbar>
+              <OnLockedToolbar>
+                <ToolbarType>Character</ToolbarType>
+                <SelectedSlot xsi:nil="true" />
+                <Slots />
+                <SlotsGamepad />
+              </OnLockedToolbar>
+              <IsTargetLockingEnabled>false</IsTargetLockingEnabled>
+              <PreviousControlledEntityId xsi:nil="true" />
+              <AutoPilotEnabled>false</AutoPilotEnabled>
+              <FlightMode>0</FlightMode>
+              <BindedCamera>0</BindedCamera>
+              <CurrentWaypointIndex>-1</CurrentWaypointIndex>
+              <Waypoints />
+              <Direction>0</Direction>
+              <DockingModeEnabled>false</DockingModeEnabled>
+              <CollisionAvoidance>false</CollisionAvoidance>
+              <Coords />
+              <Names />
+              <WaypointThresholdDistance>0</WaypointThresholdDistance>
+              <IsMainRemoteControl>false</IsMainRemoteControl>
+              <WaitForFreeWay>false</WaitForFreeWay>
+              <IsUpdatedSave>true</IsUpdatedSave>
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <DisplayName>LIGMA-GOOCH Node</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>0</LocalCoordSys>
+          <TargetingTargets />
+          <NPCGridClaimElapsed xsi:nil="true" />
+        </CubeGrid>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>130024647855022124</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="-51593.53075928436" y="-74661.006794429792" z="-49021.488194065547" />
+            <Forward x="-0.115400553" y="0.797244549" z="-0.5925232" />
+            <Up x="-0.400841683" y="-0.583159149" z="-0.706576943" />
+            <Orientation>
+              <X>0.142991245</X>
+              <Y>-0.428126037</Y>
+              <Z>0.8781419</Z>
+              <W>0.158519492</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Small</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MotorRotor">
+              <SubtypeName>SmallRotor</SubtypeName>
+              <EntityId>133959778370820357</EntityId>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ParentEntityId>99866694198502978</ParentEntityId>
+              <YieldLastComponent>false</YieldLastComponent>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MotorAdvancedStator">
+              <SubtypeName>SmallHinge</SubtypeName>
+              <EntityId>107764286179086827</EntityId>
+              <Min x="0" y="1" z="0" />
+              <BlockOrientation Forward="Right" Up="Backward" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <TopBlockId>128631177420325028</TopBlockId>
+              <ShareInertiaTensor>false</ShareInertiaTensor>
+              <SafetyDetach>5</SafetyDetach>
+              <RotorEntityId xsi:nil="true" />
+              <WeldedEntityId xsi:nil="true" />
+              <TargetVelocity>0</TargetVelocity>
+              <MinAngle>-1.57079637</MinAngle>
+              <MaxAngle>1.57079637</MaxAngle>
+              <CurrentAngle>2.68221061E-06</CurrentAngle>
+              <LimitsActive>true</LimitsActive>
+              <RotorLock>false</RotorLock>
+              <Torque>448000</Torque>
+              <BrakingTorque>0</BrakingTorque>
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <DisplayName>Small Grid 2124</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>0</LocalCoordSys>
+          <TargetingTargets />
+          <NPCGridClaimElapsed xsi:nil="true" />
+        </CubeGrid>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>74312886918717387</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="-51593.73095459686" y="-74661.298298336042" z="-49021.841465549922" />
+            <Forward x="-0.9088491" y="0.155969977" z="0.3868677" />
+            <Up x="0.115400732" y="-0.797244668" z="0.5925231" />
+            <Orientation>
+              <X>0.80389</X>
+              <Y>0.217243537</Y>
+              <Z>0.50237757</Z>
+              <W>0.232772246</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Small</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MotorAdvancedRotor">
+              <SubtypeName>SmallHingeHead</SubtypeName>
+              <EntityId>128631177420325028</EntityId>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ParentEntityId>107764286179086827</ParentEntityId>
+              <YieldLastComponent>false</YieldLastComponent>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CameraBlock">
+              <SubtypeName>SmallCameraBlock</SubtypeName>
+              <EntityId>86631288611612984</EntityId>
+              <Min x="-1" y="0" z="0" />
+              <BlockOrientation Forward="Left" Up="Backward" />
+              <ColorMaskHSV x="0" y="-0.8" z="0.4" />
+              <Owner>144115188075855897</Owner>
+              <BuiltBy>144115188075855897</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <IsActive>false</IsActive>
+              <Fov>1.04719758</Fov>
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <DisplayName>Small Grid 7387</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>0</LocalCoordSys>
+          <TargetingTargets />
+          <NPCGridClaimElapsed xsi:nil="true" />
+        </CubeGrid>
+      </CubeGrids>
+      <EnvironmentType>None</EnvironmentType>
+      <WorkshopId>0</WorkshopId>
+      <OwnerSteamId>76561198121463026</OwnerSteamId>
+      <Points>0</Points>
+    </ShipBlueprint>
+  </ShipBlueprints>
+</Definitions>

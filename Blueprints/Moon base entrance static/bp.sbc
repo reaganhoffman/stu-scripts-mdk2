@@ -1,0 +1,1071 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShipBlueprints>
+    <ShipBlueprint xsi:type="MyObjectBuilder_ShipBlueprintDefinition">
+      <Id Type="MyObjectBuilder_ShipBlueprintDefinition" Subtype="Moon base entrance static" />
+      <DisplayName>ethanjevvell</DisplayName>
+      <CubeGrids>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>127945841515312491</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="18449.677954195482" y="127497.05604368549" z="-115623.0398710904" />
+            <Forward x="-0.9404606" y="-0.1541186" z="-0.3029543" />
+            <Up x="0.22311078" y="-0.9523119" z="-0.208143413" />
+            <Orientation>
+              <X>0.5901122</X>
+              <Y>-0.01704433</Y>
+              <Z>0.7924163</Z>
+              <W>-0.153471678</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Large</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>86724394856753619</EntityId>
+              <Min x="5" y="2" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>82732393888762276</EntityId>
+              <Min x="-5" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>112486060250025147</EntityId>
+              <Min x="-1" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>92325998351436488</EntityId>
+              <Min x="2" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>131316686620140871</EntityId>
+              <Min x="1" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>113659765517832669</EntityId>
+              <Min x="-1" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>122697293417246404</EntityId>
+              <Min x="-2" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>89721309500813179</EntityId>
+              <Min x="2" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>129855198591126943</EntityId>
+              <Min x="1" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>104827805667697779</EntityId>
+              <Min x="0" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>72174626458785402</EntityId>
+              <Min x="0" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>94006292702338254</EntityId>
+              <Min x="3" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>106246650823528064</EntityId>
+              <Min x="-3" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>135555799737862854</EntityId>
+              <Min x="-5" y="2" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>74161152474813513</EntityId>
+              <Min x="4" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MergeBlock">
+              <SubtypeName>LargeShipMergeBlock</SubtypeName>
+              <EntityId>142557334253580060</EntityId>
+              <Min x="-3" y="3" z="-5" />
+              <IntegrityPercent>0.425015181</IntegrityPercent>
+              <BuildPercent>0.425015181</BuildPercent>
+              <ConstructionStockpile>
+                <Items xsi:type="MyObjectBuilder_StockpileItem">
+                  <Amount>7</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>SteelPlate</SubtypeName>
+                  </PhysicalContent>
+                </Items>
+                <Items xsi:type="MyObjectBuilder_StockpileItem">
+                  <Amount>2</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Construction</SubtypeName>
+                  </PhysicalContent>
+                </Items>
+                <Items xsi:type="MyObjectBuilder_StockpileItem">
+                  <Amount>1</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Motor</SubtypeName>
+                  </PhysicalContent>
+                </Items>
+                <Items xsi:type="MyObjectBuilder_StockpileItem">
+                  <Amount>2</Amount>
+                  <PhysicalContent xsi:type="MyObjectBuilder_Component">
+                    <SubtypeName>Computer</SubtypeName>
+                  </PhysicalContent>
+                </Items>
+              </ConstructionStockpile>
+              <Owner>144115188075855914</Owner>
+              <BuiltBy>144115188075855914</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>115433869645653474</EntityId>
+              <Min x="4" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>74990839051742437</EntityId>
+              <Min x="5" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>74182950169074192</EntityId>
+              <Min x="5" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>78007135282056720</EntityId>
+              <Min x="5" y="2" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>75680608205648693</EntityId>
+              <Min x="2" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>135152481717205106</EntityId>
+              <Min x="1" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>78058282625924163</EntityId>
+              <Min x="-5" y="2" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>116557040665411097</EntityId>
+              <Min x="-2" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>101022488620348546</EntityId>
+              <Min x="-3" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>88238470994013460</EntityId>
+              <Min x="3" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>135325356288711524</EntityId>
+              <Min x="-3" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>113296608707571623</EntityId>
+              <Min x="4" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>90987863594200949</EntityId>
+              <Min x="5" y="1" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>98674805048034654</EntityId>
+              <Min x="5" y="0" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>132756244973733425</EntityId>
+              <Min x="-5" y="1" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>127670866495211904</EntityId>
+              <Min x="-5" y="0" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>98837969543722540</EntityId>
+              <Min x="-5" y="1" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>100453824447980722</EntityId>
+              <Min x="-5" y="0" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>99755407027854578</EntityId>
+              <Min x="-5" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>104976372509504049</EntityId>
+              <Min x="5" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>77771179019003122</EntityId>
+              <Min x="5" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>140822537789168934</EntityId>
+              <Min x="-2" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>90505307595912835</EntityId>
+              <Min x="2" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>121404240737454809</EntityId>
+              <Min x="5" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>72304912069458369</EntityId>
+              <Min x="3" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>104735386082172208</EntityId>
+              <Min x="1" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>124364783908411372</EntityId>
+              <Min x="-3" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>133470844330648349</EntityId>
+              <Min x="-1" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>79847804079463220</EntityId>
+              <Min x="5" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>111893153926122781</EntityId>
+              <Min x="5" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>100744058009800782</EntityId>
+              <Min x="3" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>90818403473003533</EntityId>
+              <Min x="5" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>96189892995592373</EntityId>
+              <Min x="5" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>104039302171033570</EntityId>
+              <Min x="3" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>115456453224783274</EntityId>
+              <Min x="4" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>118312860854500593</EntityId>
+              <Min x="0" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>114450844650442404</EntityId>
+              <Min x="-2" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>138708149311325675</EntityId>
+              <Min x="-2" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>141337656246707288</EntityId>
+              <Min x="-1" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>101019553325014265</EntityId>
+              <Min x="0" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>93865543461156927</EntityId>
+              <Min x="2" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>100712705196259944</EntityId>
+              <Min x="4" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>81330791565323136</EntityId>
+              <Min x="3" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>119116605402556980</EntityId>
+              <Min x="2" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>122177523917866625</EntityId>
+              <Min x="1" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>73476267035636016</EntityId>
+              <Min x="0" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>75658804997120189</EntityId>
+              <Min x="-1" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>120620941655496448</EntityId>
+              <Min x="4" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>115472201712692034</EntityId>
+              <Min x="3" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>121960676285091506</EntityId>
+              <Min x="-3" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>76151064625140331</EntityId>
+              <Min x="-4" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>124657428547276472</EntityId>
+              <Min x="-4" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>116136347218148137</EntityId>
+              <Min x="-3" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>80667884909899224</EntityId>
+              <Min x="5" y="3" z="-5" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>118715058583430500</EntityId>
+              <Min x="4" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>142284147025466060</EntityId>
+              <Min x="3" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>122213778374810181</EntityId>
+              <Min x="4" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>130532475403983811</EntityId>
+              <Min x="4" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>77052050732217120</EntityId>
+              <Min x="5" y="1" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>118940849216300017</EntityId>
+              <Min x="-4" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>125364303657074644</EntityId>
+              <Min x="3" y="3" z="-5" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>112552366523096044</EntityId>
+              <Min x="4" y="3" z="-5" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>112605140082671868</EntityId>
+              <Min x="4" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>114939687570123034</EntityId>
+              <Min x="-3" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>112959267889938344</EntityId>
+              <Min x="5" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>139369279628012370</EntityId>
+              <Min x="-3" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>118476987447354445</EntityId>
+              <Min x="3" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>141646415322711504</EntityId>
+              <Min x="5" y="0" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>110527619133695015</EntityId>
+              <Min x="-1" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>110696751064993834</EntityId>
+              <Min x="0" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>111506072879382907</EntityId>
+              <Min x="1" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>93484788125207535</EntityId>
+              <Min x="-5" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>133585249636171269</EntityId>
+              <Min x="-5" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>132088166899113971</EntityId>
+              <Min x="-5" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>116755216851326588</EntityId>
+              <Min x="-4" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>131896555462051548</EntityId>
+              <Min x="-5" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>77148446458368808</EntityId>
+              <Min x="-3" y="3" z="0" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>72957321974375277</EntityId>
+              <Min x="-5" y="3" z="-5" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>134042771312314157</EntityId>
+              <Min x="-4" y="3" z="-1" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>86001982581393522</EntityId>
+              <Min x="-5" y="4" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>109436431489097816</EntityId>
+              <Min x="-4" y="3" z="-2" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>116212915468013277</EntityId>
+              <Min x="-4" y="3" z="-3" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>81183276901930718</EntityId>
+              <Min x="-4" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>130645457939640382</EntityId>
+              <Min x="-5" y="4" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>122821423711193711</EntityId>
+              <Min x="-4" y="3" z="-5" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>122306966818058340</EntityId>
+              <Min x="-5" y="3" z="-7" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>129975446536120519</EntityId>
+              <Min x="-4" y="3" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>125097493385484190</EntityId>
+              <Min x="-5" y="3" z="-8" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>111027759206375621</EntityId>
+              <Min x="-4" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>117074047470873999</EntityId>
+              <Min x="-5" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>134973197130793351</EntityId>
+              <Min x="-5" y="3" z="-9" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>102397764633730874</EntityId>
+              <Min x="-2" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>128511026768346631</EntityId>
+              <Min x="-3" y="3" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>131255373698829708</EntityId>
+              <Min x="-1" y="4" z="-10" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>104516434869611019</EntityId>
+              <Min x="3" y="3" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <BuiltBy>144115188075855914</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>88997905963488268</EntityId>
+              <Min x="5" y="4" z="-6" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <EntityId>75898237213256729</EntityId>
+              <Min x="5" y="4" z="-4" />
+              <IntegrityPercent>1.52590219E-05</IntegrityPercent>
+              <BuildPercent>1.52590219E-05</BuildPercent>
+              <ColorMaskHSV x="0.575" y="0" z="0" />
+              <SkinSubtypeId>Dust_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855897</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <IsStatic>true</IsStatic>
+          <DisplayName>Moon base entrance static</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>45</LocalCoordSys>
+          <TargetingTargets />
+        </CubeGrid>
+      </CubeGrids>
+      <EnvironmentType>None</EnvironmentType>
+      <WorkshopId>0</WorkshopId>
+      <OwnerSteamId>76561198121463026</OwnerSteamId>
+      <Points>0</Points>
+    </ShipBlueprint>
+  </ShipBlueprints>
+</Definitions>
