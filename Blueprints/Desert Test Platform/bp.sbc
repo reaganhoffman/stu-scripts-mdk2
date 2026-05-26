@@ -1,0 +1,2751 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ShipBlueprints>
+    <ShipBlueprint xsi:type="MyObjectBuilder_ShipBlueprintDefinition">
+      <Id Type="MyObjectBuilder_ShipBlueprintDefinition" Subtype="Desert Test Platform" />
+      <DisplayName>the_ray_gun</DisplayName>
+      <DLC>DecorativeBlocks2</DLC>
+      <CubeGrids>
+        <CubeGrid>
+          <SubtypeName />
+          <EntityId>72676799068120571</EntityId>
+          <PersistentFlags>CastShadows InScene</PersistentFlags>
+          <PositionAndOrientation>
+            <Position x="50396.105990010838" y="-322.003817475741" z="34372.259476763626" />
+            <Forward x="-0.5031784" y="-0.45690462" z="0.73351866" />
+            <Up x="0.8261441" y="-0.00527101057" z="0.563434243" />
+            <Orientation>
+              <X>0.609348059</X>
+              <Y>0.703885138</Y>
+              <Z>0.362395376</Z>
+              <W>0.0437063873</W>
+            </Orientation>
+          </PositionAndOrientation>
+          <LocalPositionAndOrientation xsi:nil="true" />
+          <GridSizeEnum>Large</GridSizeEnum>
+          <CubeBlocks>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="1" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="2" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="3" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="4" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="5" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="6" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="0" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-2" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-3" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-4" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-5" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="1" y="7" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-2" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-3" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-4" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-5" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="2" y="7" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-2" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-3" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-4" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-5" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="3" y="7" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-2" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-3" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-4" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-5" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="4" y="7" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-2" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-3" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-4" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-5" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>LargeBlockArmorBlock</SubtypeName>
+              <Min x="5" y="7" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>109735909448050251</EntityId>
+              <Min x="0" y="7" z="-1" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>131416917495790064</EntityId>
+              <Min x="-1" y="6" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>101205810990013057</EntityId>
+              <Min x="0" y="5" z="1" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>119886965715991873</EntityId>
+              <Min x="1" y="4" z="0" />
+              <BlockOrientation Forward="Backward" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>86601690711216943</EntityId>
+              <Min x="0" y="3" z="-1" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>129694376413559102</EntityId>
+              <Min x="-1" y="2" z="0" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>115597627505008007</EntityId>
+              <Min x="0" y="1" z="1" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>GratedStairs</SubtypeName>
+              <EntityId>106977041273419502</EntityId>
+              <Min x="1" y="0" z="0" />
+              <BlockOrientation Forward="Backward" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>93236800113155642</EntityId>
+              <Min x="1" y="1" z="1" />
+              <BlockOrientation Forward="Backward" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>111390338663272619</EntityId>
+              <Min x="-1" y="2" z="1" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>132891689302806241</EntityId>
+              <Min x="-1" y="3" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>128274687872493531</EntityId>
+              <Min x="1" y="4" z="-1" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>143908785843288779</EntityId>
+              <Min x="1" y="5" z="1" />
+              <BlockOrientation Forward="Backward" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>112150292062814107</EntityId>
+              <Min x="-1" y="6" z="1" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_CubeBlock">
+              <SubtypeName>CatwalkCorner</SubtypeName>
+              <EntityId>99479076745497502</EntityId>
+              <Min x="-1" y="7" z="-1" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <BuiltBy>144115188075855889</BuiltBy>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MyProgrammableBlock">
+              <SubtypeName>LargeProgrammableBlock</SubtypeName>
+              <EntityId>98787398252974389</EntityId>
+              <Min x="5" y="8" z="0" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyMultiTextPanelComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_MultiTextPanelComponent">
+                      <TextPanelsContents>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                          <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                        </MySerializedTextPanelData>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                          <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                        </MySerializedTextPanelData>
+                      </TextPanelsContents>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyModStorageComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_ModStorageComponent">
+                      <Storage>
+                        <dictionary>
+                          <item>
+                            <Key>74de02b3-27f9-4960-b1c4-27351f2b06d1</Key>
+                            <Value />
+                          </item>
+                        </dictionary>
+                      </Storage>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <Program>// R e a d m e
+// -----------
+// 
+// In this file you can include any instructions or other comments you want to have injected onto the 
+// top of your final script. You can safely delete this file if you do not want any such comments.
+// 
+public class LogLCD : STUDisplay
+{
+        public class LargeWideLCD
+        {
+            public static void ScreenArea(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f)
+            {
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "SquareHollow",
+                    Position = new Vector2(0f, 0f) * scale + centerPos,
+                    Size = new Vector2(1080f, 534f) * scale,
+                    Color = new Color(0, 255, 0, 255),
+                    RotationOrScale = 0f
+                }); // sprite6
+            }
+        }
+
+        public Queue&lt;STULog&gt; Logs { get; set; }
+
+        public LogLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
+        {
+            Logs = new Queue&lt;STULog&gt;();
+        }
+}
+    public class LogLCDPublisher
+    {
+
+        public List&lt;LogLCD&gt; Displays { get; set; }
+
+        public LogLCDPublisher(List&lt;IMyTerminalBlock&gt; mainSubscribers, List&lt;IMyTerminalBlock&gt; auxSubscribers)
+        {
+
+            Displays = new List&lt;LogLCD&gt;();
+
+            foreach (IMyTerminalBlock subscriber in mainSubscribers)
+            {
+                if (subscriber == null)
+                    continue;
+                Displays.Add(new LogLCD(subscriber, 0, "Monospace", 0.7f));
+            }
+
+            foreach (IMyTerminalBlock subscriber in auxSubscribers)
+            {
+                if (subscriber == null)
+                    continue;
+                int displayIndex = int.Parse(subscriber.CustomData.Split(':')[1]);
+                Displays.Add(new LogLCD(subscriber, displayIndex, "Monospace", 0.4f));
+            }
+
+        }
+
+        public void UpdateDisplays(STULog newLog)
+        {
+            try
+            {
+                foreach (LogLCD display in Displays)
+                {
+                    // Only STULogs with a Message property should be displayed
+                    // Anything else is just telemetry
+                    if (!string.IsNullOrEmpty(newLog.Message))
+                    {
+                        display.Logs.Enqueue(newLog);
+                        display.StartFrame();
+                        display.WriteWrappableLogs(display.Logs);
+                        display.EndAndPaintFrame();
+                        //display.UpdateDisplay();
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                foreach (LogLCD display in Displays)
+                {
+                    display.StartFrame();
+                    display.CurrentFrame.Add(new MySprite()
+                    {
+                        Type = SpriteType.TEXT,
+                        Data = e.Message,
+                        Position = display.TopLeft,
+                        RotationOrScale = display.Surface.FontSize * 0.75f,
+                        Color = STULog.GetColor(STULogType.INFO),
+                        FontId = display.Surface.Font
+                    });
+                    display.EndAndPaintFrame();
+                }
+            }
+        }
+
+    }
+public class MainLCD : STUDisplay
+{
+        public static class LargeWideLCD
+        {
+            public static void ScreenArea(MySpriteDrawFrame frame, Vector2 centerPos, float scale = 1f)
+            {
+
+                double fuelFilledRatio = CurrentFuel / FuelCapacity;
+                double powerStoredRatio = CurrentPower / PowerCapacity;
+                string velocityFuelPowerString = $"Velocity:\n   V_x = {VelocityComponents.X.ToString("F2")}\n   V_y = {VelocityComponents.Y.ToString("F2")}\n   V_z = {VelocityComponents.Z.ToString("F2")}\nFuel: {(int)(fuelFilledRatio * 100)}%\nPower: {(int)(100 * (CurrentPower / PowerCapacity))}%";
+                string accelerationString = $"Acceleration:\n   A_x = {AccelerationComponents.X.ToString("F2")}\n   A_y = {AccelerationComponents.Y.ToString("F2")}\n   A_z = {AccelerationComponents.Z.ToString("F2")}\n";
+
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXT,
+                    Alignment = TextAlignment.LEFT,
+                    Data = "LIGMA MK-I",
+                    Position = new Vector2(-472f, -234f) * scale + centerPos,
+                    Color = new Color(0, 255, 0, 255),
+                    FontId = "Debug",
+                    RotationOrScale = 2f * scale
+                }); // text1
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "SquareSimple",
+                    Position = new Vector2(-400f, 40f) * scale + centerPos,
+                    Size = new Vector2(30f, 270f) * scale,
+                    Color = new Color(192, 192, 192, 255),
+                    RotationOrScale = 0f
+                }); // PowerBarBackground
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "SquareSimple",
+                    Position = new Vector2(-400f, 40f + (270f - (270f * (float)powerStoredRatio)) * 0.5f) * scale + centerPos,
+                    Size = new Vector2(30f, 270f * (float)powerStoredRatio) * scale,
+                    Color = new Color(0, 255, 0, 255),
+                    RotationOrScale = 0f
+                }); // PowerBarForeground
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "SquareSimple",
+                    Position = new Vector2(-450f, 40f) * scale + centerPos,
+                    Size = new Vector2(30f, 270f) * scale,
+                    Color = new Color(192, 192, 192, 255),
+                    RotationOrScale = 0f
+                }); // HydrogenBarBackground
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "SquareSimple",
+                    Position = new Vector2(-450f, 40f + (270f - (270f * (float)fuelFilledRatio)) * 0.5f) * scale + centerPos,
+                    Size = new Vector2(30f, 270f * (float)fuelFilledRatio) * scale,
+                    Color = new Color(0, 255, 0, 255),
+                    RotationOrScale = 0f
+                }); // HydrogenBarForeground
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "IconEnergy",
+                    Position = new Vector2(-400f, 210f) * scale + centerPos,
+                    Size = new Vector2(35f, 35f) * scale,
+                    Color = new Color(0, 255, 0, 255),
+                    RotationOrScale = 0f
+                }); // Electricity
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXTURE,
+                    Alignment = TextAlignment.CENTER,
+                    Data = "IconHydrogen",
+                    Position = new Vector2(-450f, 210f) * scale + centerPos,
+                    Size = new Vector2(35f, 35f) * scale,
+                    Color = new Color(0, 255, 0, 255),
+                    RotationOrScale = 0f
+                }); // H2
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXT,
+                    Alignment = TextAlignment.LEFT,
+                    Data = velocityFuelPowerString,
+                    Position = new Vector2(-350f, -96f) * scale + centerPos,
+                    Color = new Color(0, 255, 0, 255),
+                    FontId = "Debug",
+                    RotationOrScale = 1f * scale
+                }); // Telemetry
+                frame.Add(new MySprite()
+                {
+                    Type = SpriteType.TEXT,
+                    Alignment = TextAlignment.LEFT,
+                    Data = accelerationString,
+                    Position = new Vector2(-150f, -96f) * scale + centerPos,
+                    Color = new Color(0, 255, 0, 255),
+                    FontId = "Debug",
+                    RotationOrScale = 1f * scale
+                }); // Telemetry
+
+            }
+        }
+
+        public static double VelocityMagnitude { get; set; }
+        public static Vector3D VelocityComponents { get; set; }
+        public static Vector3D AccelerationComponents { get; set; }
+        public static double CurrentFuel { get; set; }
+        public static double CurrentPower { get; set; }
+        public static double FuelCapacity { get; set; }
+        public static double PowerCapacity { get; set; }
+        public static Vector3D CurrentPosition { get; set; }
+
+        private Action&lt;MySpriteDrawFrame, Vector2, float&gt; Drawer;
+
+        private static STUDisplayDrawMapper MainLCDMapper = new STUDisplayDrawMapper
+        {
+            DisplayDrawMapper = {
+                { STUDisplayType.CreateDisplayIdentifier(STUDisplayBlock.LargeLCDPanelWide, STUSubDisplay.ScreenArea), LargeWideLCD.ScreenArea },
+            }
+        };
+
+        public MainLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
+        {
+            VelocityComponents = Vector3D.Zero;
+            FuelCapacity = 0;
+            CurrentFuel = 0;
+            CurrentPower = 0;
+            PowerCapacity = 0;
+            Drawer = MainLCDMapper.GetDrawFunction(block, displayIndex);
+        }
+
+        private void ParseTelemetryData(STULog log)
+        {
+
+            if (log.Metadata == null)
+            {
+                return;
+            }
+
+            try
+            {
+                Vector3D parsedVelocity;
+                Vector3D parsedAcceleration;
+                VelocityComponents = Vector3D.TryParse(log.Metadata["VelocityComponents"], out parsedVelocity) ? parsedVelocity : Vector3D.Zero;
+                AccelerationComponents = Vector3D.TryParse(log.Metadata["AccelerationComponents"], out parsedAcceleration) ? parsedAcceleration : Vector3D.Zero;
+                VelocityMagnitude = double.Parse(log.Metadata["VelocityMagnitude"]);
+                CurrentFuel = double.Parse(log.Metadata["CurrentFuel"]);
+                CurrentPower = double.Parse(log.Metadata["CurrentPower"]);
+                FuelCapacity = double.Parse(log.Metadata["FuelCapacity"]);
+                PowerCapacity = double.Parse(log.Metadata["PowerCapacity"]);
+            }
+            catch
+            {
+                VelocityComponents = Vector3D.Zero;
+                AccelerationComponents = Vector3D.Zero;
+                VelocityMagnitude = 69;
+                CurrentFuel = 69;
+                CurrentPower = 100;
+                FuelCapacity = 100;
+                PowerCapacity = 100;
+            }
+
+        }
+
+        private void DrawTelemetryData()
+        {
+            Drawer.Invoke(CurrentFrame, Viewport.Center, 1f);
+        }
+
+        public void UpdateDisplay(STULog latestLog)
+        {
+            ParseTelemetryData(latestLog);
+            StartFrame();
+            DrawTelemetryData();
+            EndAndPaintFrame();
+        }
+}
+    public class MainLCDPublisher
+    {
+
+        public List&lt;MainLCD&gt; Displays { get; set; }
+
+        public MainLCDPublisher(List&lt;IMyTerminalBlock&gt; mainSubscribers, List&lt;IMyTerminalBlock&gt; auxSubscribers)
+        {
+
+            Displays = new List&lt;MainLCD&gt;();
+
+            foreach (IMyTerminalBlock subscriber in mainSubscribers)
+            {
+                if (subscriber == null)
+                    continue;
+                Displays.Add(new MainLCD(subscriber, 0, "Monospace", 0.7f));
+            }
+
+            foreach (IMyTerminalBlock subscriber in auxSubscribers)
+            {
+                if (subscriber == null)
+                    continue;
+                int displayIndex = int.Parse(subscriber.CustomData.Split(':')[1]);
+                Displays.Add(new MainLCD(subscriber, displayIndex, "Monospace", 0.4f));
+            }
+
+        }
+
+        public void UpdateDisplays(STULog newLog)
+        {
+            foreach (MainLCD display in Displays)
+            {
+                display.UpdateDisplay(newLog);
+            }
+        }
+
+    }
+
+    const int RECENTLY_DESTROYED_TIMER = 30;
+
+    string LIGMA_MISSION_CONTROL_MAIN_LCDS_GROUP { get; set; }
+    string LIGMA_MISSION_CONTROL_LOG_LCDS_GROUP { get; set; }
+    string LIGMA_MISSION_CONTROL_AUX_MAIN_LCD_TAG { get; set; }
+    string LIGMA_MISSION_CONTROL_AUX_LOG_LCD_TAG { get; set; }
+
+    const string telemetryRecordHeader = "Timestamp, Phase, V_x, V_y, V_z, A_x, A_y, A_z, Fuel, Power\n";
+
+    MyIni _ini = new MyIni();
+
+    public string FIRING_GROUP { get; private set; } = "";
+
+    IMyBroadcastListener _telemetryListener;
+    IMyBroadcastListener _logListener;
+    IMyBroadcastListener _targetListener;
+    MyIGCMessage _incomingMessage;
+
+    List&lt;LogLCD&gt; _logSubscribers = new List&lt;LogLCD&gt;();
+    List&lt;MainLCD&gt; _mainSubscribers = new List&lt;MainLCD&gt;();
+
+    // Holds targets detected by the GOOCH system
+    Queue&lt;Dictionary&lt;string, string&gt;&gt; _targets = new Queue&lt;Dictionary&lt;string, string&gt;&gt;();
+    // Only used temporarily to hold idle missiles
+    Queue&lt;Dictionary&lt;string, string&gt;&gt; _idleMissiles = new Queue&lt;Dictionary&lt;string, string&gt;&gt;();
+    // Maps target ids to missile ids when a missile is dispatched
+    Dictionary&lt;string, string&gt; _targetToLIGMA = new Dictionary&lt;string, string&gt;();
+    // Maps missile ids to telemetry data
+    Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt; _LIGMATelemetryMap = new Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;();
+    // Used to store incoming telemetry data temporarily
+    Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt; _incomingTelemetryMap = new Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt;();
+    // Used to store recently destroyed targets
+    Dictionary&lt;string, double&gt; _recentlyDestroyedTargetsTimestamps = new Dictionary&lt;string, double&gt;();
+    // Used to store recently destroyed LIGMAs
+    Dictionary&lt;string, double&gt; _recentlyDestroyedLIGMAsTimestamps = new Dictionary&lt;string, double&gt;();
+
+    StringBuilder telemetryRecords = new StringBuilder();
+
+    // Holds log data temporarily for each run
+    STULog _incomingLog;
+    STULog _outgoingLog;
+    Dictionary&lt;string, double&gt; _tempTimestampUpdates = new Dictionary&lt;string, double&gt;();
+    List&lt;string&gt; _tempTargetsToRemove = new List&lt;string&gt;();
+    List&lt;string&gt; _tempLigmasToRemove = new List&lt;string&gt;();
+    Dictionary&lt;string, string&gt; _tempMetadata;
+
+    int TELEMETRY_WRITE_COUNTER = 0;
+    int TELEMETRY_WRITE_INTERVAL = 15;
+
+    public Program()
+    {
+        Runtime.UpdateFrequency = UpdateFrequency.Update10;
+
+        //MyIniParseResult result;
+        //if (_ini.TryParse(Me.CustomData, out result))
+        //{
+        //    FIRING_GROUP = _ini.Get("ORCHESTRATOR", "FIRING_GROUP").ToString("").ToUpper();
+        //}
+        //else
+        //{
+        //    Echo("Malformed config, terminating script.");
+        //    Runtime.UpdateFrequency = UpdateFrequency.None;
+        //}
+
+        _logListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + FIRING_GROUP);
+        _telemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + FIRING_GROUP);
+        _targetListener = IGC.RegisterBroadcastListener("CBT_LIGMA");
+        _logSubscribers = DiscoverLogSubscribers();
+        _mainSubscribers = DiscoverMainSubscribers();
+    }
+
+    public void Main(string argument)
+    {
+
+        try
+        {
+            foreach (var timestamp in _recentlyDestroyedTargetsTimestamps)
+            {
+                Echo($"Target: {timestamp.Key}, {timestamp.Value}");
+            }
+            foreach (var timestamp in _recentlyDestroyedLIGMAsTimestamps)
+            {
+                Echo($"LIGMA: {timestamp.Key}, {timestamp.Value}");
+            }
+            UpdateRecentlyDestroyedLists();
+            HandleIncomingBroadcasts();
+            DispatchMissiles();
+
+            // Write telemetry to CustomData every TELEMETRY_WRITE_INTERVAL runs
+            if (TELEMETRY_WRITE_COUNTER &gt;= TELEMETRY_WRITE_INTERVAL)
+            {
+                Me.CustomData = telemetryRecords.ToString();
+                TELEMETRY_WRITE_COUNTER = 0;
+            }
+            else
+            {
+                TELEMETRY_WRITE_COUNTER++;
+            }
+        }
+        catch (Exception e)
+        {
+            Echo($"Error in main loop:\n{e}\nTerminating script.");
+            CreateHQLog($"Error in main loop: {e}. Terminating script.", STULogType.ERROR);
+            Runtime.UpdateFrequency = UpdateFrequency.None;
+        }
+        finally
+        {
+            WriteAllLogScreens();
+            WriteAllMainScreens();
+        }
+    }
+
+    public void HandleIncomingBroadcasts()
+    {
+        HandleIncomingTargetBroadcasts();
+        HandleIncomingTelemetry();
+        HandleIncomingLogs();
+    }
+
+    public void HandleIncomingTargetBroadcasts()
+    {
+        while (_targetListener.HasPendingMessage)
+        {
+            _incomingMessage = _targetListener.AcceptMessage();
+            try
+            {
+                _incomingLog = STULog.Deserialize(_incomingMessage.Data.ToString());
+                if (_targetToLIGMA.ContainsKey(_incomingLog.Metadata["EntityId"]))
+                {
+                    try
+                    {
+                        SendTargetDataToLIGMA(_targetToLIGMA[_incomingLog.Metadata["EntityId"]], _incomingLog.Metadata);
+                    }
+                    catch
+                    {
+                        CreateHQLog("Error parsing incoming target data", STULogType.ERROR);
+                    }
+                }
+                else if (!_recentlyDestroyedTargetsTimestamps.ContainsKey(_incomingLog.Metadata["EntityId"]))
+                {
+                    CreateHQLog("Adding new target to list", STULogType.INFO);
+                    _targets.Enqueue(_incomingLog.Metadata);
+                }
+            }
+            catch
+            {
+                _incomingLog = new STULog
+                {
+                    Sender = LIGMA_VARIABLES.LIGMA_RECONNOITERER_NAME,
+                    Message = $"Received invalid message: {_incomingLog.Serialize()}",
+                    Type = STULogType.ERROR
+                };
+            }
+        }
+    }
+
+    public void HandleIncomingLogs()
+    {
+        while (_logListener.HasPendingMessage)
+        {
+            MyIGCMessage message = _logListener.AcceptMessage();
+            try
+            {
+                _incomingLog = STULog.Deserialize(message.Data.ToString());
+                if (!string.IsNullOrEmpty(_incomingLog.Message))
+                {
+                    PublishExternalLog(_incomingLog);
+                    if (_incomingLog.Message == LIGMA_VARIABLES.COMMANDS.SendGoodbye)
+                    {
+                        CreateHQLog($"Removing LIGMA {message.Source} from active duty", STULogType.WARNING);
+                        HandleGoodbye(message.Source);
+                    }
+                }
+                else
+                {
+                    CreateHQLog("Message on the drone log channel did not contain a message field", STULogType.ERROR);
+                }
+            }
+            catch (Exception e)
+            {
+                CreateHQLog($"Error processing incoming drone log: {e.Message}", STULogType.ERROR);
+            }
+        }
+    }
+
+    public void SendTargetDataToLIGMA(string missileId, Dictionary&lt;string, string&gt; target)
+    {
+        STULog commandLog = new STULog
+        {
+            Sender = LIGMA_VARIABLES.LIGMA_HQ_NAME,
+            Message = LIGMA_VARIABLES.COMMANDS.UpdateTargetData,
+            Type = STULogType.INFO,
+            Metadata = target
+        };
+        long id;
+        if (long.TryParse(missileId, out id))
+        {
+            IGC.SendUnicastMessage(id, LIGMA_VARIABLES.LIGMA_HQ_TELEMETRY_BROADCASTER, commandLog.Serialize());
+        }
+        else
+        {
+            CreateHQLog($"Failed to parse missile id: {missileId}", STULogType.ERROR);
+        }
+    }
+
+    public void WriteTelemetry()
+    {
+        _tempMetadata = _incomingLog.Metadata;
+        Vector3D parsedVelocity;
+        Vector3D parsedAcceleration;
+        parsedVelocity = Vector3D.TryParse(_tempMetadata["VelocityComponents"], out parsedVelocity) ? parsedVelocity : Vector3D.Zero;
+        parsedAcceleration = Vector3D.TryParse(_tempMetadata["AccelerationComponents"], out parsedAcceleration) ? parsedAcceleration : Vector3D.Zero;
+        telemetryRecords.Append($"{_tempMetadata["Timestamp"]}, {_tempMetadata["Phase"]}, {parsedVelocity.X}, {parsedVelocity.Y}, {parsedVelocity.Z}, {parsedAcceleration.X}, {parsedAcceleration.Y}, {parsedAcceleration.Z}, {_tempMetadata["CurrentFuel"]}, {_tempMetadata["CurrentPower"]}\n");
+    }
+
+
+    public void HandleIncomingTelemetry()
+    {
+
+        _incomingTelemetryMap.Clear();
+
+        while (_telemetryListener.HasPendingMessage)
+        {
+            MyIGCMessage message = _telemetryListener.AcceptMessage();
+            try
+            {
+                _incomingLog = STULog.Deserialize(message.Data.ToString());
+
+                // Proceed to deserialize the LIGMA data
+                string id;
+                _incomingLog.Metadata.TryGetValue("Id", out id);
+
+                if (id == null)
+                {
+                    throw new Exception("Received null id!");
+                }
+
+                if (_incomingTelemetryMap.ContainsKey(id))
+                {
+                    return;
+                }
+
+                _incomingTelemetryMap.Add(id, _incomingLog.Metadata);
+
+                // Update or add the drone to the LIGMA dictionary
+                if (_LIGMATelemetryMap.ContainsKey(id))
+                {
+                    if (_LIGMATelemetryMap[id]["Phase"] == "Missing")
+                    {
+                        CreateHQLog($"LIGMA {id} has returned", STULogType.OK);
+                    }
+                    _LIGMATelemetryMap[id] = _incomingLog.Metadata;
+                }
+                else if (!_recentlyDestroyedLIGMAsTimestamps.ContainsKey(id))
+                {
+                    CreateHQLog($"New LIGMA detected: {id}", STULogType.OK);
+                    _LIGMATelemetryMap.Add(id, _incomingLog.Metadata);
+                }
+                else
+                {
+                }
+
+            }
+            catch (Exception e)
+            {
+                CreateHQLog($"Error processing LIGMA telemetry messages: {e.Message}", STULogType.ERROR);
+            }
+
+        }
+
+        // Check for missing missiles
+        foreach (var missile in _LIGMATelemetryMap)
+        {
+            if (!_incomingTelemetryMap.ContainsKey(missile.Key) &amp;&amp; _LIGMATelemetryMap[missile.Key]["Phase"] != "Missing")
+            {
+                CreateHQLog($"LIGMA {missile.Key} is missing", STULogType.WARNING);
+                missile.Value["Phase"] = "Missing";
+            }
+        }
+
+    }
+
+    void HandleGoodbye(long rawId)
+    {
+        string ligmaId = rawId.ToString();
+        _LIGMATelemetryMap.Remove(ligmaId);
+        // Get the id of the target LIGMA is assigned to
+        string targetId = null;
+        foreach (var target in _targetToLIGMA)
+        {
+            if (target.Value == ligmaId)
+            {
+                targetId = target.Key;
+                break;
+            }
+        }
+        if (targetId != null &amp;&amp; _targetToLIGMA.ContainsKey(targetId))
+        {
+            _targetToLIGMA.Remove(targetId);
+            _recentlyDestroyedTargetsTimestamps.Add(targetId, 0);
+            _recentlyDestroyedLIGMAsTimestamps.Add(ligmaId, 0);
+            CreateHQLog($"Acknowledged LIGMA {ligmaId} has been removed from target {targetId}", STULogType.OK);
+        }
+        else
+        {
+            CreateHQLog($"Failed to remove LIGMA {ligmaId} from target {targetId}", STULogType.ERROR);
+        }
+    }
+
+    void DispatchMissiles()
+    {
+        _idleMissiles.Clear();
+        foreach (var missile in _LIGMATelemetryMap)
+        {
+            if (missile.Value["Phase"] == "Idle")
+            {
+                _idleMissiles.Enqueue(missile.Value);
+            }
+        }
+        Echo($"Idle missiles count: {_idleMissiles.Count.ToString()}");
+        Echo($"Targets count: {_targets.Count.ToString()}");
+        while (_targets.Count &gt; 0 &amp;&amp; _idleMissiles.Count &gt; 0)
+        {
+            var target = _targets.Dequeue();
+            var missile = _idleMissiles.Dequeue();
+            Dispatch(missile, target);
+        }
+    }
+
+    void Dispatch(Dictionary&lt;string, string&gt; missile, Dictionary&lt;string, string&gt; target)
+    {
+        SendTargetDataToLIGMA(missile["Id"], target);
+        SendLaunchCommand(missile["Id"]);
+        CreateHQLog($"Dispatched LIGMA {missile["Id"]} to target {target["EntityId"]}", STULogType.OK);
+        _targetToLIGMA[target["EntityId"]] = missile["Id"];
+        missile["Phase"] = "Launch";
+    }
+
+    void SendLaunchCommand(string missileId)
+    {
+        STULog commandLog = new STULog
+        {
+            Sender = LIGMA_VARIABLES.LIGMA_HQ_TELEMETRY_BROADCASTER,
+            Message = LIGMA_VARIABLES.COMMANDS.Launch,
+            Type = STULogType.INFO
+        };
+        long id;
+        if (long.TryParse(missileId, out id))
+        {
+            IGC.SendUnicastMessage(id, LIGMA_VARIABLES.LIGMA_HQ_TELEMETRY_BROADCASTER, commandLog.Serialize());
+        }
+        else
+        {
+            CreateHQLog($"Failed to parse missile id: {missileId}", STULogType.ERROR);
+        }
+    }
+
+
+    List&lt;LogLCD&gt; DiscoverLogSubscribers()
+    {
+        List&lt;IMyTextPanel&gt; logPanels = new List&lt;IMyTextPanel&gt;();
+        GridTerminalSystem.GetBlocksOfType(
+            logPanels,
+            block =&gt; MyIni.HasSection(block.CustomData, LIGMA_VARIABLES.LIGMA_HQ_LOG_SUBSCRIBER_TAG)
+            &amp;&amp; block.CubeGrid == Me.CubeGrid);
+        return new List&lt;LogLCD&gt;(logPanels.ConvertAll(panel =&gt; {
+            MyIniParseResult result;
+            if (!_ini.TryParse(panel.CustomData, out result))
+            {
+                throw new Exception($"Error parsing log configuration: {result}");
+            }
+            int displayIndex = _ini.Get(LIGMA_VARIABLES.LIGMA_HQ_LOG_SUBSCRIBER_TAG, "DisplayIndex").ToInt32(0);
+            double fontSize = _ini.Get(LIGMA_VARIABLES.LIGMA_HQ_LOG_SUBSCRIBER_TAG, "FontSize").ToDouble(1.0);
+            string font = _ini.Get(LIGMA_VARIABLES.LIGMA_HQ_LOG_SUBSCRIBER_TAG, "Font").ToString("Monospace");
+            return new LogLCD(panel, displayIndex, font, (float)fontSize);
+        }));
+    }
+
+    List&lt;MainLCD&gt; DiscoverMainSubscribers()
+    {
+        List&lt;IMyTextPanel&gt; mainPanels = new List&lt;IMyTextPanel&gt;();
+        GridTerminalSystem.GetBlocksOfType(
+            mainPanels,
+            block =&gt; MyIni.HasSection(block.CustomData, LIGMA_VARIABLES.LIGMA_HQ_MAIN_SUBSCRIBER_TAG)
+            &amp;&amp; block.CubeGrid == Me.CubeGrid
+        );
+        return new List&lt;MainLCD&gt;(mainPanels.ConvertAll(panel =&gt; {
+            return new MainLCD(panel, 0);
+        }));
+    }
+
+    void WriteAllLogScreens()
+    {
+        _logSubscribers.ForEach(subscriber =&gt; {
+            Echo(subscriber.Logs.Count.ToString());
+            subscriber.StartFrame();
+            subscriber.WriteWrappableLogs(subscriber.Logs);
+            subscriber.EndAndPaintFrame();
+        });
+    }
+
+    private void UpdateDestroyedEntities(Dictionary&lt;string, double&gt; timestamps, List&lt;string&gt; removeList)
+    {
+        _tempTimestampUpdates.Clear();
+        removeList.Clear();
+
+        // Collect updates
+        foreach (var entity in timestamps)
+        {
+            double newValue = entity.Value + Runtime.TimeSinceLastRun.TotalSeconds;
+            _tempTimestampUpdates[entity.Key] = newValue;
+
+            if (newValue &gt;= RECENTLY_DESTROYED_TIMER)
+            {
+                removeList.Add(entity.Key);
+            }
+        }
+
+        // Apply updates
+        foreach (var update in _tempTimestampUpdates)
+        {
+            timestamps[update.Key] = update.Value;
+        }
+
+        // Remove old entities
+        foreach (var key in removeList)
+        {
+            timestamps.Remove(key);
+        }
+    }
+
+    void UpdateRecentlyDestroyedLists()
+    {
+        UpdateDestroyedEntities(_recentlyDestroyedTargetsTimestamps, _tempTargetsToRemove);
+        UpdateDestroyedEntities(_recentlyDestroyedLIGMAsTimestamps, _tempLigmasToRemove);
+    }
+
+    void WriteAllMainScreens()
+    {
+        foreach (var missile in _LIGMATelemetryMap)
+        {
+            Echo(missile.Value["Id"]);
+        }
+    }
+
+    void CreateHQLog(string message, STULogType type)
+    {
+        STULog log = new STULog
+        {
+            Sender = LIGMA_VARIABLES.LIGMA_HQ_NAME,
+            Message = message,
+            Type = type,
+        };
+        foreach (var subscriber in _logSubscribers)
+        {
+            subscriber.Logs.Enqueue(log);
+        }
+    }
+
+    void PublishExternalLog(STULog log)
+    {
+        foreach (var subscriber in _logSubscribers)
+        {
+            subscriber.Logs.Enqueue(log);
+        }
+    }
+    public static class LIGMA_VARIABLES {
+
+        public const string LIGMA_VEHICLE_NAME = "LIGMA-I";
+        public const string LIGMA_RECONNOITERER_NAME = "SDC-3";
+
+        public const string LIGMA_TELEMETRY_BROADCASTER = "LIGMA_TELEMETRY_BROADCASTER";
+        public const string LIGMA_LOG_BROADCASTER = "LIGMA_LOG_BROADCASTER";
+        public const string LIGMA_GOOCH_TARGET_BROADCASTER = "LIGMA_GOOCH_TARGET_BROADCASTER";
+        public const string LIGMA_GOOCH_LOG_BROADCASTER = "LIGMA_GOOCH_LOG_BROADCASTER";
+
+        public const string LIGMA_HQ_LOG_SUBSCRIBER_TAG = "LIGMA_HQ_LOG_SUBSCRIBER";
+        public const string LIGMA_HQ_TELEMETRY_BROADCASTER = "LIGMA_HQ_TELEMETRY_BROADCASTER";
+        public const string LIGMA_HQ_MAIN_SUBSCRIBER_TAG = "LIGMA_HQ_MAIN_SUBSCRIBER";
+        public const string LIGMA_HQ_NAME = "LIGMA_HQ";
+
+        public const double PLANETARY_DETECTION_BUFFER = 2000;
+
+        public static class COMMANDS {
+            public const string Launch = "Launch";
+            public const string Detonate = "Detonate";
+            public const string UpdateTargetData = "UpdateTargetData";
+            public const string Test = "Test";
+            public const string SendGoodbye = "SendGoodbye";
+        }
+
+    }
+    public class STUMasterLogBroadcaster {
+        public string Channel { get; set; }
+        public IMyIntergridCommunicationSystem Broadcaster { get; set; }
+        public TransmissionDistance Distance { get; set; }
+
+        public STUMasterLogBroadcaster(string channel, IMyIntergridCommunicationSystem IGC, TransmissionDistance distance) {
+            Channel = channel;
+            Broadcaster = IGC;
+            Distance = distance;
+        }
+
+        /// &lt;summary&gt;
+        /// Broadcasts a log message to the channel specified in the constructor.
+        /// &lt;/summary&gt;
+        /// &lt;param name="log"&gt;An STULog object&lt;/param&gt;
+        /// &lt;param name="key"&gt;Optional: a passphrase to be used in the Tiny Encryption Algorithm.
+        /// `key` must be at least 16 characters long.
+        /// Your solution must have the CUCKS project loaded&lt;/param&gt;
+        public void Log(STULog log, string key = null) {
+            string export = log.Serialize();
+            if (key != null &amp;&amp; key.Length &gt;= 16) {
+                try {
+                    export = Encrypt(log.Serialize(), key);
+                } catch {
+                    throw new Exception($"TEA encryption unsuccessful: STUMasterLogBroadcaster.Log(STULog {log}, string {key}");
+                }
+            }
+            Broadcaster.SendBroadcastMessage(Channel, export, Distance);
+        }
+
+        public void Ping() {
+            Broadcaster.SendBroadcastMessage(Channel, "PING", Distance);
+        }
+
+        public void encode(uint[] v, uint[] k) {
+            uint y = v[0];
+            uint z = v[1];
+            uint sum = 0;
+            uint delta = 0x9e3779b9;
+            uint n = 32;
+
+            while (n-- &gt; 0) {
+                y += (z &lt;&lt; 4 ^ z &gt;&gt; 5) + z ^ sum + k[sum &amp; 3];
+                sum += delta;
+                z += (y &lt;&lt; 4 ^ y &gt;&gt; 5) + y ^ sum + k[sum &gt;&gt; 11 &amp; 3];
+            }
+
+            v[0] = y;
+            v[1] = z;
+        }
+
+        public void decode(uint[] v, uint[] k) {
+            uint n = 32;
+            uint y = v[0];
+            uint z = v[1];
+            uint delta = 0x9e3779b9;
+            uint sum = delta &lt;&lt; 5;
+
+            while (n-- &gt; 0) {
+                z -= (y &lt;&lt; 4 ^ y &gt;&gt; 5) + y ^ sum + k[sum &gt;&gt; 11 &amp; 3];
+                y -= (z &lt;&lt; 4 ^ z &gt;&gt; 5) + z ^ sum + k[sum &amp; 3];
+                sum -= delta;
+            }
+
+            v[0] = y;
+            v[1] = z;
+        }
+
+        // totally auto generated, not sure if it works
+        public uint[] FormatKey(string key) {
+            uint[] formattedKey = new uint[4];
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+
+            for (int i = 0; i &lt; 4; i++) {
+                formattedKey[i] = BitConverter.ToUInt32(keyBytes, i * 4);
+            }
+
+            return formattedKey;
+        }
+
+        public string Encrypt(string data, string key) {
+            uint[] formattedKey = FormatKey(key);
+
+            if (data.Length % 2 != 0)
+                data += '\0'; // Make sure array is even length
+            byte[] dataBytes = Encoding.ASCII.GetBytes(data);
+
+            string cipher = string.Empty;
+            uint[] tempData = new uint[2];
+            for (int i = 0; i &lt; dataBytes.Length; i += 2) {
+                tempData[0] = dataBytes[i];
+                tempData[1] = dataBytes[i + 1];
+                encode(tempData, formattedKey);
+                cipher += ConvertUIntToString(tempData[0]) + ConvertUIntToString(tempData[1]);
+            }
+
+            return cipher;
+        }
+
+        public string Decrypt(string data, string key) {
+            uint[] formattedKey = FormatKey(key);
+
+            int x = 0;
+            uint[] tempData = new uint[2];
+            byte[] dataBytes = new byte[data.Length / 8 * 2];
+            for (int i = 0; i &lt; data.Length; i += 8) {
+                tempData[0] = ConvertStringToUInt(data.Substring(i, 4));
+                tempData[1] = ConvertStringToUInt(data.Substring(i + 4, 4));
+                decode(tempData, formattedKey);
+                dataBytes[x++] = (byte)tempData[0];
+                dataBytes[x++] = (byte)tempData[1];
+            }
+
+            string decipheredString = Encoding.ASCII.GetString(dataBytes, 0, dataBytes.Length);
+
+            // Strip null characters
+            if (decipheredString[decipheredString.Length - 1] == '\0') {
+                decipheredString = decipheredString.Substring(0, decipheredString.Length - 1);
+            }
+
+            return decipheredString;
+
+        }
+
+        private string ConvertUIntToString(uint value) {
+            System.Text.StringBuilder output = new System.Text.StringBuilder();
+            output.Append((char)(value &amp; 0xFF));
+            output.Append((char)((value &gt;&gt; 8) &amp; 0xFF));
+            output.Append((char)((value &gt;&gt; 16) &amp; 0xFF));
+            output.Append((char)((value &gt;&gt; 24) &amp; 0xFF));
+            return output.ToString();
+        }
+
+        private uint ConvertStringToUInt(string input) {
+            uint output = 0;
+            output = ((uint)input[0]);
+            output += ((uint)input[1] &lt;&lt; 8);
+            output += ((uint)input[2] &lt;&lt; 16);
+            output += ((uint)input[3] &lt;&lt; 24);
+            return output;
+        }
+            }
+
+    public enum STULogType {
+        OK,
+        ERROR,
+        WARNING,
+        INFO
+    }
+    
+    /// &lt;summary&gt;
+    /// A custom Log object for use with the STU master logging system.
+    /// All three fields are required to be defind and non-empty to be valid.
+    /// &lt;/summary&gt;
+    public class STULog {
+
+        private string sender;
+
+        private const string COMPONENT_DELIMITER = "\u001f";
+        private const string METADATA_DELIMITER = "\u001e";
+
+        public STULog() { }
+
+        public STULog(string sender, string message, STULogType type, Dictionary&lt;string, string&gt; metadata = null) {
+            Sender = sender;
+            Message = message;
+            Type = type;
+            Metadata = metadata;
+        }
+
+        /// &lt;summary&gt;
+        /// Creates a new &lt;c&gt;STULog&lt;/c&gt; object. Be sure to surround in try-catch.
+        /// &lt;/summary&gt;
+        /// &lt;param name="s"&gt;&lt;/param&gt;
+        /// &lt;returns&gt;&lt;c&gt;STULog&lt;/c&gt;&lt;/returns&gt;
+        /// &lt;exception cref="ArgumentException"&gt;Thrown if deserialization fails.&lt;/exception&gt;"
+        public static STULog Deserialize(string s) {
+
+            string[] components = s.Split(new string[] { COMPONENT_DELIMITER }, StringSplitOptions.None);
+
+            string typeString = components[2];
+            STULogType logType;
+
+            if (!Enum.TryParse(typeString, false, out logType)) {
+                throw new ArgumentException($"Malformed log string; invalid log type: {typeString}.");
+            }
+
+            switch (components.Length) {
+                case 3:
+                    // No metadata
+                    return new STULog(components[0], components[1], logType);
+                case 4:
+                    // Contains metadata
+                    return new STULog(components[0], components[1], logType, ParseMetadata(components[3]));
+                default:
+                    // Any other number of components is invalid
+                    throw new ArgumentException($"Malformed log string; invalid number of components: {components.Length}.");
+            }
+
+        }
+
+        private static Dictionary&lt;string, string&gt; ParseMetadata(string metadataString) {
+            Dictionary&lt;string, string&gt; metadata = new Dictionary&lt;string, string&gt;();
+            string[] metadataKeyValuePairs = metadataString.Split(new string[] { METADATA_DELIMITER }, StringSplitOptions.None);
+
+            foreach (string pair in metadataKeyValuePairs) {
+                string[] keyValue = pair.Split('=');
+                string key = keyValue[0].Trim();
+                string value = keyValue[1].Trim();
+                metadata.Add(key, value);
+            }
+            return metadata;
+        }
+
+        public static Color GetColor(STULogType type) {
+            switch (type) {
+                case STULogType.OK:
+                    return Color.Green;
+                case STULogType.ERROR:
+                    return Color.Red;
+                case STULogType.WARNING:
+                    return Color.Yellow;
+                case STULogType.INFO:
+                    return Color.White;
+                default:
+                    return Color.White;
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Returns a string representation of a &lt;c&gt;Log&lt;/c&gt;, usually for transmission via IGC
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;string&lt;/returns&gt;
+        public string Serialize() {
+
+            if (Metadata == null) {
+                return string.Join(COMPONENT_DELIMITER, Sender, Message, Type);
+            }
+
+            string[] keyPairStrings = new string[Metadata.Keys.Count];
+            int i = 0;
+            foreach (KeyValuePair&lt;string, string&gt; pair in Metadata) {
+                keyPairStrings[i] = $"{pair.Key}={pair.Value}";
+                i++;
+            }
+            return string.Join(COMPONENT_DELIMITER, Sender, Message, Type, string.Join(METADATA_DELIMITER, keyPairStrings));
+        }
+
+        // GETTERS AND SETTERS // 
+
+        public string Sender {
+            get {
+                return sender;
+            }
+            set {
+                if (string.IsNullOrEmpty(value)) {
+                    throw new ArgumentException("Sender cannot be an empty string");
+                } else {
+                    sender = value;
+                }
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Creates a pipe-delineated CSV-like row using the Sender, Message, Type, and Metadata keys (in that order)
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public string ToCSV(string identifier = "n/a") {
+            List&lt;string&gt; metadataList = new List&lt;string&gt;();
+            foreach (KeyValuePair&lt;string, string&gt; pair in Metadata) {
+                metadataList.Add($"{pair.Key}={pair.Value}");
+            }
+            if (metadataList.Count &gt; 0) {
+                return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", metadataList.ToArray())}";
+            } else {
+                return $"{identifier}|{Sender}|{Message}|{Type}";
+            }
+        }
+
+        public string Message { get; set; }
+
+        public STULogType Type { get; set; }
+
+        public Dictionary&lt;string, string&gt; Metadata { get; set; }
+
+    }
+    public class STUDisplay {
+
+        public IMyTextPanel DisplayBlock { get; private set; }
+        public IMyTextSurface Surface { get; private set; }
+        public RectangleF Viewport { get; private set; }
+        public Vector2 TopLeft { get; private set; }
+        public Vector2 Center { get; private set; }
+        public float Center_X { get; private set; }
+        public float Center_Y { get; private set; }
+        public Vector2 Cursor { get; set; }
+        public MySpriteDrawFrame CurrentFrame { get; set; }
+        /// &lt;summary&gt;
+        /// The background sprite to be drawn on every frame.
+        /// Background will be blank and black if not overridden.
+        /// &lt;/summary&gt;
+        public MySpriteCollection BackgroundSprite { get; set; }
+        public float ScreenWidth { get; private set; }
+        public float ScreenHeight { get; private set; }
+        public float DefaultLineHeight { get; set; }
+        public float CharacterWidth { get; private set; }
+        public int TotalLines { get; set; }
+
+        IEnumerator&lt;bool&gt; ImageDrawerStateMachine { get; set; }
+        public bool FinishedDrawingCustomImage { get; private set; }
+
+        /// &lt;summary&gt;
+        /// Used to determine if a sprite needs to be centered within its parent sprite.
+        /// Flag intended for internal use; do not modify unless you know what you're doing.
+        /// &lt;/summary&gt;
+        private bool NeedToCenterSprite;
+
+        public static Dictionary&lt;string, RectangleF&gt; ViewportOffsets { get; set; } = new Dictionary&lt;string, RectangleF&gt;
+        {
+            {"Large Display", new RectangleF(new Vector2(8, 8), new Vector2(512, 320))},
+            {"Keyboard", new RectangleF(new Vector2(0, 48), new Vector2(512, 204.8f))},
+            {"Bottom Left Screen", new RectangleF(new Vector2(60, 0), new Vector2(192, 256)) },
+        };
+
+        /// &lt;summary&gt;
+        /// Custom STU wrapper for text surfaces.
+        /// Initializes an LCD with the given font and font size.
+        /// Extend this class to create your own display with custom methods / properties.
+        /// If not specified, the default font is Monospace and the default font size is 1.
+        /// &lt;/summary&gt;
+        /// &lt;param name="surface"&gt;&lt;/param&gt;
+        /// &lt;param name="font"&gt;&lt;/param&gt;
+        /// &lt;param name="fontSize"&gt;&lt;/param&gt;
+        public STUDisplay(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1f) {
+            var tempBlock = block as IMyTextSurfaceProvider;
+            Surface = TryGetSurface(tempBlock, displayIndex);
+            Surface.Script = "";
+            Surface.ContentType = ContentType.SCRIPT;
+            Surface.ScriptBackgroundColor = Color.Black;
+            Surface.FontSize = fontSize;
+            Surface.Font = font;
+            BackgroundSprite = new MySpriteCollection();
+            Viewport = GetViewport();
+            TopLeft = Cursor = Viewport.Position;
+            Center = Viewport.Center;
+            ScreenWidth = Viewport.Width;
+            ScreenHeight = Viewport.Height;
+            DefaultLineHeight = GetTextDimensions("A").Y;
+            TotalLines = (int)(ScreenHeight / DefaultLineHeight);
+            NeedToCenterSprite = true;
+            FinishedDrawingCustomImage = false;
+            DisplayBlock = block as IMyTextPanel;
+            Clear();
+        }
+
+        /// &lt;summary&gt;
+        /// Moves the viewport to the next line, where the distance to the next line is the line height.
+        /// Line height is calculated by measuring the height of a single character in font you provided in the constructor.
+        /// Monospace is the default font.
+        /// &lt;/summary&gt;
+        public void GoToNextLine(float verticalPadding = 0) {
+            Cursor = new Vector2(TopLeft.X, Cursor.Y + DefaultLineHeight + verticalPadding);
+        }
+
+        public void StartFrame() {
+            CurrentFrame = Surface.DrawFrame();
+
+            // Draw background sprite if one is defined
+            // The default MySprite is a struct with certain default values,
+            // so we can't just check if BackgroundSprite is null.
+            // User MUST override this value to have a custom background.
+            if (!BackgroundSprite.Equals(default(MySpriteCollection))) {
+                foreach (MySprite sprite in BackgroundSprite.Sprites) {
+                    CurrentFrame.Add(sprite);
+                }
+            }
+        }
+
+        public void EndAndPaintFrame() {
+            CurrentFrame.Dispose();
+        }
+
+        public void Clear() {
+            CurrentFrame.Dispose();
+        }
+
+        public void ResetViewport() {
+            Viewport = GetViewport();
+        }
+
+        private IMyTextSurface TryGetSurface(IMyTextSurfaceProvider tempBlock, int displayIndex) {
+            var surface = tempBlock.GetSurface(displayIndex);
+            if (surface == null) {
+                throw new Exception($"Failed to get display at index {displayIndex}; double-check the index of the display you're trying to write to.");
+            }
+            return surface;
+        }
+
+        private RectangleF GetViewport() {
+            // the following line of code returns the coordinates of the top left corner of the actual writable area
+            // WITH RESPECT TO the top left corner of the texture
+            // this is important because whenever we define the position of a sprite, the coordinates that get read are with respect to the TEXTURE, not the viewable area (suface)
+            var standardViewport = new RectangleF((Surface.TextureSize - Surface.SurfaceSize) / 2f, Surface.SurfaceSize);
+            return standardViewport;
+        }
+
+
+        private float GetTextSpriteWidth(MySprite sprite) {
+            StringBuilder builder = new StringBuilder();
+            return Surface.MeasureStringInPixels(builder.Append(sprite.Data), sprite.FontId, sprite.RotationOrScale).X;
+        }
+
+        public float GetTextSpriteWidth(string s, float scale = 1f, string fontID = "Monospace") {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(s);
+            return Surface.MeasureStringInPixels(builder, fontID, scale).X;
+        }
+
+        private float GetTextSpriteHeight(MySprite sprite) {
+            StringBuilder builder = new StringBuilder();
+            return Surface.MeasureStringInPixels(builder.Append(sprite.Data), sprite.FontId, sprite.RotationOrScale).Y;
+        }
+
+        public float GetTextSpriteHeight(string s, float scale = 1f, string fontID = "Monospace") {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(s);
+            return Surface.MeasureStringInPixels(builder, fontID, scale).Y;
+        }
+
+        public MySprite BuildTextSprite(string text, float topLeftOffsetX, float topLeftOffsetY, Color color) {
+            return new MySprite {
+                Type = SpriteType.TEXT,
+                Data = text,
+                Position = TopLeft + new Vector2(topLeftOffsetX, topLeftOffsetY),
+                Color = color,
+                FontId = Surface.Font,
+                RotationOrScale = Surface.FontSize
+            };
+        }
+
+        public void DrawCenteredMultilineString(string input, Color color, MySpriteDrawFrame frame) {
+            string[] lines = input.Split('\n');
+
+            for (int i = 0; i &lt; lines.Length; i++) {
+                frame.Add(new MySprite() {
+                    Type = SpriteType.TEXT,
+                    Data = lines[i],
+                    Position = TopLeft + new Vector2((ScreenWidth / 2) - (GetTextDimensions(lines[i]).X / 2) - CharacterWidth, DefaultLineHeight * i),
+                    Color = color,
+                    FontId = Surface.Font,
+                    RotationOrScale = Surface.FontSize
+                });
+            }
+        }
+
+        /// &lt;summary&gt;
+        /// Aligns a sprite to the center of its parent sprite.
+        /// &lt;/summary&gt;
+        /// &lt;param name="parentSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="childSprite"&gt;&lt;/param&gt;
+        public void AlignCenterWithinParent(MySprite parentSprite, ref MySprite childSprite) {
+
+            childSprite.Alignment = TextAlignment.CENTER;
+
+            switch (childSprite.Type) {
+
+                case SpriteType.TEXT:
+
+                    var textSpriteLineHeight = GetTextSpriteHeight(childSprite);
+
+                    switch (parentSprite.Alignment) {
+
+                        // Parent sprite is aligned by its absolute middle
+                        case TextAlignment.CENTER:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X,
+                                parentSprite.Position.Value.Y - (textSpriteLineHeight / 2f)
+                            );
+                            return;
+
+                        // Parent sprint is aligned by the middle of its left edge
+                        case TextAlignment.LEFT:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X + (parentSprite.Size.Value.X / 2f),
+                                parentSprite.Position.Value.Y - (textSpriteLineHeight / 2f)
+                            );
+                            return;
+
+                        // Parent sprite is aligned by the middle of its right edge
+                        case TextAlignment.RIGHT:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X - (parentSprite.Size.Value.X / 2f),
+                                parentSprite.Position.Value.Y - (textSpriteLineHeight / 2f)
+                            );
+                            return;
+                    }
+
+                    break;
+
+                case SpriteType.TEXTURE:
+
+                    switch (parentSprite.Alignment) {
+
+                        case TextAlignment.CENTER:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X,
+                                parentSprite.Position.Value.Y
+                            );
+                            return;
+
+                        case TextAlignment.LEFT:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X + (parentSprite.Size.Value.X / 2f),
+                                parentSprite.Position.Value.Y
+                            );
+                            return;
+
+                        case TextAlignment.RIGHT:
+                            childSprite.Position = new Vector2(
+                                parentSprite.Position.Value.X - (parentSprite.Size.Value.X / 2f),
+                                parentSprite.Position.Value.Y
+                            );
+                            return;
+
+                    }
+
+                    break;
+            }
+
+        }
+
+        /// &lt;summary&gt;
+        /// Aligns a sprite to the left of its parent sprite, with optional padding.
+        /// &lt;/summary&gt;
+        /// &lt;param name="parentSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="childSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="padding"&gt;&lt;/param&gt;
+        public void AlignLeftWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            if (NeedToCenterSprite) {
+                AlignCenterWithinParent(parentSprite, ref childSprite);
+            }
+
+            switch (childSprite.Type) {
+
+                case SpriteType.TEXT:
+                    childSprite.Position -= new Vector2(((parentSprite.Size.Value.X - GetTextSpriteWidth(childSprite)) / 2f) - padding, 0);
+                    break;
+
+                case SpriteType.TEXTURE:
+                    childSprite.Position -= new Vector2(((parentSprite.Size.Value.X - childSprite.Size.Value.X) / 2f) - padding, 0);
+                    break;
+
+            }
+
+        }
+
+        /// &lt;summary&gt;
+        /// Aligns a sprite to the right of its parent sprite, with optional padding.
+        /// &lt;/summary&gt;
+        /// &lt;param name="parentSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="childSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="padding"&gt;&lt;/param&gt;
+        public void AlignRightWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            if (NeedToCenterSprite) {
+                AlignCenterWithinParent(parentSprite, ref childSprite);
+            }
+
+            switch (childSprite.Type) {
+
+                case SpriteType.TEXT:
+                    childSprite.Position += new Vector2(((parentSprite.Size.Value.X - GetTextSpriteWidth(childSprite)) / 2f) - padding, 0);
+                    break;
+
+                case SpriteType.TEXTURE:
+                    childSprite.Position += new Vector2(((parentSprite.Size.Value.X - childSprite.Size.Value.X) / 2f) - padding, 0);
+                    break;
+
+            }
+
+        }
+
+        /// &lt;summary&gt;
+        /// Aligns a sprite to the top of its parent sprite, with optional padding.
+        /// &lt;/summary&gt;
+        /// &lt;param name="parentSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="childSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="padding"&gt;&lt;/param&gt;
+        public void AlignTopWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            if (NeedToCenterSprite) {
+                AlignCenterWithinParent(parentSprite, ref childSprite);
+            }
+
+            switch (childSprite.Type) {
+
+                case SpriteType.TEXT:
+                    childSprite.Position -= new Vector2(0, ((parentSprite.Size.Value.Y - GetTextSpriteHeight(childSprite)) / 2f) - padding);
+                    break;
+
+                case SpriteType.TEXTURE:
+                    childSprite.Position -= new Vector2(0, ((parentSprite.Size.Value.Y - childSprite.Size.Value.Y) / 2f) - padding);
+                    break;
+
+            }
+
+        }
+
+        /// &lt;summary&gt;
+        /// Aligns a sprite to the bottom of its parent sprite, with optional padding
+        /// &lt;/summary&gt;
+        /// &lt;param name="parentSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="childSprite"&gt;&lt;/param&gt;
+        /// &lt;param name="padding"&gt;&lt;/param&gt;
+        public void AlignBottomWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            if (NeedToCenterSprite) {
+                AlignCenterWithinParent(parentSprite, ref childSprite);
+            }
+
+            switch (childSprite.Type) {
+
+                case SpriteType.TEXT:
+                    childSprite.Position += new Vector2(0, ((parentSprite.Size.Value.Y - GetTextSpriteHeight(childSprite)) / 2f) - padding);
+                    break;
+
+                case SpriteType.TEXTURE:
+                    childSprite.Position += new Vector2(0, ((parentSprite.Size.Value.Y - childSprite.Size.Value.Y) / 2f) - padding);
+                    break;
+
+            }
+
+        }
+
+        public void AlignTopLeftWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            AlignCenterWithinParent(parentSprite, ref childSprite);
+            NeedToCenterSprite = false;
+            AlignTopWithinParent(parentSprite, ref childSprite, padding);
+            AlignLeftWithinParent(parentSprite, ref childSprite, padding);
+            NeedToCenterSprite = true;
+        }
+
+        public void AlignTopRightWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            AlignCenterWithinParent(parentSprite, ref childSprite);
+            NeedToCenterSprite = false;
+            AlignTopWithinParent(parentSprite, ref childSprite, padding);
+            AlignRightWithinParent(parentSprite, ref childSprite, padding);
+            NeedToCenterSprite = true;
+        }
+
+        public void AlignBottomLeftWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            AlignCenterWithinParent(parentSprite, ref childSprite);
+            NeedToCenterSprite = false;
+            AlignBottomWithinParent(parentSprite, ref childSprite, padding);
+            AlignLeftWithinParent(parentSprite, ref childSprite, padding);
+            NeedToCenterSprite = true;
+        }
+
+        public void AlignBottomRightWithinParent(MySprite parentSprite, ref MySprite childSprite, float padding = 0) {
+            AlignCenterWithinParent(parentSprite, ref childSprite);
+            NeedToCenterSprite = false;
+            AlignBottomWithinParent(parentSprite, ref childSprite, padding);
+            AlignRightWithinParent(parentSprite, ref childSprite, padding);
+            NeedToCenterSprite = true;
+        }
+
+        public void WriteWrappableLogs(Queue&lt;STULog&gt; logs, Func&lt;STULog, string&gt; logFormatter = null) {
+            if (logs.Count == 0)
+                return;
+
+            if (logFormatter == null)
+                logFormatter = DefaultLogFormatter;
+
+            Cursor = TopLeft;
+
+            Queue&lt;int&gt; logLineCounts = new Queue&lt;int&gt;();
+            int logLines = 0;
+
+            foreach (STULog log in logs) {
+                int linesConsumed = GetLinesConsumed(logFormatter(log));
+                logLineCounts.Enqueue(linesConsumed);
+                logLines += linesConsumed;
+            }
+
+            while (logLines &gt; TotalLines &amp;&amp; logs.Count &gt; 0) {
+                logs.Dequeue();
+                logLines -= logLineCounts.Dequeue();
+            }
+
+            foreach (STULog log in logs) {
+                StringBuilder logSegment = new StringBuilder();
+                string formatted = logFormatter(log);
+
+                foreach (char c in formatted) {
+                    if (c == '\n') {
+                        CreateLogSprite(log, logSegment);
+                        GoToNextLine();
+                        logSegment.Clear();
+                        continue;
+                    }
+
+                    logSegment.Append(c);
+
+                    if (GetTextDimensions(logSegment).X &gt; ScreenWidth) {
+                        logSegment.Remove(logSegment.Length - 1, 1);
+                        CreateLogSprite(log, logSegment);
+                        GoToNextLine();
+                        logSegment.Clear();
+
+                        if (c != ' ')
+                            logSegment.Append(c);
+                    }
+                }
+
+                CreateLogSprite(log, logSegment);
+                GoToNextLine();
+            }
+        }
+        private string DefaultLogFormatter(STULog log) {
+            return $" &gt; {log.Sender}: {log.Message}";
+        }
+
+        private void CreateLogSprite(STULog log, StringBuilder logSegment) {
+            CurrentFrame.Add(new MySprite() {
+                Type = SpriteType.TEXT,
+                Data = logSegment.ToString(),
+                Position = Cursor,
+                RotationOrScale = Surface.FontSize,
+                Color = STULog.GetColor(log.Type),
+                FontId = Surface.Font,
+            });
+        }
+
+        private Vector2 GetTextDimensions(StringBuilder builder) {
+            return Surface.MeasureStringInPixels(builder, Surface.Font, Surface.FontSize);
+        }
+
+        private Vector2 GetTextDimensions(string s) {
+            StringBuilder builder = new StringBuilder().Append(s);
+            return GetTextDimensions(builder);
+        }
+
+        private int GetLinesConsumed(string text) {
+            text = text.Replace("\r\n", "\n").Replace("\r", "\n");
+
+            float charWidth = GetTextDimensions("A").X;
+            int charsPerLine = (int)Math.Floor(ScreenWidth / charWidth);
+
+            if (charsPerLine &lt;= 0)
+                return 0;
+
+            int linesConsumed = 0;
+            string[] segments = text.Split('\n');
+
+            foreach (string segment in segments) {
+                if (segment.Length == 0) {
+                    // blank line caused by consecutive newlines, leading newline, or trailing newline
+                    linesConsumed++;
+                } else {
+                    linesConsumed += (int)Math.Ceiling((double)segment.Length / charsPerLine);
+                }
+            }
+
+            return linesConsumed;
+        }
+    }
+
+    public class STUDisplayDrawMapper {
+
+        private static string errorMessage = "";
+
+        public static Action&lt;MySpriteDrawFrame, Vector2, float&gt; DefaultErrorScreen = (frame, centerPos, scale) =&gt; {
+            frame.Add(new MySprite() {
+                Type = SpriteType.TEXTURE,
+                Data = "SquareSimple",
+                Size = new Vector2(5000, 5000),
+                Color = Color.Red,
+                Alignment = TextAlignment.CENTER,
+            });
+            frame.Add(new MySprite() {
+                Type = SpriteType.TEXT,
+                Alignment = TextAlignment.CENTER,
+                Data = errorMessage,
+                Color = new Color(255, 255, 255, 255),
+                FontId = "Debug",
+                RotationOrScale = 1f * scale
+            }); // text1
+        };
+
+        public Dictionary&lt;string, Action&lt;MySpriteDrawFrame, Vector2, float&gt;&gt; DisplayDrawMapper = new Dictionary&lt;string, Action&lt;MySpriteDrawFrame, Vector2, float&gt;&gt;();
+
+        public STUDisplayDrawMapper() { }
+        public STUDisplayDrawMapper(Dictionary&lt;string, Action&lt;MySpriteDrawFrame, Vector2, float&gt;&gt; drawMapper) {
+            DisplayDrawMapper = drawMapper;
+        }
+
+        /// &lt;summary&gt;
+        /// Adds a display type to the mapper; be sure to use the STUDisplayType.CreateDisplayIdentifier method to create the display identifier for your screen.
+        /// If possible, don't use this function. Instead, instantiate the STUDisplayDrawMapper with its mappings directly defined in the instantiation. 
+        /// &lt;/summary&gt;
+        /// &lt;param name="displayType"&gt;&lt;/param&gt;
+        /// &lt;param name="drawFunction"&gt;&lt;/param&gt;
+        public void Add(string displayType, Action&lt;MySpriteDrawFrame, Vector2, float&gt; drawFunction) {
+            try {
+                DisplayDrawMapper.Add(displayType, drawFunction);
+            } catch { }
+        }
+
+        public Action&lt;MySpriteDrawFrame, Vector2, float&gt; GetDrawFunction(IMyTerminalBlock block, int displayIndex) {
+
+            var displayIdentifier = STUDisplayType.GetDisplayIdentifier(block, displayIndex);
+            Action&lt;MySpriteDrawFrame, Vector2, float&gt; drawFunction;
+
+            try {
+                drawFunction = DisplayDrawMapper[displayIdentifier];
+            } catch {
+
+                errorMessage = $"INVALID DISPLAY: {block.DefinitionDisplayNameText}\n";
+                return DefaultErrorScreen;
+            }
+            return drawFunction;
+
+        }
+
+    }
+
+    public static class STUDisplayBlock {
+        public const string HoloLCDLarge = "HoloLCDLarge";
+        public const string HoloLCDSmall = "HoloLCDSmall";
+        public const string LargeBlockCorner_LCD_1 = "LargeBlockCorner_LCD_1";
+        public const string LargeBlockCorner_LCD_2 = "LargeBlockCorner_LCD_2";
+        public const string LargeBlockCorner_LCD_Flat_1 = "LargeBlockCorner_LCD_Flat_1";
+        public const string LargeBlockCorner_LCD_Flat_2 = "LargeBlockCorner_LCD_Flat_2";
+        public const string LargeCurvedLCDPanel = "LargeCurvedLCDPanel";
+        public const string LargeDiagonalLCDPanel = "LargeDiagonalLCDPanel";
+        public const string LargeFullBlockLCDPanel = "LargeFullBlockLCDPanel";
+        public const string LargeLCDPanel = "LargeLCDPanel";
+        public const string LargeLCDPanel3x3 = "LargeLCDPanel3x3";
+        public const string LargeLCDPanel5x3 = "LargeLCDPanel5x3";
+        public const string LargeLCDPanel5x5 = "LargeLCDPanel5x5";
+        public const string LargeLCDPanelWide = "LargeLCDPanelWide";
+        public const string LargeTextPanel = "LargeTextPanel";
+        public const string SmallBlockCorner_LCD_1 = "SmallBlockCorner_LCD_1";
+        public const string SmallBlockCorner_LCD_2 = "SmallBlockCorner_LCD_2";
+        public const string SmallBlockCorner_LCD_Flat_1 = "SmallBlockCorner_LCD_Flat_1";
+        public const string SmallBlockCorner_LCD_Flat_2 = "SmallBlockCorner_LCD_Flat_2";
+        public const string SmallCurvedLCDPanel = "SmallCurvedLCDPanel";
+        public const string SmallDiagonalLCDPanel = "SmallDiagonalLCDPanel";
+        public const string SmallFullBlockLCDPanel = "SmallFullBlockLCDPanel";
+        public const string SmallLCDPanel = "SmallLCDPanel";
+        public const string SmallLCDPanelWide = "SmallLCDPanelWide";
+        public const string SmallTextPanel = "SmallTextPanel";
+        public const string TransparentLCDLarge = "TransparentLCDLarge";
+        public const string TransparentLCDSmall = "TransparentLCDSmall";
+        public const string LargeProgrammableBlock = "LargeProgrammableBlock";
+        public const string LargeProgrammableBlockReskin = "LargeProgrammableBlockReskin"; // automations pb
+        public const string SmallProgrammableBlock = "SmallProgrammableBlock";
+        public const string SmallProgrammableBlockReskin = "SmallProgrammableBlockReskin"; // automations pb
+        public const string BuggyCockpit = "BuggyCockpit";
+        public const string CockpitOpen = "CockpitOpen";
+        public const string DBSmallBlockFighterCockpit = "DBSmallBlockFighterCockpit";
+        public const string LargeBlockCockpit = "LargeBlockCockpit";
+        public const string LargeBlockCockpitIndustrial = "LargeBlockCockpitIndustrial";
+        public const string OpenCockpitLarge = "OpenCockpitLarge";
+        public const string OpenCockpitSmall = "OpenCockpitSmall";
+        public const string RoverCockpit = "RoverCockpit";
+        public const string SmallBlockCapCockpit = "SmallBlockCapCockpit";
+        public const string SmallBlockCockpit = "SmallBlockCockpit";
+        public const string SmallBlockCockpitIndustrial = "SmallBlockCockpitIndustrial";
+        public const string SmallBlockStandingCockpit = "SmallBlockStandingCockpit";
+        public const string SpeederCockpit = "SpeederCockpit";
+        public const string SpeederCockpitCompact = "SpeederCockpitCompact";
+        public const string LargeBlockConsole = "LargeBlockConsole";
+    }
+
+    public static class STUSubDisplay {
+        public const string ScreenArea = "ScreenArea";
+        public const string LargeDisplay = "LargeDisplay";
+        public const string Keyboard = "Keyboard";
+        public const string Numpad = "Numpad";
+        public const string ProjectionArea = "ProjectionArea";
+        public const string TopCenterScreen = "TopCenterScreen";
+        public const string TopLeftScreen = "TopLeftScreen";
+        public const string TopRightScreen = "TopRightScreen";
+        public const string BottomCenterScreen = "BottomCenterScreen";
+        public const string BottomLeftScreen = "BottomLeftScreen";
+        public const string BottomRightScreen = "BottomRightScreen";
+    }
+
+    public class STUDisplayType {
+
+        public static string CreateDisplayIdentifier(string block, string display) {
+            var displayName = display.ToString();
+            var blockName = block.ToString();
+            return $"{blockName}.{displayName}";
+        }
+
+        public static string GetDisplayIdentifier(IMyTerminalBlock block, int displayIndex) {
+            var tempBlock = block as IMyTextSurfaceProvider;
+            var surface = tempBlock.GetSurface(displayIndex);
+            var blockName = block.BlockDefinition.SubtypeName;
+            var surfaceName = surface.DisplayName.Replace(" ", "");
+            return $"{blockName}.{surfaceName}";
+        }
+
+    }
+</Program>
+              <Storage />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_MedicalRoom">
+              <SubtypeName>LargeMedicalRoom</SubtypeName>
+              <EntityId>111033864603607582</EntityId>
+              <Min x="1" y="8" z="-6" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyMultiTextPanelComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_MultiTextPanelComponent">
+                      <TextPanelsContents>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                          <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                        </MySerializedTextPanelData>
+                        <MySerializedTextPanelData>
+                          <ChangeInterval>0</ChangeInterval>
+                          <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+                          <FontSize>1</FontSize>
+                          <ShowText>NONE</ShowText>
+                          <FontColor>
+                            <PackedValue>4294967295</PackedValue>
+                            <X>255</X>
+                            <Y>255</Y>
+                            <Z>255</Z>
+                            <R>255</R>
+                            <G>255</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </FontColor>
+                          <BackgroundColor>
+                            <PackedValue>4278190080</PackedValue>
+                            <X>0</X>
+                            <Y>0</Y>
+                            <Z>0</Z>
+                            <R>0</R>
+                            <G>0</G>
+                            <B>0</B>
+                            <A>255</A>
+                          </BackgroundColor>
+                          <CurrentShownTexture>0</CurrentShownTexture>
+                          <SelectedScript />
+                          <TextPadding>2</TextPadding>
+                          <ScriptBackgroundColor>
+                            <PackedValue>4288108544</PackedValue>
+                            <X>0</X>
+                            <Y>88</Y>
+                            <Z>151</Z>
+                            <R>0</R>
+                            <G>88</G>
+                            <B>151</B>
+                            <A>255</A>
+                          </ScriptBackgroundColor>
+                          <ScriptForegroundColor>
+                            <PackedValue>4294962611</PackedValue>
+                            <X>179</X>
+                            <Y>237</Y>
+                            <Z>255</Z>
+                            <R>179</R>
+                            <G>237</G>
+                            <B>255</B>
+                            <A>255</A>
+                          </ScriptForegroundColor>
+                          <Sprites>
+                            <Length>0</Length>
+                          </Sprites>
+                          <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                        </MySerializedTextPanelData>
+                      </TextPanelsContents>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <SteamUserId>0</SteamUserId>
+              <IdleSound>ArcBlockMedical</IdleSound>
+              <ProgressSound>ArcBlockMedicalProgress</ProgressSound>
+              <TakeOwnership>false</TakeOwnership>
+              <SetFaction>false</SetFaction>
+              <WardrobeUserId>0</WardrobeUserId>
+              <SpawnName />
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_BatteryBlock">
+              <SubtypeName>LargeBlockPrototechBattery</SubtypeName>
+              <EntityId>140936164447000552</EntityId>
+              <Min x="4" y="8" z="-6" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <CurrentStoredPower>18</CurrentStoredPower>
+              <ProducerEnabled>true</ProducerEnabled>
+              <MaxStoredPower>0</MaxStoredPower>
+              <SemiautoEnabled>false</SemiautoEnabled>
+              <OnlyDischargeEnabled>false</OnlyDischargeEnabled>
+              <ChargeMode>0</ChargeMode>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_TextPanel">
+              <SubtypeName>LargeLCDPanel</SubtypeName>
+              <EntityId>142900574681943297</EntityId>
+              <Min x="5" y="8" z="-1" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0.6666667" y="-0.04" z="-0.21" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyLcdSurfaceComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_LcdSurfaceComponent">
+                      <SelectedRotationIndex>0</SelectedRotationIndex>
+                      <TextPanelContent>
+                        <ChangeInterval>0</ChangeInterval>
+                        <Font Type="MyObjectBuilder_FontDefinition" Subtype="Monospace" />
+                        <FontSize>1</FontSize>
+                        <ShowText>NONE</ShowText>
+                        <FontColor>
+                          <PackedValue>4294967295</PackedValue>
+                          <X>255</X>
+                          <Y>255</Y>
+                          <Z>255</Z>
+                          <R>255</R>
+                          <G>255</G>
+                          <B>255</B>
+                          <A>255</A>
+                        </FontColor>
+                        <BackgroundColor>
+                          <PackedValue>4278190080</PackedValue>
+                          <X>0</X>
+                          <Y>0</Y>
+                          <Z>0</Z>
+                          <R>0</R>
+                          <G>0</G>
+                          <B>0</B>
+                          <A>255</A>
+                        </BackgroundColor>
+                        <CurrentShownTexture>0</CurrentShownTexture>
+                        <ContentType>SCRIPT</ContentType>
+                        <SelectedScript />
+                        <TextPadding>2</TextPadding>
+                        <CustomizeScripts>true</CustomizeScripts>
+                        <ScriptBackgroundColor>
+                          <PackedValue>4278190080</PackedValue>
+                          <X>0</X>
+                          <Y>0</Y>
+                          <Z>0</Z>
+                          <R>0</R>
+                          <G>0</G>
+                          <B>0</B>
+                          <A>255</A>
+                        </ScriptBackgroundColor>
+                        <ScriptForegroundColor>
+                          <PackedValue>4294962611</PackedValue>
+                          <X>179</X>
+                          <Y>237</Y>
+                          <Z>255</Z>
+                          <R>179</R>
+                          <G>237</G>
+                          <B>255</B>
+                          <A>255</A>
+                        </ScriptForegroundColor>
+                        <Sprites>
+                          <Length>0</Length>
+                        </Sprites>
+                        <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                      </TextPanelContent>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyModStorageComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_ModStorageComponent">
+                      <Storage>
+                        <dictionary>
+                          <item>
+                            <Key>74de02b3-27f9-4960-b1c4-27351f2b06d1</Key>
+                            <Value>[LIGMA_HQ_MAIN_SUBSCRIBER]</Value>
+                          </item>
+                        </dictionary>
+                      </Storage>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <Description />
+              <Title>Title</Title>
+              <AccessFlag>READ_AND_WRITE_FACTION</AccessFlag>
+              <ChangeInterval>0</ChangeInterval>
+              <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+              <FontSize>1</FontSize>
+              <PublicDescription />
+              <PublicTitle>Public title</PublicTitle>
+              <ShowText>NONE</ShowText>
+              <FontColor xsi:nil="true" />
+              <BackgroundColor xsi:nil="true" />
+              <CurrentShownTexture>0</CurrentShownTexture>
+              <TextPadding>2</TextPadding>
+              <Version>0</Version>
+              <ScriptBackgroundColor xsi:nil="true" />
+              <ScriptForegroundColor xsi:nil="true" />
+              <Sprites>
+                <Length>0</Length>
+              </Sprites>
+              <SelectedRotationIndex xsi:nil="true" />
+              <UpdateStartOfFirstTexture>-9223372036854775808</UpdateStartOfFirstTexture>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_TextPanel">
+              <SubtypeName>LargeLCDPanel</SubtypeName>
+              <EntityId>73169158345357773</EntityId>
+              <Min x="5" y="8" z="-2" />
+              <BlockOrientation Forward="Right" Up="Up" />
+              <ColorMaskHSV x="0.6666667" y="-0.04" z="-0.21" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ComponentContainer>
+                <Components>
+                  <ComponentData>
+                    <TypeId>MyLcdSurfaceComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_LcdSurfaceComponent">
+                      <SelectedRotationIndex>0</SelectedRotationIndex>
+                      <TextPanelContent>
+                        <ChangeInterval>0</ChangeInterval>
+                        <Font Type="MyObjectBuilder_FontDefinition" Subtype="Monospace" />
+                        <FontSize>1</FontSize>
+                        <ShowText>NONE</ShowText>
+                        <FontColor>
+                          <PackedValue>4294967295</PackedValue>
+                          <X>255</X>
+                          <Y>255</Y>
+                          <Z>255</Z>
+                          <R>255</R>
+                          <G>255</G>
+                          <B>255</B>
+                          <A>255</A>
+                        </FontColor>
+                        <BackgroundColor>
+                          <PackedValue>4278190080</PackedValue>
+                          <X>0</X>
+                          <Y>0</Y>
+                          <Z>0</Z>
+                          <R>0</R>
+                          <G>0</G>
+                          <B>0</B>
+                          <A>255</A>
+                        </BackgroundColor>
+                        <CurrentShownTexture>0</CurrentShownTexture>
+                        <ContentType>SCRIPT</ContentType>
+                        <SelectedScript />
+                        <TextPadding>2</TextPadding>
+                        <CustomizeScripts>true</CustomizeScripts>
+                        <ScriptBackgroundColor>
+                          <PackedValue>4278190080</PackedValue>
+                          <X>0</X>
+                          <Y>0</Y>
+                          <Z>0</Z>
+                          <R>0</R>
+                          <G>0</G>
+                          <B>0</B>
+                          <A>255</A>
+                        </ScriptBackgroundColor>
+                        <ScriptForegroundColor>
+                          <PackedValue>4294962611</PackedValue>
+                          <X>179</X>
+                          <Y>237</Y>
+                          <Z>255</Z>
+                          <R>179</R>
+                          <G>237</G>
+                          <B>255</B>
+                          <A>255</A>
+                        </ScriptForegroundColor>
+                        <Sprites>
+                          <Length>0</Length>
+                        </Sprites>
+                        <UpdateStartOfFirstTexture>2270280336</UpdateStartOfFirstTexture>
+                      </TextPanelContent>
+                    </Component>
+                  </ComponentData>
+                  <ComponentData>
+                    <TypeId>MyModStorageComponent</TypeId>
+                    <Component xsi:type="MyObjectBuilder_ModStorageComponent">
+                      <Storage>
+                        <dictionary>
+                          <item>
+                            <Key>74de02b3-27f9-4960-b1c4-27351f2b06d1</Key>
+                            <Value>[LIGMA_HQ_LOG_SUBSCRIBER]</Value>
+                          </item>
+                        </dictionary>
+                      </Storage>
+                    </Component>
+                  </ComponentData>
+                </Components>
+              </ComponentContainer>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>2</NumberInGrid>
+              <Enabled>true</Enabled>
+              <Description />
+              <Title>Title</Title>
+              <AccessFlag>READ_AND_WRITE_FACTION</AccessFlag>
+              <ChangeInterval>0</ChangeInterval>
+              <Font Type="MyObjectBuilder_FontDefinition" Subtype="Debug" />
+              <FontSize>1</FontSize>
+              <PublicDescription />
+              <PublicTitle>Public title</PublicTitle>
+              <ShowText>NONE</ShowText>
+              <FontColor xsi:nil="true" />
+              <BackgroundColor xsi:nil="true" />
+              <CurrentShownTexture>0</CurrentShownTexture>
+              <TextPadding>2</TextPadding>
+              <Version>0</Version>
+              <ScriptBackgroundColor xsi:nil="true" />
+              <ScriptForegroundColor xsi:nil="true" />
+              <Sprites>
+                <Length>0</Length>
+              </Sprites>
+              <SelectedRotationIndex xsi:nil="true" />
+              <UpdateStartOfFirstTexture>-9223372036854775808</UpdateStartOfFirstTexture>
+            </MyObjectBuilder_CubeBlock>
+            <MyObjectBuilder_CubeBlock xsi:type="MyObjectBuilder_RadioAntenna">
+              <SubtypeName>LargeBlockRadioAntenna</SubtypeName>
+              <EntityId>139154869658815658</EntityId>
+              <Min x="0" y="8" z="0" />
+              <BlockOrientation Forward="Left" Up="Up" />
+              <ColorMaskHSV x="0" y="-0.85" z="0.2" />
+              <SkinSubtypeId>Clean_Armor</SkinSubtypeId>
+              <Owner>144115188075855889</Owner>
+              <BuiltBy>144115188075855889</BuiltBy>
+              <ShareMode>Faction</ShareMode>
+              <ShowOnHUD>false</ShowOnHUD>
+              <ShowInTerminal>true</ShowInTerminal>
+              <ShowInToolbarConfig>true</ShowInToolbarConfig>
+              <ShowInInventory>true</ShowInInventory>
+              <NumberInGrid>1</NumberInGrid>
+              <Enabled>true</Enabled>
+              <BroadcastRadius>5999.99951</BroadcastRadius>
+              <ShowShipName>false</ShowShipName>
+              <EnableBroadcasting>true</EnableBroadcasting>
+              <AttachedPB>0</AttachedPB>
+              <IgnoreAllied>false</IgnoreAllied>
+              <IgnoreOther>true</IgnoreOther>
+              <HudText />
+            </MyObjectBuilder_CubeBlock>
+          </CubeBlocks>
+          <IsStatic>true</IsStatic>
+          <DisplayName>Desert Test Platform</DisplayName>
+          <DestructibleBlocks>true</DestructibleBlocks>
+          <IsRespawnGrid>false</IsRespawnGrid>
+          <LocalCoordSys>45</LocalCoordSys>
+          <TargetingTargets />
+          <NPCGridClaimElapsed xsi:nil="true" />
+        </CubeGrid>
+      </CubeGrids>
+      <EnvironmentType>None</EnvironmentType>
+      <WorkshopId>0</WorkshopId>
+      <OwnerSteamId>76561198139046498</OwnerSteamId>
+      <Points>0</Points>
+    </ShipBlueprint>
+  </ShipBlueprints>
+</Definitions>

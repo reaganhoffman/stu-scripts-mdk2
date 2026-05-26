@@ -103,15 +103,15 @@ namespace IngameScript
                 }
                 catch (Exception e)
                 { 
-                    AddToLogQueue($"Failed to dequeue pending broadcast log:\n{e}"); }
+                    AddToLocalLogQueue($"Failed to dequeue pending broadcast log:\n{e}"); }
             }
 
-            public void AddToLogQueue(string message, STULogType logType = STULogType.INFO)
+            public void AddToLocalLogQueue(string message, STULogType logType = STULogType.INFO)
             {
                 MainScreen.Logs.Enqueue(new STULog(BALLS_STATION_NAME, message, logType));
             }
 
-            public void AddToLogQueue(STULog log)
+            public void AddToLocalLogQueue(STULog log)
             {
                 MainScreen.Logs.Enqueue(log);
             }

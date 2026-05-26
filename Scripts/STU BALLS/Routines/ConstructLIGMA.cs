@@ -42,15 +42,19 @@ namespace IngameScript
 
             public override bool Closeout()
             {
-                if (IGNORE_OUT_OF_RESOURCES) return true;
                 _balls.TryGetLIGMAFuelTanks();
                 bool tanksFull = true;
                 foreach (var tank in _balls.LIGMA_FuelTanks)
                 {
-                    _balls.AddToLogQueue($"filled ratio: {tank.FilledRatio}");
                     if (tank.FilledRatio < 1) tanksFull = false;
                 }
-                return tanksFull;
+                if (tanksFull || IGNORE_OUT_OF_RESOURCES)
+                {
+                    _balls.Connector.Disconnect();
+                    _balls.Connector.Enabled = false;
+                    return true;
+                }
+                return false;
             }
         }
     }

@@ -62,6 +62,14 @@ namespace IngameScript {
             /// Missile's total power capacity in kilowatt-hours
             /// </summary>
             public static double PowerCapacity { get; set; }
+            /// <summary>
+            /// Missile's firing group. 
+            /// FiringGroup is supposed to initialize as an empty string. The firing group is given to each LIGMA by the BALLS that built it.
+            /// When the LIGMA first broadcasts its telemetry, it does so on the channel LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup,
+            /// where firingGroup is found in the LIGMA's custom data ([Configuration] -> FiringGroup=xyz). If the FiringGroup key is not found in
+            /// the custom data, LIGMA's Program constructor defaults to a blank string.
+            /// </summary>
+            public static string FiringGroup { get; set; }
 
             #region mdk preserve
             public enum Phase {
@@ -77,11 +85,13 @@ namespace IngameScript {
                          STUMasterLogBroadcaster logBroadcaster,
                          IMyGridTerminalSystem grid,
                          IMyProgrammableBlock me,
-                         IMyGridProgramRuntimeInfo runtime) {
+                         IMyGridProgramRuntimeInfo runtime,
+                         string firingGroup) {
                 Me = me;
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
                 Runtime = runtime;
+                FiringGroup = firingGroup;
             }
 
             public bool LoadHardware(IMyGridTerminalSystem grid) {
@@ -402,6 +412,7 @@ namespace IngameScript {
                     { "CurrentPower", CurrentPower.ToString() },
                     { "FuelCapacity", FuelCapacity.ToString() },
                     { "PowerCapacity", PowerCapacity.ToString() },
+                    { "FiringGroup", FiringGroup },
                 };
             }
 

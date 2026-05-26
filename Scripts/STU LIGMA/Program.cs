@@ -58,7 +58,7 @@ namespace IngameScript {
             s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             _unicastListener = IGC.UnicastListener;
-            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, GridTerminalSystem, Me, Runtime);
+            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, GridTerminalSystem, Me, Runtime, firingGroup);
             _display = new MissileReadout(Me, 0, _missile);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -87,7 +87,8 @@ namespace IngameScript {
                 if (_unicastListener.HasPendingMessage) {
                     var message = _unicastListener.AcceptMessage();
                     var command = message.Data.ToString();
-                    ParseIncomingCommand(command);
+                    var tag = message.Tag.ToString();
+                    ParseIncomingCommand(command, tag);
                 }
 
                 LIGMA.UpdateState();
@@ -176,7 +177,7 @@ namespace IngameScript {
 
         }
 
-        public void ParseIncomingCommand(string logString) {
+        public void ParseIncomingCommand(string logString, string tag = "") {
 
             try {
                 _tempIncomingLog = STULog.Deserialize(logString);
@@ -200,6 +201,12 @@ namespace IngameScript {
                 Action commandAction;
                 if (!_LIGMACommands.TryGetValue(commandString, out commandAction)) {
                     LIGMA.CreateErrorBroadcast($"Command {commandString} not found in LIGMA commands dictionary.");
+                    return;
+                }
+
+                if (commandString == "SubscribeToFiringGroup")
+                {
+                    SubscribeToFiringGroup(tag);
                     return;
                 }
 
@@ -345,6 +352,21 @@ namespace IngameScript {
                 LIGMA.CreateOkBroadcast(broadcastString);
             } catch (Exception e) {
                 LIGMA.CreateErrorBroadcast($"Failed to parse target data: {e}");
+            }
+        }
+
+        public void SubscribeToFiringGroup(string firingGroup)
+        {
+            try
+            {
+                LIGMA.CreateWarningBroadcast($"Ordered to change firing groups: {firingGroup}");
+                LIGMA.s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
+                LIGMA.s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
+                LIGMA.CreateOkBroadcast($"Now reporting to firing group {firingGroup}");
+            }
+            catch (Exception e)
+            {
+                LIGMA.CreateErrorBroadcast($"Failed to parse updated firing group info: {e}");
             }
         }
 

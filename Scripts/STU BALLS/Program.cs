@@ -5,6 +5,7 @@ using Sandbox.ModAPI.Ingame;
 using VRage.Game;
 using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
+using VRage.Utils;
 
 namespace IngameScript
 {
@@ -12,12 +13,15 @@ namespace IngameScript
     {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         MyCommandLine CommandLine { get; set; }
-        IMyBroadcastListener Listener { get; set; }
-        IMyBroadcastListener TelemetryListener { get; set; }
+        IMyBroadcastListener BALLSListener { get; set; }
+        IMyBroadcastListener LIGMATelemetryListener { get; set; }
         IMyBroadcastListener LIGMALogListener { get; set; }
+        IMyBroadcastListener FiringGroupLogListener { get; set; }
+        IMyBroadcastListener FiringGroupTelemetryListener { get; set; }
         MyCommandLine WirelessMessageCommandLine { get; set; }
         MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
+        string FIRING_GROUP { get; set; }
         Queue<STUStateMachine> ManeuverQueue { get; set; }
         static STUStateMachine CurrentManeuver { get; set; }
         ConstructLIGMA ConstructionStateMachine { get; set; }
@@ -33,29 +37,35 @@ namespace IngameScript
 
             if (_ini.TryParse(Me.CustomData))
             {
-                BALLS_STATION_NAME = _ini.Get("CONFIG", "BALLS_STATION_NAME").ToString("");
+                BALLS_STATION_NAME = _ini.Get("Configuration", "BALLSStationName").ToString("");
+                FIRING_GROUP = _ini.Get("Configuration", "FiringGroup").ToString("");
             }
             else
             {
-                Echo($"Malformed configuration in this PB's custom data. Terminating script.");
+                Echo($"Malformed configuration in this PB's custom data.\n" +
+                    $"BALLSStationName and FiringGroup *must* be defined under the [Configuration] section.\n" +
+                    $"They can both be blank, but must be defined.\n" +
+                    $"Terminating script.");
                 Runtime.UpdateFrequency = UpdateFrequency.None;
                 return;
             }
 
             _BALLS = new BALLS(GridTerminalSystem, Runtime, IGC, Me, BALLS_STATION_NAME, "");
-            _BALLS.AddToLogQueue("Initializing subsystems...");
+            _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             
             CommandLine = new MyCommandLine();
-            Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
-            TelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
+            BALLSListener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
+            LIGMATelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
             LIGMALogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER);
+            FiringGroupLogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + FIRING_GROUP);
+            FiringGroupTelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + FIRING_GROUP);
             WirelessMessageCommandLine = new MyCommandLine();
             ManeuverQueue = new Queue<STUStateMachine>();
             _BALLS.CurrentState = BALLS.State.Standby;
 
-            _BALLS.AddToLogQueue("Done.", STULogType.OK);
+            _BALLS.AddToLocalLogQueue("Done.", STULogType.OK);
 
             ConstructionStateMachine = new ConstructLIGMA(_BALLS);
         }
@@ -71,19 +81,22 @@ namespace IngameScript
 
             HandleCommand(argument);
 
-            if (Listener.HasPendingMessage) { HandleIncomingLog(Listener.AcceptMessage()); }
+            if (BALLSListener.HasPendingMessage) { HandleIncomingBALLSLog(BALLSListener.AcceptMessage()); }
 
-            if (LIGMALogListener.HasPendingMessage)
-            {
-                _BALLS.AddToLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
-            }
+            if (LIGMALogListener.HasPendingMessage) { HandleIncomingLIGMALog(LIGMALogListener.AcceptMessage()); }
+
+            if (FiringGroupLogListener.HasPendingMessage) { HandleIncomingLIGMALog(FiringGroupLogListener.AcceptMessage()); }
+
+            if (LIGMATelemetryListener.HasPendingMessage) { HandleIncomingLIGMATelemetry(LIGMATelemetryListener.AcceptMessage()); }
+
+            if (FiringGroupTelemetryListener.HasPendingMessage) { HandleIncomingLIGMATelemetry(FiringGroupTelemetryListener.AcceptMessage()); }
 
             switch (_BALLS.CurrentState)
             {
                 case BALLS.State.Active:
                     if (!HaveEnoughResources())
                     {
-                        _BALLS.AddToLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
+                        _BALLS.AddToLocalLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
                         _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.WARNING));
                         _BALLS.CurrentState = BALLS.State.MissingResources;
                     }
@@ -125,45 +138,70 @@ namespace IngameScript
                         _BALLS.CurrentState = BALLS.State.Standby; 
                         break;
                     case "IGNORE": 
-                        _BALLS.AddToLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); 
+                        _BALLS.AddToLocalLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); 
                         IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES; 
                         break;
                     case "TEST": 
                         Test(); 
-                        break;
-                    case "LAUNCH":
-                        Launch();
                         break;
                     default: break;
                 }
             }
         }
 
-        public void HandleIncomingLog(MyIGCMessage message)
+        public void HandleIncomingBALLSLog(MyIGCMessage message)
         {
             try
             {
                 STULog receivedLog = STULog.Deserialize(message.Data.ToString());
-                switch (receivedLog.Message)
+                _BALLS.AddToLocalLogQueue(receivedLog);
+            }
+            catch (Exception e)
+            {
+                _BALLS.AddToLocalLogQueue($"Failed to parse incoming message as STULog:\n'{message}'\n{e.Message}");
+            }
+        }
+
+        public void HandleIncomingLIGMALog(MyIGCMessage message)
+        {
+            STULog incomingLog = STULog.Deserialize(message.Data.ToString());
+            _BALLS.AddToLocalLogQueue(incomingLog);
+        }
+
+        public void HandleIncomingLIGMATelemetry(MyIGCMessage message)
+        {
+            try
+            {
+                STULog incomingLog = STULog.Deserialize(message.Data.ToString());
+                Dictionary<string, string> incomingTelemetry = incomingLog.Metadata;
+                _BALLS.AddToLocalLogQueue(incomingLog);
+                string incomingFiringGroup;
+                incomingTelemetry.TryGetValue("FiringGroup", out incomingFiringGroup);
+                if (string.IsNullOrEmpty(incomingFiringGroup))
                 {
-                    case "UpdateTargetData":
-                        _BALLS.LIGMAUnicasterQueue.Enqueue(receivedLog);
-                        _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Target data received.", STULogType.OK));
-                        _BALLS.LIGMAUnicasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Launch", receivedLog.Type, receivedLog.Metadata));
-                        _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Bombs away!", STULogType.OK));
-                        break;
+                    string incomingId;
+                    incomingTelemetry.TryGetValue("Id", out incomingId);
+                    long ligma_id;
+                    long.TryParse(incomingId, out ligma_id);
+                    _BALLS.AddToLocalLogQueue($"Found virgin LIGMA with ID {ligma_id}.");
+                    AssignVirginLIGMAToFiringGroup(ligma_id);
                 }
             }
             catch (Exception e)
             {
-                _BALLS.AddToLogQueue($"Failed to parse incoming message as STULog:\n'{message}'\n{e.Message}");
-            }
-            finally
-            {
-                _BALLS.AddToLogQueue($"New wireless message:\n{message.Data}");
+                _BALLS.AddToLocalLogQueue($"Received malformed LIGMA Telemetry. Not processed.\n{e}", STULogType.ERROR);
             }
         }
 
+        public void AssignVirginLIGMAToFiringGroup(long ligma_id)
+        {
+            IGC.SendUnicastMessage(ligma_id, FIRING_GROUP, new STULog()
+            {
+                Message = "SubscribeToFiringGroup",
+                Sender = BALLS_STATION_NAME,
+                Type = STULogType.INFO,
+            });
+        }
 
         public bool HaveEnoughResources()
         {
@@ -184,10 +222,7 @@ namespace IngameScript
             
         }
 
-        void Launch()
-        {
-            _BALLS.BroadcasterQueue.Enqueue(new STULog() { Message = "Launch" });
-        }
+
 
         public Dictionary<string, int> GetComponentsNeededForRemainingBlocks()
         {
