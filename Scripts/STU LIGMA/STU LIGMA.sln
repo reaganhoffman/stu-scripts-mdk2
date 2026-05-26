@@ -27,6 +27,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Raycaster", "..\..\Mixi
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU CLAM", "..\STU CLAM\STU CLAM.csproj", "{754E1532-1B0D-7710-7BD2-CF92EAB53D61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,10 @@ Global
 		{8C72F973-136E-4D1B-ACFA-2937DD81DE01}.Debug|x64.Build.0 = Debug|x64
 		{8C72F973-136E-4D1B-ACFA-2937DD81DE01}.Release|x64.ActiveCfg = Release|x64
 		{8C72F973-136E-4D1B-ACFA-2937DD81DE01}.Release|x64.Build.0 = Release|x64
+		{754E1532-1B0D-7710-7BD2-CF92EAB53D61}.Debug|x64.ActiveCfg = Debug|x64
+		{754E1532-1B0D-7710-7BD2-CF92EAB53D61}.Debug|x64.Build.0 = Debug|x64
+		{754E1532-1B0D-7710-7BD2-CF92EAB53D61}.Release|x64.ActiveCfg = Release|x64
+		{754E1532-1B0D-7710-7BD2-CF92EAB53D61}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,12 @@ Global
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{4fb19e00-bd67-4421-ad35-d02f6c4c181b}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
 		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
+		..\..\Mixins\LIGMA\STU LIGMA Variables\STU_LIGMA_Variables.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{754e1532-1b0d-7710-7bd2-cf92eab53d61}*SharedItemsImports = 5
 		..\..\Mixins\Displays\STU Image\STU_Image.projitems*{7d53f862-df1c-4fc4-92f8-49568e15c32b}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{83207d78-9012-4ea3-ac3f-5fea6193e59a}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems*{8c72f973-136e-4d1b-acfa-2937dd81de01}*SharedItemsImports = 5

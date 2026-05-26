@@ -117,8 +117,7 @@ namespace IngameScript {
                 return dx;
             }
 
-            public bool DetectCollisionCourseWithPlanet()
-            {
+            public bool DetectCollisionCourseWithPlanet() {
                 return Vector3D.Dot(CurrentVelocity_WorldFrame, ShipController.GetNaturalGravity()) > GetCurrentSurfaceAltitude();
             }
 
@@ -150,11 +149,10 @@ namespace IngameScript {
             /// <param name="referencePos"></param>
             /// <returns></returns>
             public bool SetV_WorldFrame(
-                Vector3D targetPos, 
-                double desiredVelocity, 
-                Vector3D referencePos, 
-                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
-            {
+                Vector3D targetPos,
+                double desiredVelocity,
+                Vector3D referencePos,
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, referencePos, desiredVelocity, overrideMode);
             }
 
@@ -166,11 +164,10 @@ namespace IngameScript {
             /// <param name="reference"></param>
             /// <returns></returns>
             public bool SetV_WorldFrame(
-                Vector3D targetPos, 
-                double desiredVelocity, 
-                IMyTerminalBlock reference, 
-                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
-            {
+                Vector3D targetPos,
+                double desiredVelocity,
+                IMyTerminalBlock reference,
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, reference.GetPosition(), desiredVelocity, overrideMode);
             }
 
@@ -181,19 +178,17 @@ namespace IngameScript {
             /// <param name="desiredVelocity"></param>
             /// <returns></returns>
             public bool SetV_WorldFrame(
-                Vector3D targetPos, 
-                double desiredVelocity, 
-                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
-            {
+                Vector3D targetPos,
+                double desiredVelocity,
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 return _velocityController.SetV_WorldFrame(targetPos, CurrentVelocity_WorldFrame, CurrentPosition, desiredVelocity, overrideMode);
             }
 
             public bool SetV_WorldFrame(
-                Base6Directions.Direction desiredDirection, 
-                double desiredVelocity, 
-                IMyTerminalBlock reference = null, 
-                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) 
-            {
+                Base6Directions.Direction desiredDirection,
+                double desiredVelocity,
+                IMyTerminalBlock reference = null,
+                STUVelocityController.OverrideMode overrideMode = STUVelocityController.OverrideMode.IGNORE_PLAYER_INPUT) {
                 if (reference == null) {
                     reference = ShipController;
                 }
@@ -226,8 +221,7 @@ namespace IngameScript {
                 }
             }
 
-            public bool Hover()
-            {
+            public bool Hover() {
                 return _velocityController.SetV_WorldFrame(CurrentPosition, CurrentVelocity_WorldFrame, CurrentPosition, 0);
             }
 
@@ -235,8 +229,7 @@ namespace IngameScript {
             /// Sets the ship's axial velocities.
             /// </summary>
             /// <param name="axialVelocities">This vector's components correlate to the same axes as its planar counterpart; this variable's 'X' component should describe a desired rotation about the X axis, i.e. pitch. Similarly, this variable's 'Y' component should describe a desired yaw, and Z should describe roll.</param>
-            public void SetAxialVelocity(Vector3D axialVelocities)
-            {
+            public void SetAxialVelocity(Vector3D axialVelocities) {
                 _orientationController.SetVp(axialVelocities.X);
                 _orientationController.SetVw(axialVelocities.Y);
                 _orientationController.SetVr(axialVelocities.Z);

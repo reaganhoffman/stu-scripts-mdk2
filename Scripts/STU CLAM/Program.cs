@@ -116,6 +116,7 @@ namespace IngameScript {
                             CreateHQLog("Error parsing incoming target data", STULogType.ERROR);
                         }
                     } else if (!_recentlyDestroyedTargetsTimestamps.ContainsKey(_incomingLog.Metadata["EntityId"])) {
+                        CreateHQLog("Enqueued new target", STULogType.OK);
                         _targets.Enqueue(_incomingLog.Metadata);
                     }
                 } catch {
@@ -254,8 +255,7 @@ namespace IngameScript {
             }
             Echo($"Idle missiles count: {_idleMissiles.Count.ToString()}");
             Echo($"Targets count: {_targets.Count.ToString()}");
-            while (_targets.Count > 0 && _idleMissiles.Count > 0)
-            {
+            while (_targets.Count > 0 && _idleMissiles.Count > 0) {
                 var target = _targets.Dequeue();
                 var missile = _idleMissiles.Dequeue();
                 Dispatch(missile, target);
@@ -317,7 +317,6 @@ namespace IngameScript {
 
         void WriteAllLogScreens() {
             _logSubscribers.ForEach(subscriber => {
-                Echo(subscriber.Logs.Count.ToString());
                 subscriber.StartFrame();
                 subscriber.WriteWrappableLogs(subscriber.Logs);
                 subscriber.EndAndPaintFrame();
