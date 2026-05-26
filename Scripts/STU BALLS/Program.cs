@@ -88,14 +88,14 @@ namespace IngameScript
                         _BALLS.CurrentState = BALLS.State.MissingResources;
                     }
 
-                    if (ConstructionStateMachine.CurrentInternalState == STUStateMachine.InternalStates.Done)
+                    if (!_BALLS.MergeBlock.IsConnected)
                     {
                         ConstructionStateMachine = new ConstructLIGMA(_BALLS);
                         _BALLS.CurrentState = BALLS.State.Building;
                     }                    
                     break;
                 case BALLS.State.Building:
-                    if (ConstructionStateMachine.ExecuteStateMachine()) _BALLS.CurrentState = BALLS.State.Active;
+                    if (ConstructionStateMachine.ExecuteStateMachine() && ConstructionStateMachine.CurrentInternalState == STUStateMachine.InternalStates.Done) _BALLS.CurrentState = BALLS.State.Active;
                     break;
                 case BALLS.State.Standby:
                     ManeuverQueue.Clear();
