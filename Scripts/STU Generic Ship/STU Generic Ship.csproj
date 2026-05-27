@@ -32,4 +32,5 @@
   <Import Project="..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems" Label="Shared" />
 </Project>

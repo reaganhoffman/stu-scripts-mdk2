@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Generic Ship", "STU Generic Ship.csproj", "{057C17EA-91BA-4A46-B4C3-0BBEB17F9205}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Log", "..\..\Mixins\Logging\STU Log\STU Log.shproj", "{6EE22094-1878-45BC-805C-D32278F9C704}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Master Log Broadcaster", "..\..\Mixins\Logging\STU Master Log Broadcaster\STU Master Log Broadcaster.shproj", "{4CAC373A-9512-4083-B2F8-27AB57997CC4}"
 EndProject
@@ -20,6 +18,10 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STUInventoryEnumerator", "..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.shproj", "{9543D945-4F12-4CD2-9B70-938AE33C98C7}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU State Machine", "..\..\Mixins\Misc\STU State Machine\STU State Machine.shproj", "{4FB19E00-BD67-4421-AD35-D02F6C4C181B}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Hardware Loading Utils", "..\..\Mixins\Hardware Loading Utils\Hardware Loading Utils.shproj", "{4EEDEFE0-703D-4133-876B-54CC6FBF49CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,16 +44,18 @@ Global
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
-		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
+		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
 		..\..\Mixins\STU Generic Ship Variables\STU_Generic_Ship_Variables.projitems*{057c17ea-91ba-4a46-b4c3-0bbeb17f9205}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{1eba5aff-373f-4112-bee3-15b74121539e}*SharedItemsImports = 13
 		..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems*{4cac373a-9512-4083-b2f8-27ab57997cc4}*SharedItemsImports = 13
+		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{4eedefe0-703d-4133-876b-54cc6fbf49cb}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU State Machine\STU_State_Machine.projitems*{4fb19e00-bd67-4421-ad35-d02f6c4c181b}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
 		..\..\Mixins\STU Generic Ship Variables\STU_Generic_Ship_Variables.projitems*{61eba249-19f3-48b6-a25b-a4cee90168ba}*SharedItemsImports = 13
-		..\..\Mixins\Logging\STU Log\STU_Log.projitems*{6ee22094-1878-45bc-805c-d32278f9c704}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Galactic Map\STU_Galactic_Map.projitems*{83207d78-9012-4ea3-ac3f-5fea6193e59a}*SharedItemsImports = 13
 		..\..\Mixins\Misc\STU Inventory Enumerator\STUInventoryEnumerator.projitems*{9543d945-4f12-4cd2-9b70-938ae33c98c7}*SharedItemsImports = 13
 		..\..\Mixins\Flight\STU Flight Controller\STU_Flight_Controller.projitems*{c606c84c-c957-4859-be77-23907a2b1b72}*SharedItemsImports = 13
