@@ -95,7 +95,6 @@ namespace IngameScript {
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
                 Runtime = runtime;
-                FiringGroup = firingGroup;
             }
 
             public bool LoadHardware(IMyGridTerminalSystem grid) {
@@ -577,6 +576,7 @@ namespace IngameScript {
             {
                 s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup;
                 s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup;
+                FiringGroup = firingGroup;
             }
 
             private static bool IsStagedLIGMA(IMyGridTerminalSystem grid) {
