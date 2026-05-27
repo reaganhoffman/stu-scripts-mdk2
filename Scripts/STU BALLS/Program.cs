@@ -5,6 +5,7 @@ using Sandbox.ModAPI.Ingame;
 using VRage.Game;
 using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
+using VRageMath;
 
 namespace IngameScript
 {
@@ -13,11 +14,14 @@ namespace IngameScript
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         MyCommandLine CommandLine { get; set; }
         IMyBroadcastListener Listener { get; set; }
+        IMyBroadcastListener VirginLIGMAListener { get; set; }
+        STUMasterLogBroadcaster VirginLIGMABroadcaster { get; set; }
         IMyBroadcastListener TelemetryListener { get; set; }
         IMyBroadcastListener LIGMALogListener { get; set; }
         MyCommandLine WirelessMessageCommandLine { get; set; }
         MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
+        string FIRING_GROUP { get; set; }
         Queue<STUStateMachine> ManeuverQueue { get; set; }
         static STUStateMachine CurrentManeuver { get; set; }
         ConstructLIGMA ConstructionStateMachine { get; set; }
@@ -33,29 +37,33 @@ namespace IngameScript
 
             if (_ini.TryParse(Me.CustomData))
             {
-                BALLS_STATION_NAME = _ini.Get("CONFIG", "BALLS_STATION_NAME").ToString("");
+                BALLS_STATION_NAME = _ini.Get("Configuration", "BALLSStationName").ToString("BALLS");
+                FIRING_GROUP = _ini.Get("Configuration", "FiringGroup").ToString("GOOCH");
             }
             else
             {
-                Echo($"Malformed configuration in this PB's custom data. Terminating script.");
+                Echo($"Malformed configuration in this PB's custom data.\n" +
+                   $"Terminating script.");
                 Runtime.UpdateFrequency = UpdateFrequency.None;
                 return;
             }
 
             _BALLS = new BALLS(GridTerminalSystem, Runtime, IGC, Me, BALLS_STATION_NAME, "");
-            _BALLS.AddToLogQueue("Initializing subsystems...");
+            _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             
             CommandLine = new MyCommandLine();
             Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
+            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            VirginLIGMABroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL, IGC, TransmissionDistance.AntennaRelay); // should this be TransmissionDistance.Max?
             TelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
             LIGMALogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER);
             WirelessMessageCommandLine = new MyCommandLine();
             ManeuverQueue = new Queue<STUStateMachine>();
             _BALLS.CurrentState = BALLS.State.Standby;
 
-            _BALLS.AddToLogQueue("Done.", STULogType.OK);
+            _BALLS.AddToLocalLogQueue("Done.", STULogType.OK);
 
             ConstructionStateMachine = new ConstructLIGMA(_BALLS);
         }
@@ -71,19 +79,18 @@ namespace IngameScript
 
             HandleCommand(argument);
 
-            if (Listener.HasPendingMessage) { HandleIncomingLog(Listener.AcceptMessage()); }
+            if (Listener.HasPendingMessage) HandleIncomingLog(Listener.AcceptMessage());
 
-            if (LIGMALogListener.HasPendingMessage)
-            {
-                _BALLS.AddToLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
-            }
+            if (VirginLIGMAListener.HasPendingMessage) AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage());
+
+            if (LIGMALogListener.HasPendingMessage) _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
 
             switch (_BALLS.CurrentState)
             {
                 case BALLS.State.Active:
                     if (!HaveEnoughResources())
                     {
-                        _BALLS.AddToLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
+                        _BALLS.AddToLocalLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
                         _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.WARNING));
                         _BALLS.CurrentState = BALLS.State.MissingResources;
                     }
@@ -125,7 +132,7 @@ namespace IngameScript
                         _BALLS.CurrentState = BALLS.State.Standby; 
                         break;
                     case "IGNORE": 
-                        _BALLS.AddToLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); 
+                        _BALLS.AddToLocalLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); 
                         IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES; 
                         break;
                     case "TEST": 
@@ -156,15 +163,23 @@ namespace IngameScript
             }
             catch (Exception e)
             {
-                _BALLS.AddToLogQueue($"Failed to parse incoming message as STULog:\n'{message}'\n{e.Message}");
+                _BALLS.AddToLocalLogQueue($"Failed to parse incoming message as STULog:\n'{message}'\n{e.Message}");
             }
             finally
             {
-                _BALLS.AddToLogQueue($"New wireless message:\n{message.Data}");
+                _BALLS.AddToLocalLogQueue($"New wireless message:\n{message.Data}");
             }
         }
 
-
+        public void AnnounceBALLS_Data(MyIGCMessage mesage)
+        {
+            Dictionary<string, string> outgoingMetadata = new Dictionary<string, string>();
+            Vector3D currentWorldPos = Me.GetPosition();
+            outgoingMetadata.Add("X", currentWorldPos.X.ToString());
+            outgoingMetadata.Add("Y", currentWorldPos.Y.ToString());
+            outgoingMetadata.Add("Z", currentWorldPos.Z.ToString());
+            VirginLIGMABroadcaster.Log(new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
+        }
         public bool HaveEnoughResources()
         {
             if (IGNORE_OUT_OF_RESOURCES) return true;

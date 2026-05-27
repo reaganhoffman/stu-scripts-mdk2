@@ -9,6 +9,7 @@ namespace IngameScript {
 
         public bool ALREADY_RAN_FIRST_COMMAND = false;
         bool FINISHED_LOADING_HARDWARE = false;
+        bool FIRING_GROUP_DETERMINED = false;
         bool ALREADY_SAID_GOODBYE = false;
 
         public Dictionary<string, Action> _LIGMACommands = new Dictionary<string, Action>();
@@ -21,6 +22,7 @@ namespace IngameScript {
         static STUMasterLogBroadcaster s_telemetryBroadcaster;
         static STUMasterLogBroadcaster s_logBroadcaster;
         IMyUnicastListener _unicastListener;
+        IMyBroadcastListener _ballsListener;
 
         MyIni _ini = new MyIni();
 
@@ -33,12 +35,12 @@ namespace IngameScript {
 
         STULog _tempIncomingLog;
 
-        enum Phase {
-            Idle,
-            Launch,
-            Flight,
-            Descent,
-            Terminal,
+        public class BALLS_Data
+        {
+            public string FiringGroup;
+            public Vector3D WorldPosition;
+
+            public BALLS_Data() { }
         }
 
         enum MissileMode {
@@ -58,7 +60,8 @@ namespace IngameScript {
             s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             _unicastListener = IGC.UnicastListener;
-            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, GridTerminalSystem, Me, Runtime);
+            _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime);
             _display = new MissileReadout(Me, 0, _missile);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -67,9 +70,10 @@ namespace IngameScript {
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Test, Test);
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.UpdateTargetData, HandleIncomingTargetData);
             if (string.IsNullOrEmpty(firingGroup)) {
-                LIGMA.CreateWarningBroadcast("No firing group specified in configuration; operating within universal GOOCH network");
+                LIGMA.CreateWarningBroadcast("No firing group specified in configuration; attempting to determine firing group from BALLS");
             } else {
                 LIGMA.CreateOkBroadcast($"Reporting to firing group {firingGroup}");
+                FIRING_GROUP_DETERMINED = true;
             }
         }
 
@@ -77,6 +81,12 @@ namespace IngameScript {
 
             if (!FINISHED_LOADING_HARDWARE) {
                 FINISHED_LOADING_HARDWARE = _missile.LoadHardware(GridTerminalSystem);
+                return;
+            }
+
+            if (!FIRING_GROUP_DETERMINED)
+            {
+                FIRING_GROUP_DETERMINED = _missile.DetermineFiringGroup();
                 return;
             }
 

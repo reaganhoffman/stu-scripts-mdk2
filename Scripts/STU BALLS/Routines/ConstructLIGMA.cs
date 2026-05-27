@@ -47,7 +47,7 @@ namespace IngameScript
                 bool tanksFull = true;
                 foreach (var tank in _balls.LIGMA_FuelTanks)
                 {
-                    _balls.AddToLogQueue($"filled ratio: {tank.FilledRatio}");
+                    _balls.AddToLocalLogQueue($"filled ratio: {tank.FilledRatio}");
                     if (tank.FilledRatio < 1) tanksFull = false;
                 }
                 return tanksFull;

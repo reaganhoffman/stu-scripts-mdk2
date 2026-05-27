@@ -1,4 +1,5 @@
-﻿using Sandbox.ModAPI.Ingame;
+﻿using Sandbox.Game.WorldEnvironment.Modules;
+using Sandbox.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
 using VRage.Game.GUI.TextPanel;
@@ -15,19 +16,34 @@ namespace IngameScript
         STURaycaster Raycaster;
         STUMasterLogBroadcaster Broadcaster;
         MyCommandLine CommandLineParser;
+        MyIni _ini { get; set; } = new MyIni();
 
         public Dictionary<string, Action> ProgramCommands = new Dictionary<string, Action>(StringComparer.OrdinalIgnoreCase);
 
-        public string FIRING_GROUP { get; private set; } = "GOOCH";
+        public string CAMERA_NAME { get; private set; }
+        public string FIRING_GROUP { get; private set; }
 
         public Program()
         {
+            if (_ini.TryParse(Me.CustomData))
+            {
+                CAMERA_NAME = _ini.Get("Configuration", "CameraName").ToString("Camera");
+                FIRING_GROUP = _ini.Get("Configuration", "FiringGroup").ToString("TEST");
+            }
+            else
+            {
+                Echo($"Malformed configuration in this PB's custom data.\n" +
+                    $"Needs [Configuration] section and CameraName and FiringGroup defined.\n" +
+                   $"Terminating script.");
+                Runtime.UpdateFrequency = UpdateFrequency.None;
+                return;
+            }
 
             Cockpit = GetMainCockpit();
             CockpitDisplay = InitCockpitDisplay(Cockpit);
-            Raycaster = InitRaycaster();
+            Raycaster = InitRaycaster(CAMERA_NAME);
             Raycaster.RaycastDistance = 10000;
-            Broadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_GOOCH_TARGET_BROADCASTER, IGC, TransmissionDistance.AntennaRelay);
+            Broadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_GOOCH_TARGET_BROADCASTER + FIRING_GROUP, IGC, TransmissionDistance.AntennaRelay);
 
             CommandLineParser = new MyCommandLine();
             ProgramCommands.Add("Raycast", Raycast);
@@ -76,6 +92,11 @@ namespace IngameScript
         {
             try
             {
+                if (!Raycaster.Camera.EnableRaycast)
+                {
+                    CockpitDisplay.Surface.WriteText("Camera raycast not enabled.");
+                    return;
+                }
                 var hit = Raycaster.Raycast();
                 if (!hit.IsEmpty())
                 {
@@ -134,9 +155,8 @@ namespace IngameScript
             return display;
         }
 
-        public STURaycaster InitRaycaster()
+        public STURaycaster InitRaycaster(string cameraName)
         {
-            var cameraName = Me.CustomData.Trim();
             var camera = GridTerminalSystem.GetBlockWithName(cameraName) as IMyCameraBlock;
             if (camera != null)
             {

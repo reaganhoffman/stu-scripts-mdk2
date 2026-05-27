@@ -54,9 +54,6 @@ namespace IngameScript {
         List<string> _tempLigmasToRemove = new List<string>();
         Dictionary<string, string> _tempMetadata;
 
-        int TELEMETRY_WRITE_COUNTER = 0;
-        int TELEMETRY_WRITE_INTERVAL = 15;
-
         public Program() {
             // Get firing group param from _ini
             if (!_ini.TryParse(Me.CustomData)) {

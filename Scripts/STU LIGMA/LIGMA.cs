@@ -2,6 +2,7 @@
 using SpaceEngineers.Game.ModAPI.Ingame;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using VRageMath;
 
 namespace IngameScript {
@@ -33,6 +34,7 @@ namespace IngameScript {
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster s_telemetryBroadcaster { get; set; }
             public static STUMasterLogBroadcaster s_logBroadcaster { get; set; }
+            public static IMyBroadcastListener BALLSListener { get; set; }
             public static IMyRemoteControl RemoteControl { get; set; }
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
 
@@ -45,6 +47,8 @@ namespace IngameScript {
             public static IMyShipMergeBlock s_mainMergeBlock { get; set; }
 
             IEnumerator<bool> _hardwareLoadStateMachine;
+            IEnumerator<bool> _firingGroupDeterminator;
+            static Dictionary<long, BALLS_Data> _discoveredBALLS = new Dictionary<long, BALLS_Data>();
 
             /// <summary>
             /// Missile's current fuel level in liters
@@ -75,6 +79,7 @@ namespace IngameScript {
 
             public LIGMA(STUMasterLogBroadcaster telemetryBroadcaster,
                          STUMasterLogBroadcaster logBroadcaster,
+                         IMyBroadcastListener ballsListener,
                          IMyGridTerminalSystem grid,
                          IMyProgrammableBlock me,
                          IMyGridProgramRuntimeInfo runtime) {
@@ -180,6 +185,42 @@ namespace IngameScript {
                 RemoteControl.DampenersOverride = true;
 
                 CreateOkBroadcast("ALL SYSTEMS GO");
+            }
+
+            public bool DetermineFiringGroup()
+            {
+                if (_firingGroupDeterminator == null)
+                {
+                    _firingGroupDeterminator = DetermineFiringGroupCoroutine().GetEnumerator();
+                }
+
+                if (!_firingGroupDeterminator.MoveNext())
+                {
+                    _firingGroupDeterminator.Dispose();
+                    _firingGroupDeterminator = null;
+                    return true;
+                }
+
+                return false;
+            }
+
+            IEnumerable<bool> DetermineFiringGroupCoroutine()
+            {
+                SendTelemetry(); yield return true;
+
+                int i = 0;
+                while (i < 18) { i++; yield return true; }
+
+                while (BALLSListener.HasPendingMessage)
+                {
+                    FormatBALLSDiscoveryReply(BALLSListener.AcceptMessage());
+                    yield return true;
+                }
+
+                yield return true;
+
+                SelectFiringGroup();
+                CreateOkBroadcast("hi every1 im new!!!!!!!");
             }
 
             private static bool LoadMainMergeBlock(IMyGridTerminalSystem grid) {
@@ -440,6 +481,93 @@ namespace IngameScript {
                 });
             }
 
+            public static void FormatBALLSDiscoveryReply(MyIGCMessage message)
+            {
+                try
+                {
+                    STULog incomingLog = STULog.Deserialize(message.Data.ToString());
+                    long sender_id = message.Source;
+                    Vector3D incomingWorldPos = FormatBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
+
+                    if (double.IsNaN(incomingWorldPos.Length())) { throw new Exception(); } // clever trick from FC to determine if a given vector is a zero vector.
+
+                    BALLS_Data incomingBALLS_Data = new BALLS_Data();
+                    incomingBALLS_Data.FiringGroup = incomingLog.Message;
+                    incomingBALLS_Data.WorldPosition = incomingWorldPos;
+
+                    _discoveredBALLS[sender_id] = incomingBALLS_Data; // dictionary syntax trick; if [key] exists, value is updated; if [key] dne, a new entry is added.
+                }
+                catch { }
+            }
+
+            public static Vector3D FormatBALLSDiscoveryReplyMetadata(Dictionary<string, string> incomingMetadata)
+            {
+                try
+                {
+                    double x;
+                    string s_x = "0";
+                    incomingMetadata.TryGetValue("X", out s_x);
+                    double.TryParse(s_x, out x);
+
+                    double y;
+                    string s_y = "0";
+                    incomingMetadata.TryGetValue("Y", out s_y);
+                    double.TryParse(s_y, out y);
+
+                    double z;
+                    string s_z = "0";
+                    incomingMetadata.TryGetValue("Z", out s_z);
+                    double.TryParse(s_z, out z);
+
+                    return new Vector3D()
+                    {
+                        X = x,
+                        Y = y,
+                        Z = z
+                    };
+                }
+                catch {
+                    return new Vector3D();
+                }
+            }
+
+            static void SelectFiringGroup()
+            {
+                string _firingGroup = "";
+                if (_discoveredBALLS.Count == 0) // shortcut if no BALLS were found (very unlikely)
+                {
+                    AcceptFiringGroup(_firingGroup);
+                    return;
+                }
+                else if (_discoveredBALLS.Count == 1) // if you have one, you have none
+                {
+                    AcceptFiringGroup(_discoveredBALLS[0].FiringGroup);
+                    return;
+                }
+                else // simply pick the one who's closest to me
+                {
+                    Vector3D myPos = Me.GetPosition();
+                    double shortestDistanceToMe = double.PositiveInfinity;
+                    string winningFiringGroup = "";
+                    foreach (var balls in _discoveredBALLS)
+                    {
+                        double measuredDistance = Math.Abs((myPos - _discoveredBALLS[balls.Key].WorldPosition).Length());
+                        if (measuredDistance < shortestDistanceToMe)
+                        {
+                            shortestDistanceToMe = measuredDistance;
+                            winningFiringGroup = _discoveredBALLS[balls.Key].FiringGroup;
+                        }
+                    }
+
+                    AcceptFiringGroup(winningFiringGroup);
+                }
+            }
+
+            static void AcceptFiringGroup(string firingGroup)
+            {
+                s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup;
+                s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup;
+            }
 
             private static bool IsStagedLIGMA(IMyGridTerminalSystem grid) {
                 IMyShipMergeBlock mergeBlock = grid.GetBlockWithName("TERMINAL_TO_FLIGHT_MERGE_BLOCK") as IMyShipMergeBlock;

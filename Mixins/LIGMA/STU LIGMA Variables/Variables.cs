@@ -15,6 +15,8 @@
             public const string LIGMA_HQ_MAIN_SUBSCRIBER_TAG = "LIGMA_HQ_MAIN_SUBSCRIBER";
             public const string LIGMA_HQ_NAME = "LIGMA_HQ";
 
+            public const string BALLS_DISCOVERY_CHANNEL = "BALLS_DISCOVERY_CHANNEL";
+
             public const double PLANETARY_DETECTION_BUFFER = 2000;
 
             public static class COMMANDS {
