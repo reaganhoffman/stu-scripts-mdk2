@@ -79,6 +79,8 @@ namespace IngameScript {
 
         void Main(string argument) {
 
+            LIGMA.LogScreen.Refresh();
+
             if (!FINISHED_LOADING_HARDWARE) {
                 FINISHED_LOADING_HARDWARE = _missile.LoadHardware(GridTerminalSystem);
                 return;

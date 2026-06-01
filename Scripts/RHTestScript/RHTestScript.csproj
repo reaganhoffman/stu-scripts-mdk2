@@ -8,25 +8,25 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.11">
+    <PackageReference Include="Mal.Mdk2.PbAnalyzers" Version="2.1.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.1.2">
+    <PackageReference Include="Mal.Mdk2.PbPackager" Version="2.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Mal.Mdk2.References" Version="2.2.4" />
+    <PackageReference Include="Mal.Mdk2.References" Version="2.2.8" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Instructions.readme" />
     <AdditionalFiles Include="Instructions.readme" />
     <AdditionalFiles Include="thumb.png" />
   </ItemGroup>
-  <Import Project="..\..\Mixins\Logging\STU Log\STU_Log.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Logging\STU Master Log Broadcaster\STU_Master_Log_Broadcaster.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Display Type\STU_Display_Type.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Displays\STU Image\STU_Image.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Logging\STULog\STULog.projitems" Label="Shared" />
 </Project>

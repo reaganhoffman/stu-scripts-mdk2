@@ -36,10 +36,8 @@ namespace IngameScript
 
             public AirlockControlModule ACM { get; private set; }
             public PowerControlModule PCM { get; private set; }
-            public List<STULog> Logs { get; private set; }
             public LogScreen MainScreen { get; private set; }
             public StatusScreen SmallScreen { get; private set; }
-            public Queue<STULog> LogQueue { get; private set; }
 
             public static List<IMyTerminalBlock> AllTerminalBlocks { get; private set; }
             public IMyRadioAntenna Antenna { get; private set; }

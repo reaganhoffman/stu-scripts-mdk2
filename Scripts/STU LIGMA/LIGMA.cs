@@ -45,9 +45,11 @@ namespace IngameScript {
             public static IMyWarhead[] Warheads { get; set; }
             public static IMyShipConnector[] Connectors { get; set; }
             public static IMyShipMergeBlock s_mainMergeBlock { get; set; }
+            public static LogScreen LogScreen { get; set; }
+            public static Queue<STULog> LocalLogQueue { get; set; } = new Queue<STULog>();
 
             IEnumerator<bool> _hardwareLoadStateMachine;
-            IEnumerator<bool> _firingGroupDeterminator;
+            IEnumerator<bool> _firingGroupDeterminatorStateMachine;
             static Dictionary<long, BALLS_Data> _discoveredBALLS = new Dictionary<long, BALLS_Data>();
 
             /// <summary>
@@ -95,6 +97,17 @@ namespace IngameScript {
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
                 Runtime = runtime;
+                LogScreen = new LogScreen(Me, 0, 0.25f);
+            }
+
+            public void AddToLocalLogQueue(string message, STULogType logType = STULogType.INFO)
+            {
+                LogScreen.Logs.Enqueue(new STULog(LIGMA_VARIABLES.LIGMA_VEHICLE_NAME, message, logType));
+            }
+
+            public void AddToLocalLogQueue(STULog log)
+            {
+                LogScreen.Logs.Enqueue(log);
             }
 
             public bool LoadHardware(IMyGridTerminalSystem grid) {
@@ -197,15 +210,18 @@ namespace IngameScript {
 
             public bool DetermineFiringGroup()
             {
-                if (_firingGroupDeterminator == null)
+                AddToLocalLogQueue($"flight group state machine is null? {_firingGroupDeterminatorStateMachine == null}");
+                if (_firingGroupDeterminatorStateMachine == null)
                 {
-                    _firingGroupDeterminator = DetermineFiringGroupCoroutine().GetEnumerator();
+                    _firingGroupDeterminatorStateMachine = DetermineFiringGroupCoroutine().GetEnumerator();
                 }
 
-                if (!_firingGroupDeterminator.MoveNext())
+                AddToLocalLogQueue($"flight group state machine is null? {_firingGroupDeterminatorStateMachine == null}");
+
+                if (!_firingGroupDeterminatorStateMachine.MoveNext())
                 {
-                    _firingGroupDeterminator.Dispose();
-                    _firingGroupDeterminator = null;
+                    _firingGroupDeterminatorStateMachine.Dispose();
+                    _firingGroupDeterminatorStateMachine = null;
                     return true;
                 }
 
@@ -214,21 +230,115 @@ namespace IngameScript {
 
             IEnumerable<bool> DetermineFiringGroupCoroutine()
             {
+                AddToLocalLogQueue("top of DetermineFiringGroupCoroutine");
                 SendTelemetry(); yield return true;
 
                 int i = 0;
                 while (i < 18) { i++; yield return true; }
 
+                if (BALLSListener.HasPendingMessage) { AddToLocalLogQueue($"balls listener not blank"); }
+
+                int n = 0;
                 while (BALLSListener.HasPendingMessage)
                 {
                     FormatBALLSDiscoveryReply(BALLSListener.AcceptMessage());
+                    n++;
+                    AddToLocalLogQueue($"dequeued messages: {n}");
                     yield return true;
                 }
 
-                yield return true;
-
                 SelectFiringGroup();
                 CreateOkBroadcast("hi every1 im new!!!!!!!");
+            }
+
+            public static void FormatBALLSDiscoveryReply(MyIGCMessage message)
+            {
+                try
+                {
+                    STULog incomingLog = STULog.Deserialize(message.Data.ToString());
+                    long sender_id = message.Source;
+                    Vector3D incomingWorldPos = FormatBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
+
+                    if (double.IsNaN(incomingWorldPos.Length())) { throw new Exception(); } // clever trick from FC to determine if a given vector is a zero vector.
+
+                    BALLS_Data incomingBALLS_Data = new BALLS_Data();
+                    incomingBALLS_Data.FiringGroup = incomingLog.Message;
+                    incomingBALLS_Data.WorldPosition = incomingWorldPos;
+
+                    _discoveredBALLS[sender_id] = incomingBALLS_Data; // dictionary syntax trick; if [key] exists, value is updated; if [key] dne, a new entry is added.
+                }
+                catch { }
+            }
+
+            public static Vector3D FormatBALLSDiscoveryReplyMetadata(Dictionary<string, string> incomingMetadata)
+            {
+                try
+                {
+                    double x;
+                    string s_x = "0";
+                    incomingMetadata.TryGetValue("X", out s_x);
+                    double.TryParse(s_x, out x);
+
+                    double y;
+                    string s_y = "0";
+                    incomingMetadata.TryGetValue("Y", out s_y);
+                    double.TryParse(s_y, out y);
+
+                    double z;
+                    string s_z = "0";
+                    incomingMetadata.TryGetValue("Z", out s_z);
+                    double.TryParse(s_z, out z);
+
+                    return new Vector3D()
+                    {
+                        X = x,
+                        Y = y,
+                        Z = z
+                    };
+                }
+                catch
+                {
+                    return new Vector3D();
+                }
+            }
+
+            static void SelectFiringGroup()
+            {
+                string _firingGroup = "";
+                if (_discoveredBALLS.Count == 0) // shortcut if no BALLS were found (very unlikely)
+                {
+                    AcceptFiringGroup(_firingGroup);
+                    return;
+                }
+                else if (_discoveredBALLS.Count == 1) // if you have one, you have none
+                {
+                    AcceptFiringGroup(_discoveredBALLS[0].FiringGroup);
+                    return;
+                }
+                else // simply pick the one who's closest to me
+                {
+                    Vector3D myPos = Me.GetPosition();
+                    double shortestDistanceToMe = double.PositiveInfinity;
+                    string winningFiringGroup = "";
+                    foreach (var balls in _discoveredBALLS)
+                    {
+                        double measuredDistance = Math.Abs((myPos - _discoveredBALLS[balls.Key].WorldPosition).Length());
+                        if (measuredDistance < shortestDistanceToMe)
+                        {
+                            shortestDistanceToMe = measuredDistance;
+                            winningFiringGroup = _discoveredBALLS[balls.Key].FiringGroup;
+                        }
+                    }
+
+                    AcceptFiringGroup(winningFiringGroup);
+                }
+            }
+
+            static void AcceptFiringGroup(string firingGroup)
+            {
+                s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup;
+                s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup;
+                FiringGroup = firingGroup;
             }
 
             private static bool LoadMainMergeBlock(IMyGridTerminalSystem grid) {
@@ -473,11 +583,14 @@ namespace IngameScript {
             }
 
             private static void CreateLogBroadcast(string message, STULogType type) {
-                s_logBroadcaster.Log(new STULog {
+                STULog outboundLog = new STULog {
                     Sender = LIGMA_VARIABLES.LIGMA_VEHICLE_NAME,
                     Message = message,
                     Type = type,
-                });
+                };
+
+                s_logBroadcaster.Log(outboundLog);
+                LogScreen.Logs.Enqueue(outboundLog);
             }
 
             public static void SendTelemetry() {
@@ -490,94 +603,6 @@ namespace IngameScript {
                 });
             }
 
-            public static void FormatBALLSDiscoveryReply(MyIGCMessage message)
-            {
-                try
-                {
-                    STULog incomingLog = STULog.Deserialize(message.Data.ToString());
-                    long sender_id = message.Source;
-                    Vector3D incomingWorldPos = FormatBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
-
-                    if (double.IsNaN(incomingWorldPos.Length())) { throw new Exception(); } // clever trick from FC to determine if a given vector is a zero vector.
-
-                    BALLS_Data incomingBALLS_Data = new BALLS_Data();
-                    incomingBALLS_Data.FiringGroup = incomingLog.Message;
-                    incomingBALLS_Data.WorldPosition = incomingWorldPos;
-
-                    _discoveredBALLS[sender_id] = incomingBALLS_Data; // dictionary syntax trick; if [key] exists, value is updated; if [key] dne, a new entry is added.
-                }
-                catch { }
-            }
-
-            public static Vector3D FormatBALLSDiscoveryReplyMetadata(Dictionary<string, string> incomingMetadata)
-            {
-                try
-                {
-                    double x;
-                    string s_x = "0";
-                    incomingMetadata.TryGetValue("X", out s_x);
-                    double.TryParse(s_x, out x);
-
-                    double y;
-                    string s_y = "0";
-                    incomingMetadata.TryGetValue("Y", out s_y);
-                    double.TryParse(s_y, out y);
-
-                    double z;
-                    string s_z = "0";
-                    incomingMetadata.TryGetValue("Z", out s_z);
-                    double.TryParse(s_z, out z);
-
-                    return new Vector3D()
-                    {
-                        X = x,
-                        Y = y,
-                        Z = z
-                    };
-                }
-                catch {
-                    return new Vector3D();
-                }
-            }
-
-            static void SelectFiringGroup()
-            {
-                string _firingGroup = "";
-                if (_discoveredBALLS.Count == 0) // shortcut if no BALLS were found (very unlikely)
-                {
-                    AcceptFiringGroup(_firingGroup);
-                    return;
-                }
-                else if (_discoveredBALLS.Count == 1) // if you have one, you have none
-                {
-                    AcceptFiringGroup(_discoveredBALLS[0].FiringGroup);
-                    return;
-                }
-                else // simply pick the one who's closest to me
-                {
-                    Vector3D myPos = Me.GetPosition();
-                    double shortestDistanceToMe = double.PositiveInfinity;
-                    string winningFiringGroup = "";
-                    foreach (var balls in _discoveredBALLS)
-                    {
-                        double measuredDistance = Math.Abs((myPos - _discoveredBALLS[balls.Key].WorldPosition).Length());
-                        if (measuredDistance < shortestDistanceToMe)
-                        {
-                            shortestDistanceToMe = measuredDistance;
-                            winningFiringGroup = _discoveredBALLS[balls.Key].FiringGroup;
-                        }
-                    }
-
-                    AcceptFiringGroup(winningFiringGroup);
-                }
-            }
-
-            static void AcceptFiringGroup(string firingGroup)
-            {
-                s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup;
-                s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup;
-                FiringGroup = firingGroup;
-            }
 
             private static bool IsStagedLIGMA(IMyGridTerminalSystem grid) {
                 IMyShipMergeBlock mergeBlock = grid.GetBlockWithName("TERMINAL_TO_FLIGHT_MERGE_BLOCK") as IMyShipMergeBlock;

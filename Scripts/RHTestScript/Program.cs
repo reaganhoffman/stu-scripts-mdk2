@@ -1,44 +1,40 @@
 ﻿
 using System.Collections.Generic;
 using Sandbox.ModAPI.Ingame;
+using VRageMath;
 
 
 namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        public static List<IMyTerminalBlock> AllTerminalBlocks { get; set; } = new List<IMyTerminalBlock>();
-        public static List<IMyGasTank> AllGasTanks { get; set; } = new List<IMyGasTank>();
-        public static PBScreenLCD PBScreen { get; set; }
+        public static LogScreen _LogScreen { get; set; }
+
+        public Vector3D TestVector { get; set; }
 
         public Program()
         {
-            Runtime.UpdateFrequency = UpdateFrequency.Update10;
-            GridTerminalSystem.GetBlocksOfType<IMyGasTank>(AllGasTanks);
-            PBScreen = new PBScreenLCD(Me, 0, "Monospace", 0.5f);
+            Runtime.UpdateFrequency = UpdateFrequency.Once;
+            _LogScreen = new LogScreen(Me, 0, 1f);
         }
 
         public void Main(string argument, UpdateType updateSource)
         {
-            foreach (var item in AllGasTanks)
-            {
-                Echo($"{item.CustomName}: {item.BlockDefinition.SubtypeId}");
-                AddToLogQueue($"{item.CustomName}: {item.BlockDefinition.SubtypeId}");
-            }
+            float newFontSize;
+            float.TryParse(argument, out newFontSize);
+            if (newFontSize == default(float)) {
+                AddToLogQueue("new font size not determined from input; defaulting to 0.5");
+                newFontSize = 0.5f; }
+            _LogScreen.Surface.FontSize = newFontSize;
+            AddToLogQueue($"this is font size {_LogScreen.Surface.FontSize}");
 
-            UpdateLogScreens();
+            _LogScreen.Refresh();
         }
 
         public void AddToLogQueue(string message)
         {
-            PBScreen.Logs.Enqueue(new STULog("me", message, "INFO"));
+            _LogScreen.Logs.Enqueue(new STULog("me", message, STULogType.INFO));
         }
 
-        public static void UpdateLogScreens()
-        {
-            PBScreen.StartFrame();
-            PBScreen.WriteWrappableLogs(PBScreen.Logs);
-            PBScreen.EndAndPaintFrame();
-        }
     }
 }
