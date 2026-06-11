@@ -401,3 +401,4 @@ FodyWeavers.xsd
 
 # Exclude mdk.local files
 **/*.mdk.local
+**/*.mdk.local.ini
