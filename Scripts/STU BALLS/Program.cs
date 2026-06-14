@@ -1,16 +1,11 @@
-﻿using System;
+﻿using Sandbox.ModAPI.Ingame;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Sandbox.ModAPI.Ingame;
-using VRage.Game;
-using VRage.Game.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 using VRageMath;
 
-namespace IngameScript
-{
-    partial class Program : MyGridProgram
-    {
+namespace IngameScript {
+    partial class Program : MyGridProgram {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         MyCommandLine CommandLine { get; set; }
         IMyBroadcastListener Listener { get; set; }
@@ -29,19 +24,15 @@ namespace IngameScript
         BALLS _BALLS { get; set; }
 
         public static bool IGNORE_OUT_OF_RESOURCES { get; private set; } = false;
-        
 
-        public Program()
-        {
+
+        public Program() {
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
-            if (_ini.TryParse(Me.CustomData))
-            {
+            if (_ini.TryParse(Me.CustomData)) {
                 BALLS_STATION_NAME = _ini.Get("Configuration", "BALLSStationName").ToString("BALLS");
                 FIRING_GROUP = _ini.Get("Configuration", "FiringGroup").ToString("GOOCH");
-            }
-            else
-            {
+            } else {
                 Echo($"Malformed configuration in this PB's custom data.\n" +
                    $"Terminating script.");
                 Runtime.UpdateFrequency = UpdateFrequency.None;
@@ -52,12 +43,11 @@ namespace IngameScript
             _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            
+
             CommandLine = new MyCommandLine();
             Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
-            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
-            VirginLIGMABroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL, IGC, TransmissionDistance.AntennaRelay); // should this be TransmissionDistance.Max?
-            TelemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
+            VirginLIGMABroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.BALLS_ANNOUNCEMENT_CHANNEL, IGC, TransmissionDistance.AntennaRelay); // should this be TransmissionDistance.Max?
+            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
             LIGMALogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER);
             WirelessMessageCommandLine = new MyCommandLine();
             ManeuverQueue = new Queue<STUStateMachine>();
@@ -68,60 +58,57 @@ namespace IngameScript
             ConstructionStateMachine = new ConstructLIGMA(_BALLS);
         }
 
-        public void Save()
-        {
-            
+        public void Save() {
+
         }
 
-        public void Main(string argument, UpdateType updateSource)
-        {
+        public void Main(string argument, UpdateType updateSource) {
             InventoryEnumerator.EnumerateInventories();
 
             HandleCommand(argument);
 
-            if (Listener.HasPendingMessage) HandleIncomingLog(Listener.AcceptMessage());
+            if (Listener.HasPendingMessage)
+                HandleIncomingLog(Listener.AcceptMessage());
 
-            if (VirginLIGMAListener.HasPendingMessage) AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage());
+            if (VirginLIGMAListener.HasPendingMessage)
+                AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage());
 
-            if (LIGMALogListener.HasPendingMessage) _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
+            if (LIGMALogListener.HasPendingMessage)
+                _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
 
-            switch (_BALLS.CurrentState)
-            {
+            switch (_BALLS.CurrentState) {
                 case BALLS.State.Active:
-                    if (!HaveEnoughResources())
-                    {
+                    if (!HaveEnoughResources()) {
                         _BALLS.AddToLocalLogQueue("Out of resources; cannot construct a new LIGMA!", STULogType.WARNING);
                         _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Not enough resources", STULogType.WARNING));
                         _BALLS.CurrentState = BALLS.State.MissingResources;
                     }
 
-                    if (!_BALLS.MergeBlock.IsConnected)
-                    {
+                    if (!_BALLS.MergeBlock.IsConnected) {
                         ConstructionStateMachine = new ConstructLIGMA(_BALLS);
                         _BALLS.CurrentState = BALLS.State.Building;
-                    }                    
+                    }
                     break;
                 case BALLS.State.Building:
-                    if (ConstructionStateMachine.ExecuteStateMachine() && ConstructionStateMachine.CurrentInternalState == STUStateMachine.InternalStates.Done) _BALLS.CurrentState = BALLS.State.Active;
+                    if (ConstructionStateMachine.ExecuteStateMachine() && ConstructionStateMachine.CurrentInternalState == STUStateMachine.InternalStates.Done)
+                        _BALLS.CurrentState = BALLS.State.Active;
                     break;
                 case BALLS.State.Standby:
                     ManeuverQueue.Clear();
                     // wait to be reactivated
                     break;
                 case BALLS.State.MissingResources:
-                    if (HaveEnoughResources()) _BALLS.CurrentState = BALLS.State.Standby;
+                    if (HaveEnoughResources())
+                        _BALLS.CurrentState = BALLS.State.Standby;
                     break;
             }
 
             _BALLS.Update();
         }
 
-        public void HandleCommand(string command)
-        {
-            if (CommandLine.TryParse(command))
-            {
-                switch (CommandLine.Argument(0).ToUpper())
-                {
+        public void HandleCommand(string command) {
+            if (CommandLine.TryParse(command)) {
+                switch (CommandLine.Argument(0).ToUpper()) {
                     case "ACTIVATE":
                         ConstructionStateMachine.CurrentInternalState = STUStateMachine.InternalStates.Done;
                         _BALLS.CurrentState = BALLS.State.Active;
@@ -129,30 +116,28 @@ namespace IngameScript
                     case "STANDBY":
                         ConstructionStateMachine.CurrentInternalState = STUStateMachine.InternalStates.Done;
                         foreach (var welder in _BALLS.Welders) { welder.Enabled = false; }
-                        _BALLS.CurrentState = BALLS.State.Standby; 
+                        _BALLS.CurrentState = BALLS.State.Standby;
                         break;
-                    case "IGNORE": 
-                        _BALLS.AddToLocalLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}"); 
-                        IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES; 
+                    case "IGNORE":
+                        _BALLS.AddToLocalLogQueue($"Setting creative mode to {!IGNORE_OUT_OF_RESOURCES}");
+                        IGNORE_OUT_OF_RESOURCES = !IGNORE_OUT_OF_RESOURCES;
                         break;
-                    case "TEST": 
-                        Test(); 
+                    case "TEST":
+                        Test();
                         break;
                     case "LAUNCH":
                         Launch();
                         break;
-                    default: break;
+                    default:
+                        break;
                 }
             }
         }
 
-        public void HandleIncomingLog(MyIGCMessage message)
-        {
-            try
-            {
+        public void HandleIncomingLog(MyIGCMessage message) {
+            try {
                 STULog receivedLog = STULog.Deserialize(message.Data.ToString());
-                switch (receivedLog.Message)
-                {
+                switch (receivedLog.Message) {
                     case "UpdateTargetData":
                         _BALLS.LIGMAUnicasterQueue.Enqueue(receivedLog);
                         _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Target data received.", STULogType.OK));
@@ -160,19 +145,14 @@ namespace IngameScript
                         _BALLS.BroadcasterQueue.Enqueue(new STULog(BALLS_STATION_NAME, "Bombs away!", STULogType.OK));
                         break;
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 _BALLS.AddToLocalLogQueue($"Failed to parse incoming message as STULog:\n'{message}'\n{e.Message}");
-            }
-            finally
-            {
+            } finally {
                 _BALLS.AddToLocalLogQueue($"New wireless message:\n{message.Data}");
             }
         }
 
-        public void AnnounceBALLS_Data(MyIGCMessage mesage)
-        {
+        public void AnnounceBALLS_Data(MyIGCMessage mesage) {
             Dictionary<string, string> outgoingMetadata = new Dictionary<string, string>();
             Vector3D currentWorldPos = Me.GetPosition();
             outgoingMetadata.Add("X", currentWorldPos.X.ToString());
@@ -180,44 +160,38 @@ namespace IngameScript
             outgoingMetadata.Add("Z", currentWorldPos.Z.ToString());
             VirginLIGMABroadcaster.Log(new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
         }
-        public bool HaveEnoughResources()
-        {
-            if (IGNORE_OUT_OF_RESOURCES) return true;
+        public bool HaveEnoughResources() {
+            if (IGNORE_OUT_OF_RESOURCES)
+                return true;
 
             // check if we have enough resources for a missile
-            foreach (var item in GetComponentsNeededForRemainingBlocks())
-            {
+            foreach (var item in GetComponentsNeededForRemainingBlocks()) {
                 double currentItemCount;
                 InventoryEnumerator.MostRecentItemTotals.TryGetValue(item.Key, out currentItemCount);
-                if (currentItemCount < item.Value) return false;
+                if (currentItemCount < item.Value)
+                    return false;
             }
             return true;
         }
 
-        void Test()
-        {
-            
+        void Test() {
+
         }
 
-        void Launch()
-        {
+        void Launch() {
             _BALLS.BroadcasterQueue.Enqueue(new STULog() { Message = "Launch" });
         }
 
-        public Dictionary<string, int> GetComponentsNeededForRemainingBlocks()
-        {
+        public Dictionary<string, int> GetComponentsNeededForRemainingBlocks() {
             Dictionary<string, int> remainingComponents = new Dictionary<string, int>();
             foreach (var block in _BALLS.Projector.RemainingBlocksPerType) // loop through all blocks of the blueprint that have yet to be welded
             {
                 Dictionary<string, int> thisBlockBOM = CBOM.GetPartBOM(block.ToString(), CBOM.Size.Small); // retrieve the BOM of each block (e.g. a PB requires some steel plates, some computers, whatever) in the form of a dictionary
                 foreach (var component in thisBlockBOM) // loop through this dictionary, and add each of its component/count pairs to the running-total-return-value dictionary
                 {
-                    if (remainingComponents.ContainsKey(component.Key))
-                    {
+                    if (remainingComponents.ContainsKey(component.Key)) {
                         remainingComponents[component.ToString()] += component.Value;
-                    }
-                    else
-                    {
+                    } else {
                         remainingComponents.Add(component.Key, component.Value);
                     }
                 }
