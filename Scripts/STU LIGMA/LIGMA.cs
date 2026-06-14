@@ -33,7 +33,7 @@ namespace IngameScript {
             public static IMyProgrammableBlock Me { get; set; }
             public static STUMasterLogBroadcaster s_telemetryBroadcaster { get; set; }
             public static STUMasterLogBroadcaster s_logBroadcaster { get; set; }
-            public static IMyBroadcastListener BALLSListener { get; set; }
+            //public static IMyBroadcastListener BALLSListener { get; set; }
             public static IMyRemoteControl RemoteControl { get; set; }
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
             public static IMyIntergridCommunicationSystem IGC { get; set; }
@@ -90,7 +90,7 @@ namespace IngameScript {
 
             public LIGMA(STUMasterLogBroadcaster telemetryBroadcaster,
                          STUMasterLogBroadcaster logBroadcaster,
-                         IMyBroadcastListener ballsListener,
+                         //IMyBroadcastListener ballsListener,
                          IMyGridTerminalSystem grid,
                          IMyProgrammableBlock me,
                          IMyGridProgramRuntimeInfo runtime,
@@ -98,7 +98,7 @@ namespace IngameScript {
                 Me = me;
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
-                BALLSListener = ballsListener;
+                //BALLSListener = ballsListener;
                 Runtime = runtime;
                 IGC = igc;
                 LogScreen = new LogScreen(Me, 0, 0.5f);
