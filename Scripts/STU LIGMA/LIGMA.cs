@@ -48,6 +48,7 @@ namespace IngameScript {
             public static Queue<STULog> LocalLogQueue { get; set; } = new Queue<STULog>();
 
             IEnumerator<bool> _hardwareLoadStateMachine;
+            public static List<IMyBroadcastListener> DiscoveredBALLS = new List<IMyBroadcastListener>();
             IEnumerator<bool> _firingGroupDeterminatorStateMachine;
             static Dictionary<long, BALLS_Data> _discoveredBALLS = new Dictionary<long, BALLS_Data>();
 
@@ -225,7 +226,7 @@ namespace IngameScript {
 
             IEnumerable<bool> DetermineFiringGroupCoroutine() {
                 AddToLocalLogQueue("top of DetermineFiringGroupCoroutine");
-                SendTelemetry();
+
                 yield return true;
 
                 int i = 0;

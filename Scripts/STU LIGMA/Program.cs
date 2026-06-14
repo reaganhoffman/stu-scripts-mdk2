@@ -55,10 +55,10 @@ namespace IngameScript {
                 Echo("Failed to parse configuration string");
             }
             string firingGroup = _ini.Get("Configuration", "FiringGroup").ToString("");
-            s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-            s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-            _unicastListener = IGC.UnicastListener;
+            s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
+            s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            _unicastListener = IGC.UnicastListener;
             _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
@@ -362,8 +362,8 @@ namespace IngameScript {
         public void SubscribeToFiringGroup(string firingGroup) {
             try {
                 LIGMA.CreateWarningBroadcast($"Ordered to change firing groups: {firingGroup}");
-                LIGMA.s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-                LIGMA.s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup, IGC, TransmissionDistance.AntennaRelay);
+                LIGMA.s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
+                LIGMA.s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
                 LIGMA.CreateOkBroadcast($"Now reporting to firing group {firingGroup}");
             } catch (Exception e) {
                 LIGMA.CreateErrorBroadcast($"Failed to parse updated firing group info: {e}");

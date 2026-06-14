@@ -8,33 +8,26 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        public static LogScreen _LogScreen { get; set; }
-
-        public Vector3D TestVector { get; set; }
+        public IMyBroadcastListener Listener { get; set; }
+        public List<IMyBroadcastListener> FoundListeners { get; set; } = new List<IMyBroadcastListener>();
 
         public Program()
         {
-            Runtime.UpdateFrequency = UpdateFrequency.Once;
-            _LogScreen = new LogScreen(Me, 0, 1f);
+            Runtime.UpdateFrequency = UpdateFrequency.Update10;
+            Listener = IGC.RegisterBroadcastListener("BALLS_DISCOVERY_CHANNEL");
         }
 
         public void Main(string argument, UpdateType updateSource)
         {
-            float newFontSize;
-            float.TryParse(argument, out newFontSize);
-            if (newFontSize == default(float)) {
-                AddToLogQueue("new font size not determined from input; defaulting to 0.5");
-                newFontSize = 0.5f; }
-            _LogScreen.Surface.FontSize = newFontSize;
-            AddToLogQueue($"this is font size {_LogScreen.Surface.FontSize}");
-
-            _LogScreen.Refresh();
+            IGC.GetBroadcastListeners(FoundListeners);
+            Echo($"GetBroadcastListeners: \n{FoundListeners}\nCount: {FoundListeners.Count}");
+            FoundListeners.Clear();
         }
 
-        public void AddToLogQueue(string message)
-        {
-            _LogScreen.Logs.Enqueue(new STULog("me", message, STULogType.INFO));
-        }
+        //public void AddToLogQueue(string message)
+        //{
+        //    _LogScreen.Logs.Enqueue(new STULog("me", message, STULogType.INFO));
+        //}
 
     }
 }

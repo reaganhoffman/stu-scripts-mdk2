@@ -5,8 +5,8 @@
             public const string LIGMA_VEHICLE_NAME = "LIGMA-I";
             public const string LIGMA_RECONNOITERER_NAME = "SDC-3";
 
-            public const string LIGMA_TELEMETRY_BROADCASTER = "LIGMA_TELEMETRY_BROADCASTER";
-            public const string LIGMA_LOG_BROADCASTER = "LIGMA_LOG_BROADCASTER";
+            public const string LIGMA_TELEMETRY_CHANNEL = "LIGMA_TELEMETRY_BROADCASTER"; // + firingGroup; blank at first, then attempts to self-assign, remains blank on fail
+            public const string LIGMA_LOG_CHANNEL = "LIGMA_LOG_BROADCASTER"; // + firingGroup; blank at first, then attempts to self-assign, remains blank on fail
             public const string LIGMA_GOOCH_TARGET_BROADCASTER = "LIGMA_GOOCH_TARGET_BROADCASTER";
             public const string LIGMA_GOOCH_LOG_BROADCASTER = "LIGMA_GOOCH_LOG_BROADCASTER";
 

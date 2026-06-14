@@ -7,18 +7,15 @@ using VRageMath;
 namespace IngameScript {
     partial class Program : MyGridProgram {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
-        MyCommandLine CommandLine { get; set; }
-        IMyBroadcastListener Listener { get; set; }
+        MyCommandLine CommandLine { get; set; } = new MyCommandLine();
+        MyCommandLine WirelessMessageCommandLine { get; set; } = new MyCommandLine();
+        IMyBroadcastListener BALLS_CommandListener { get; set; }
         IMyBroadcastListener VirginLIGMAListener { get; set; }
-        STUMasterLogBroadcaster VirginLIGMABroadcaster { get; set; }
-        IMyBroadcastListener TelemetryListener { get; set; }
-        IMyBroadcastListener LIGMALogListener { get; set; }
-        MyCommandLine WirelessMessageCommandLine { get; set; }
+        IMyUnicastListener UnicastListener { get; set; }
         MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
         string FIRING_GROUP { get; set; }
-        Queue<STUStateMachine> ManeuverQueue { get; set; }
-        static STUStateMachine CurrentManeuver { get; set; }
+        Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
         ConstructLIGMA ConstructionStateMachine { get; set; }
 
         BALLS _BALLS { get; set; }
@@ -43,16 +40,11 @@ namespace IngameScript {
             _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
+            BALLS_CommandListener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
+            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            UnicastListener = IGC.UnicastListener;
 
-            CommandLine = new MyCommandLine();
-            Listener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
-            VirginLIGMABroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.BALLS_ANNOUNCEMENT_CHANNEL, IGC, TransmissionDistance.AntennaRelay); // should this be TransmissionDistance.Max?
-            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER);
-            LIGMALogListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER);
-            WirelessMessageCommandLine = new MyCommandLine();
-            ManeuverQueue = new Queue<STUStateMachine>();
             _BALLS.CurrentState = BALLS.State.Standby;
-
             _BALLS.AddToLocalLogQueue("Done.", STULogType.OK);
 
             ConstructionStateMachine = new ConstructLIGMA(_BALLS);
@@ -67,14 +59,11 @@ namespace IngameScript {
 
             HandleCommand(argument);
 
-            if (Listener.HasPendingMessage)
-                HandleIncomingLog(Listener.AcceptMessage());
+            if (BALLS_CommandListener.HasPendingMessage)
+                HandleIncomingLog(BALLS_CommandListener.AcceptMessage());
 
-            if (VirginLIGMAListener.HasPendingMessage)
-                AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage());
-
-            if (LIGMALogListener.HasPendingMessage)
-                _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
+            if (UnicastListener.HasPendingMessage)
+                HandleUnicastMessage(UnicastListener.AcceptMessage());
 
             switch (_BALLS.CurrentState) {
                 case BALLS.State.Active:
@@ -152,13 +141,13 @@ namespace IngameScript {
             }
         }
 
-        public void AnnounceBALLS_Data(MyIGCMessage mesage) {
+        public void HandleUnicastMessage(MyIGCMessage message) {
             Dictionary<string, string> outgoingMetadata = new Dictionary<string, string>();
             Vector3D currentWorldPos = Me.GetPosition();
             outgoingMetadata.Add("X", currentWorldPos.X.ToString());
             outgoingMetadata.Add("Y", currentWorldPos.Y.ToString());
             outgoingMetadata.Add("Z", currentWorldPos.Z.ToString());
-            VirginLIGMABroadcaster.Log(new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
+            IGC.SendUnicastMessage(message.Source, FIRING_GROUP, new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
         }
         public bool HaveEnoughResources() {
             if (IGNORE_OUT_OF_RESOURCES)
