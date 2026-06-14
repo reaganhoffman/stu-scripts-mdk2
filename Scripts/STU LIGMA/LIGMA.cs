@@ -223,8 +223,8 @@ namespace IngameScript {
             }
 
             IEnumerable<bool> DetermineFiringGroupCoroutine() {
-                foreach (var balls in BALLS_Listeners)
-                {
+                foreach (var balls in BALLS_Listeners) {
+                    CreateOkBroadcast($"TAG: {balls.Tag}");
                     string[] parsed = balls.Tag.Split('-');
                     long entityID;
                     bool success = long.TryParse(parsed[1], out entityID);
