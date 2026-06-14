@@ -60,8 +60,8 @@ namespace IngameScript {
                 throw new Exception("Failed to parse custom data");
             }
             string firingGroup = _ini.Get("Configuration", "FiringGroup").ToString("");
-            _logListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup);
-            _telemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup);
+            _logListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup);
+            _telemetryListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup);
             _targetListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.LIGMA_GOOCH_TARGET_BROADCASTER + firingGroup);
             _logSubscribers = DiscoverLogSubscribers();
             _mainSubscribers = DiscoverMainSubscribers();
