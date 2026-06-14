@@ -25,4 +25,5 @@
   </ItemGroup>
   <Import Project="..\..\Mixins\Displays\STU Display\STU_Display.projitems" Label="Shared" />
   <Import Project="..\..\Mixins\Elevator\Elevator.projitems" Label="Shared" />
+  <Import Project="..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems" Label="Shared" />
 </Project>

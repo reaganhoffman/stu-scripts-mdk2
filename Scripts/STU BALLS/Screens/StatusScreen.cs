@@ -12,7 +12,7 @@ namespace IngameScript
 
             BALLS _BALLS { get; set; }
 
-            public StatusScreen(BALLS balls, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base (block, displayIndex, font, fontSize)
+            public StatusScreen(BALLS balls, IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base (block, displayIndex, fontSize, font)
             {
                 FontSize = fontSize;
                 _BALLS = balls;
