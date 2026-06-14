@@ -9,6 +9,7 @@ namespace IngameScript {
 
         public bool ALREADY_RAN_FIRST_COMMAND = false;
         bool FINISHED_LOADING_HARDWARE = false;
+        bool RAN_BALLS_DISCOVERY = false;
         bool FIRING_GROUP_DETERMINED = false;
         bool ALREADY_SAID_GOODBYE = false;
 
@@ -59,7 +60,7 @@ namespace IngameScript {
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
             _unicastListener = IGC.UnicastListener;
-            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime);
+            _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime, IGC);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Launch, Launch);
@@ -79,6 +80,13 @@ namespace IngameScript {
             if (!FINISHED_LOADING_HARDWARE) {
                 FINISHED_LOADING_HARDWARE = _missile.LoadHardware(GridTerminalSystem);
                 return;
+            }
+
+            // ONLY when hardware is finished loading, find BALLS listeners and make available to LIGMA's DetermineFiringGroup method
+            if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED)
+            {
+                IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners);
+                RAN_BALLS_DISCOVERY = true;
             }
 
             if (!FIRING_GROUP_DETERMINED) {

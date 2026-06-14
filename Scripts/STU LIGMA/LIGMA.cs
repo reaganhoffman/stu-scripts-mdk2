@@ -36,6 +36,7 @@ namespace IngameScript {
             public static IMyBroadcastListener BALLSListener { get; set; }
             public static IMyRemoteControl RemoteControl { get; set; }
             public static IMyGridProgramRuntimeInfo Runtime { get; set; }
+            public static IMyIntergridCommunicationSystem IGC { get; set; }
 
             public static IMyThrust[] AllThrusters { get; set; }
             public static IMyGyro[] Gyros { get; set; }
@@ -48,7 +49,7 @@ namespace IngameScript {
             public static Queue<STULog> LocalLogQueue { get; set; } = new Queue<STULog>();
 
             IEnumerator<bool> _hardwareLoadStateMachine;
-            public static List<IMyBroadcastListener> DiscoveredBALLS = new List<IMyBroadcastListener>();
+            public static List<IMyBroadcastListener> BALLS_Listeners = new List<IMyBroadcastListener>();
             IEnumerator<bool> _firingGroupDeterminatorStateMachine;
             static Dictionary<long, BALLS_Data> _discoveredBALLS = new Dictionary<long, BALLS_Data>();
 
@@ -92,12 +93,14 @@ namespace IngameScript {
                          IMyBroadcastListener ballsListener,
                          IMyGridTerminalSystem grid,
                          IMyProgrammableBlock me,
-                         IMyGridProgramRuntimeInfo runtime) {
+                         IMyGridProgramRuntimeInfo runtime,
+                         IMyIntergridCommunicationSystem igc) {
                 Me = me;
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
                 BALLSListener = ballsListener;
                 Runtime = runtime;
+                IGC = igc;
                 LogScreen = new LogScreen(Me, 0, 0.5f);
             }
 
@@ -220,18 +223,21 @@ namespace IngameScript {
             }
 
             IEnumerable<bool> DetermineFiringGroupCoroutine() {
-                SendTelemetry();
+                foreach (var balls in BALLS_Listeners)
+                {
+                    string[] parsed = balls.Tag.Split('-');
+                    long entityID;
+                    bool success = long.TryParse(parsed[1], out entityID);
+                    if (!success) { throw new Exception("failed to parse entity ID from BALLS discovery"); }
+                    IGC.SendUnicastMessage(entityID, "ASL?", "");
+                }
                 yield return true;
 
                 int i = 0;
                 while (i < 18) { i++; yield return true; }
 
-                if (BALLSListener.HasPendingMessage) { AddToLocalLogQueue($"balls listener not blank"); }
-
-                int n = 0;
-                while (BALLSListener.HasPendingMessage) {
-                    FormatBALLSDiscoveryReply(BALLSListener.AcceptMessage());
-                    n++;
+                while (IGC.UnicastListener.HasPendingMessage) {
+                    ParseBALLSDiscoveryReply(IGC.UnicastListener.AcceptMessage());
                     yield return true;
                 }
 
@@ -239,24 +245,20 @@ namespace IngameScript {
                 CreateOkBroadcast("hi every1 im new!!!!!!!");
             }
 
-            public static void FormatBALLSDiscoveryReply(MyIGCMessage message) {
-                try {
-                    CreateOkBroadcast("Found a BALLS");
-                    STULog incomingLog = STULog.Deserialize(message.Data.ToString());
-                    long sender_id = message.Source;
-                    Vector3D incomingWorldPos = FormatBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
+            public static void ParseBALLSDiscoveryReply(MyIGCMessage message) {
+                CreateOkBroadcast("Found a BALLS");
+                STULog incomingLog = STULog.Deserialize(message.Data.ToString());
+                long sender_id = message.Source;
+                Vector3D incomingWorldPos = ParseBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
 
-                    if (double.IsNaN(incomingWorldPos.Length())) { throw new Exception(); } // clever trick from FC to determine if a given vector is a zero vector.
+                BALLS_Data incomingBALLS_Data = new BALLS_Data();
+                incomingBALLS_Data.FiringGroup = incomingLog.Message;
+                incomingBALLS_Data.WorldPosition = incomingWorldPos;
 
-                    BALLS_Data incomingBALLS_Data = new BALLS_Data();
-                    incomingBALLS_Data.FiringGroup = incomingLog.Message;
-                    incomingBALLS_Data.WorldPosition = incomingWorldPos;
-
-                    _discoveredBALLS[sender_id] = incomingBALLS_Data; // dictionary syntax trick; if [key] exists, value is updated; if [key] dne, a new entry is added.
-                } catch { }
+                _discoveredBALLS[sender_id] = incomingBALLS_Data; // dictionary syntax trick; if [key] exists, value is updated; if [key] dne, a new entry is added.
             }
 
-            public static Vector3D FormatBALLSDiscoveryReplyMetadata(Dictionary<string, string> incomingMetadata) {
+            public static Vector3D ParseBALLSDiscoveryReplyMetadata(Dictionary<string, string> incomingMetadata) {
                 try {
                     double x;
                     string s_x = "0";
@@ -279,12 +281,13 @@ namespace IngameScript {
                         Z = z
                     };
                 } catch {
+                    CreateFatalErrorBroadcast("Malformed BALLS Discovery Metadata");
                     return new Vector3D();
                 }
             }
 
             static void SelectFiringGroup() {
-                string _firingGroup = "";
+                string _firingGroup = "NONE";
                 if (_discoveredBALLS.Count == 0) // shortcut if no BALLS were found (very unlikely)
                 {
                     AcceptFiringGroup(_firingGroup);
@@ -309,8 +312,8 @@ namespace IngameScript {
             }
 
             static void AcceptFiringGroup(string firingGroup) {
-                s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_BROADCASTER + firingGroup;
-                s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_BROADCASTER + firingGroup;
+                s_logBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup;
+                s_telemetryBroadcaster.Channel = LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup;
                 FiringGroup = firingGroup;
             }
 
