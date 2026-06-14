@@ -54,7 +54,7 @@ namespace IngameScript {
             /// <param name="surface"></param>
             /// <param name="font"></param>
             /// <param name="fontSize"></param>
-            public STUDisplay(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1f) {
+            public STUDisplay(IMyTerminalBlock block, int displayIndex, float fontSize, string font = "Monospace") {
                 var tempBlock = block as IMyTextSurfaceProvider;
                 Surface = TryGetSurface(tempBlock, displayIndex);
                 Surface.Script = "";

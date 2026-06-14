@@ -6,7 +6,7 @@ namespace IngameScript {
 
             public LIGMA Missile { get; set; }
 
-            public MissileReadout(IMyTerminalBlock block, int displayIndex, LIGMA missile) : base(block, displayIndex, "Monospace", 1f) {
+            public MissileReadout(IMyTerminalBlock block, int displayIndex, LIGMA missile) : base(block, displayIndex, 1f, "Monospace") {
                 Missile = missile;
             }
 

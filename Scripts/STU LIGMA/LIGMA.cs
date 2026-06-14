@@ -96,8 +96,9 @@ namespace IngameScript {
                 Me = me;
                 s_telemetryBroadcaster = telemetryBroadcaster;
                 s_logBroadcaster = logBroadcaster;
+                BALLSListener = ballsListener;
                 Runtime = runtime;
-                LogScreen = new LogScreen(Me, 0, 0.25f);
+                LogScreen = new LogScreen(Me, 0, 2f);
             }
 
             public void AddToLocalLogQueue(string message, STULogType logType = STULogType.INFO)

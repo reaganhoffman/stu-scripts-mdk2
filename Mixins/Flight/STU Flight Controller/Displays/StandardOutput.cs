@@ -9,7 +9,7 @@ namespace IngameScript {
 
                 //STUDisplayDrawMapper DrawMapper;
 
-                public StandardOutput(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
+                public StandardOutput(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, fontSize, font) {
                     //DrawMapper = new STUDisplayDrawMapper {
                     //    DisplayDrawMapper = {
                     //        { STUDisplayType.CreateDisplayIdentifier(STUDisplayBlock.SmallBlockCockpit, STUSubDisplay.LargeDisplay), SmallBuggyCockpit.ScreenArea}

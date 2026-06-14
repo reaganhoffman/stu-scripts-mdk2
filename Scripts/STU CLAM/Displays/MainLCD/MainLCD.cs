@@ -29,7 +29,7 @@ namespace IngameScript
                 }
             };
 
-            public MainLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
+            public MainLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, fontSize, font)
             {
                 VelocityComponents = Vector3D.Zero;
                 FuelCapacity = 0;

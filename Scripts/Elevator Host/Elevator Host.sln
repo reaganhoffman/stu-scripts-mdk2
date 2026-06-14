@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator Host", "Elevator Host.csproj", "{74E4DD59-897F-4407-BD55-109D28C9C6FE}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74E4DD59-897F-4407-BD55-109D28C9C6FE}.Debug|x64.ActiveCfg = Debug|x64
+		{74E4DD59-897F-4407-BD55-109D28C9C6FE}.Debug|x64.Build.0 = Debug|x64
+		{74E4DD59-897F-4407-BD55-109D28C9C6FE}.Release|x64.ActiveCfg = Release|x64
+		{74E4DD59-897F-4407-BD55-109D28C9C6FE}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8BDD809F-02F3-4256-988A-A836E1C88FD2}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
+		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{74e4dd59-897f-4407-bd55-109d28c9c6fe}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

@@ -11,7 +11,7 @@ namespace IngameScript
         {
             public Queue<STULog> Logs { get; set; }
 
-            public LogScreen(IMyTerminalBlock block, int displayIndex, float fontSize = 1, string font = "Monospace") : base(block, displayIndex, font, fontSize)
+            public LogScreen(IMyTerminalBlock block, int displayIndex, float fontSize, string font = "Monospace") : base(block, displayIndex, fontSize, font)
             {
                 Logs = new Queue<STULog>();
             }
@@ -19,6 +19,7 @@ namespace IngameScript
             public void Refresh()
             {
                 StartFrame();
+                LIGMA.CreateOkBroadcast($"{this.Surface.FontSize}");
                 WriteWrappableLogs(Logs);
                 EndAndPaintFrame();
             }

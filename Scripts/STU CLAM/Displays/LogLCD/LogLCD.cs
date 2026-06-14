@@ -10,7 +10,7 @@ namespace IngameScript
 
             public Queue<STULog> Logs { get; set; }
 
-            public LogLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize)
+            public LogLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, fontSize, font)
             {
                 Logs = new Queue<STULog>();
             }
