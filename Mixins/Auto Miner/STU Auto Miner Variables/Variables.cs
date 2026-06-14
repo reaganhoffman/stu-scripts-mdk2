@@ -1,12 +1,16 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Text;
 using VRageMath;
 
-namespace IngameScript {
-    partial class Program {
+namespace IngameScript
+{
+    partial class Program
+    {
 
-        public static class AUTO_MINER_VARIABLES {
+        public static class AUTO_MINER_VARIABLES
+        {
 
             public const string AUTO_MINER_RECON_NAME = "AM-R";
             public const string AUTO_MINER_RECON_LOG_SUBSCRIBER_TAG = "AUTO_MINER_RECON_LOG_SUBSCRIBER";
@@ -26,7 +30,8 @@ namespace IngameScript {
 
         }
 
-        public class MiningDroneData {
+        public class MiningDroneData
+        {
 
             public string Id { get; set; }
             public string Name { get; set; }
@@ -44,11 +49,13 @@ namespace IngameScript {
             public Vector3D JobSite { get; set; }
             public int JobDepth { get; set; }
 
-            public static MiningDroneData Deserialize(string s) {
+            public static MiningDroneData Deserialize(string s)
+            {
                 var drone = new MiningDroneData();
 
                 var parts = s.Split(';');
-                foreach (var part in parts) {
+                foreach (var part in parts)
+                {
                     var kv = part.Split(':');
                     if (kv.Length != 2)
                         continue;
@@ -56,7 +63,8 @@ namespace IngameScript {
                     var key = kv[0].Trim();
                     var value = kv[1].Trim();
 
-                    switch (key) {
+                    switch (key)
+                    {
                         case "Id":
                             drone.Id = value;
                             break;
@@ -108,11 +116,13 @@ namespace IngameScript {
                 return drone;
             }
 
-            public static string FormatVector3D(Vector3D v) {
+            public static string FormatVector3D(Vector3D v)
+            {
                 return $"({v.X}, {v.Y}, {v.Z})";
             }
 
-            public static Vector3D DeserializeVector3D(string s) {
+            public static Vector3D DeserializeVector3D(string s)
+            {
                 // Remove parentheses and split by comma
                 s = s.Trim('(', ')');
                 var parts = s.Split(',');
@@ -126,7 +136,8 @@ namespace IngameScript {
                 return new Vector3D(x, y, z);
             }
 
-            public static PlaneD DeserializePlaneD(string s) {
+            public static PlaneD DeserializePlaneD(string s)
+            {
                 // Remove parentheses and split by comma
                 s = s.Trim('(', ')');
                 var parts = s.Split(',');
@@ -141,9 +152,9 @@ namespace IngameScript {
                 return new PlaneD(x, y, z, d);
             }
 
-            public string Serialize() {
+            public string Serialize()
+            {
                 var sb = new StringBuilder();
-
                 sb.Append($"Id: {Id}; ");
                 sb.Append($"Name: {Name}; ");
                 sb.Append($"State: {State}; ");
@@ -159,17 +170,39 @@ namespace IngameScript {
                 sb.Append($"JobPlane: {FormatPlaneD(JobPlane)}; ");
                 sb.Append($"JobDepth: {JobDepth}; ");
                 sb.Append($"CargoCapacity: {CargoCapacity}");
-
                 return sb.ToString();
             }
 
-            public static string FormatPlaneD(PlaneD p) {
+            public Dictionary<string, string> SerialDictionary()
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>
+                {
+                    ["Id"] = Id,
+                    ["Name"] = Name,
+                    ["State"] = State,
+                    ["WorldPosition"] = FormatVector3D(WorldPosition),
+                    ["WorldVelocity"] = FormatVector3D(WorldVelocity),
+                    ["WorldAcceleration"] = FormatVector3D(WorldAcceleration),
+                    ["HydrogenLiters"] = HydrogenLiters.ToString(),
+                    ["PowerMegawatts"] = PowerMegawatts.ToString(),
+                    ["HydrogenCapacity"] = PowerCapacity.ToString(),
+                    ["PowerCapacity"] = PowerCapacity.ToString(),
+                    ["CargoLevel"] = CargoLevel.ToString(),
+                    ["JobSite"] = FormatVector3D(JobSite),
+                    ["JobPlane"] = FormatPlaneD(JobPlane)
+                };
+                return dict;
+            }
+
+            public static string FormatPlaneD(PlaneD p)
+            {
                 return $"({p.Normal.X}, {p.Normal.Y}, {p.Normal.Z}, {p.D})";
             }
 
         }
 
-        public class MinerState {
+        public class MinerState
+        {
             public const string INITIALIZE = "INITIALIZE";
             public const string IDLE = "IDLE";
             public const string FLY_TO_JOB_SITE = "FLY_TO_JOB_SITE";

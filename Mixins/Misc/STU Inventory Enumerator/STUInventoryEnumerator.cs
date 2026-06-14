@@ -188,6 +188,12 @@ namespace IngameScript {
             }
 
             void Init() {
+                // MostRecentItemTotals must never be null: the (grid,blocks,me) and (blocks,tanks,batteries,me)
+                // constructors don't set it, and it's only populated after a full enumeration cycle completes
+                // (which spans several ticks). Consumers read it every tick, so start it as an empty dictionary.
+                if (MostRecentItemTotals == null) {
+                    MostRecentItemTotals = new Dictionary<string, double>();
+                }
                 HydrogenCapacity = GetHydrogenCapacity();
                 OxygenCapacity = GetOxygenCapacity();
                 PowerCapacity = GetPowerCapacity();

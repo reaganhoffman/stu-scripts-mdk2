@@ -402,3 +402,10 @@ FodyWeavers.xsd
 # Exclude mdk.local files
 **/*.mdk.local
 **/*.mdk.local.ini
+
+# .env anywhere they appear
+**/*.env
+
+# Python virtual environments
+**/.venv/
+**/venv/

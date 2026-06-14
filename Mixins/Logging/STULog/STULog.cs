@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using VRageMath;
 
-namespace IngameScript {
-    partial class Program {
+namespace IngameScript
+{
+    partial class Program
+    {
 
         #region mdk preserve
-        public enum STULogType {
+        public enum STULogType
+        {
             OK,
             ERROR,
             WARNING,
@@ -18,7 +21,8 @@ namespace IngameScript {
         /// A custom Log object for use with the STU master logging system.
         /// All three fields are required to be defind and non-empty to be valid.
         /// </summary>
-        public class STULog {
+        public class STULog
+        {
 
             private string sender;
 
@@ -27,7 +31,8 @@ namespace IngameScript {
 
             public STULog() { }
 
-            public STULog(string sender, string message, STULogType type, Dictionary<string, string> metadata = null) {
+            public STULog(string sender, string message, STULogType type, Dictionary<string, string> metadata = null)
+            {
                 Sender = sender;
                 Message = message;
                 Type = type;
@@ -40,18 +45,21 @@ namespace IngameScript {
             /// <param name="s"></param>
             /// <returns><c>STULog</c></returns>
             /// <exception cref="ArgumentException">Thrown if deserialization fails.</exception>"
-            public static STULog Deserialize(string s) {
+            public static STULog Deserialize(string s)
+            {
 
                 string[] components = s.Split(new string[] { COMPONENT_DELIMITER }, StringSplitOptions.None);
 
                 string typeString = components[2];
                 STULogType logType;
 
-                if (!Enum.TryParse(typeString, false, out logType)) {
+                if (!Enum.TryParse(typeString, false, out logType))
+                {
                     throw new ArgumentException($"Malformed log string; invalid log type: {typeString}.");
                 }
 
-                switch (components.Length) {
+                switch (components.Length)
+                {
                     case 3:
                         // No metadata
                         return new STULog(components[0], components[1], logType);
@@ -65,11 +73,13 @@ namespace IngameScript {
 
             }
 
-            private static Dictionary<string, string> ParseMetadata(string metadataString) {
+            private static Dictionary<string, string> ParseMetadata(string metadataString)
+            {
                 Dictionary<string, string> metadata = new Dictionary<string, string>();
                 string[] metadataKeyValuePairs = metadataString.Split(new string[] { METADATA_DELIMITER }, StringSplitOptions.None);
 
-                foreach (string pair in metadataKeyValuePairs) {
+                foreach (string pair in metadataKeyValuePairs)
+                {
                     string[] keyValue = pair.Split('=');
                     string key = keyValue[0].Trim();
                     string value = keyValue[1].Trim();
@@ -78,8 +88,10 @@ namespace IngameScript {
                 return metadata;
             }
 
-            public static Color GetColor(STULogType type) {
-                switch (type) {
+            public static Color GetColor(STULogType type)
+            {
+                switch (type)
+                {
                     case STULogType.OK:
                         return Color.Green;
                     case STULogType.ERROR:
@@ -97,31 +109,40 @@ namespace IngameScript {
             /// Returns a string representation of a <c>Log</c>, usually for transmission via IGC
             /// </summary>
             /// <returns>string</returns>
-            public string Serialize() {
+            public string Serialize()
+            {
 
-                if (Metadata == null) {
+                if (Metadata == null)
+                {
                     return string.Join(COMPONENT_DELIMITER, Sender, Message, Type);
                 }
 
                 string[] keyPairStrings = new string[Metadata.Keys.Count];
                 int i = 0;
-                foreach (KeyValuePair<string, string> pair in Metadata) {
+                foreach (KeyValuePair<string, string> pair in Metadata)
+                {
                     keyPairStrings[i] = $"{pair.Key}={pair.Value}";
                     i++;
                 }
                 return string.Join(COMPONENT_DELIMITER, Sender, Message, Type, string.Join(METADATA_DELIMITER, keyPairStrings));
             }
 
-            // GETTERS AND SETTERS // 
+            // GETTERS AND SETTERS //
 
-            public string Sender {
-                get {
+            public string Sender
+            {
+                get
+                {
                     return sender;
                 }
-                set {
-                    if (string.IsNullOrEmpty(value)) {
+                set
+                {
+                    if (string.IsNullOrEmpty(value))
+                    {
                         throw new ArgumentException("Sender cannot be an empty string");
-                    } else {
+                    }
+                    else
+                    {
                         sender = value;
                     }
                 }
@@ -131,18 +152,37 @@ namespace IngameScript {
             /// Creates a pipe-delineated CSV-like row using the Sender, Message, Type, and Metadata keys (in that order)
             /// </summary>
             /// <returns></returns>
-            public string ToPSV(string identifier = "n/a") {
+            public string ToPSV(string identifier = "n/a")
+            {
                 List<string> metadataList = new List<string>();
-                if (Metadata != null) {
-                    foreach (KeyValuePair<string, string> pair in Metadata) {
+                List<string> attributeList = new List<string>
+                {
+                    identifier,
+                    Sender,
+                    Message,
+                    Type.ToString()
+                };
+
+                string attributeString = string.Join("|", attributeList.ToArray());
+
+                if (Metadata != null)
+                {
+                    foreach (KeyValuePair<string, string> pair in Metadata)
+                    {
                         metadataList.Add($"{pair.Key}={pair.Value}");
                     }
                 }
-                if (metadataList.Count > 0) {
-                    return $"{identifier}|{Sender}|{Message}|{Type}|{string.Join("|", metadataList.ToArray())}";
-                } else {
-                    return $"{identifier}|{Sender}|{Message}|{Type}";
+
+                if (metadataList.Count > 0)
+                {
+                    string metadataString = string.Join("|", metadataList.ToArray());
+                    return $"{attributeString}|{metadataString}";
                 }
+                else
+                {
+                    return attributeString;
+                }
+
             }
 
             public string Message { get; set; }

@@ -1,10 +1,13 @@
-﻿using Sandbox.ModAPI.Ingame;
-using System;
+﻿using System;
+using System.Linq;
 using System.Text;
+using Sandbox.ModAPI.Ingame;
 using VRage.Game.ModAPI.Ingame.Utilities;
 
-namespace IngameScript {
-    public partial class Program : MyGridProgram {
+namespace IngameScript
+{
+    public partial class Program : MyGridProgram
+    {
 
         IMyUnicastListener _broadcastListener;
         MyIGCMessage _incomingMessage;
@@ -14,20 +17,25 @@ namespace IngameScript {
 
         string _failedLogs;
 
-        public Program() {
+        public Program()
+        {
             Runtime.UpdateFrequency = UpdateFrequency.Update100;
             _ini = new MyIni();
             _broadcastListener = IGC.UnicastListener;
             _logs = new StringBuilder();
-            if (!String.IsNullOrEmpty(Storage)) {
+            if (!String.IsNullOrEmpty(Storage))
+            {
                 _logs = new StringBuilder(Storage);
             }
 
             // initialize configuration
             MyIniParseResult parseResult = new MyIniParseResult();
-            if (_ini.TryParse(Me.CustomData, out parseResult)) {
+            if (_ini.TryParse(Me.CustomData, out parseResult))
+            {
                 // fill out pre-existing values
-            } else {
+            }
+            else
+            {
                 // initialize values
             }
 
@@ -36,19 +44,31 @@ namespace IngameScript {
             Me.CustomData = _ini.ToString();
         }
 
-        public void Save() {
+        public void Save()
+        {
             Storage = _logs.ToString();
         }
 
-        public void Main() {
+        public void Main(string command)
+        {
+            long logAppendedTs = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
+            if (command == "clear")
+            {
+                _logs = new StringBuilder();
+            }
             Echo(_broadcastListener.HasPendingMessage.ToString());
-            while (_broadcastListener.HasPendingMessage) {
-                try {
+            while (_broadcastListener.HasPendingMessage)
+            {
+                try
+                {
                     _incomingMessage = _broadcastListener.AcceptMessage();
                     _log = STULog.Deserialize(_incomingMessage.Data.ToString());
-                    _logs.Append(_log.ToPSV(_incomingMessage.Tag));
-                } catch (ArgumentException ex) {
-                    // figure out later     
+                    _logs.Append($"{_log.ToPSV(_incomingMessage.Tag)}|{logAppendedTs}");
+                    _logs.Append(Environment.NewLine);
+                }
+                catch (ArgumentException ex)
+                {
+                    // figure out later
                     Echo(ex.Message);
                 }
             }
