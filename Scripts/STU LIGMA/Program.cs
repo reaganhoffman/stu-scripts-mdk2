@@ -58,7 +58,7 @@ namespace IngameScript {
             string firingGroup = _ini.Get("Configuration", "FiringGroup").ToString("");
             s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-            _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_ANNOUNCEMENT_CHANNEL);
             _unicastListener = IGC.UnicastListener;
             _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime, IGC);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
