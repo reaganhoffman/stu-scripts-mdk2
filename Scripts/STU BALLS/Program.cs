@@ -18,12 +18,15 @@ namespace IngameScript {
         Queue<STUStateMachine> ManeuverQueue { get; set; } = new Queue<STUStateMachine>();
         ConstructLIGMA ConstructionStateMachine { get; set; }
 
+        IMyUnicastListener _virginLIGMAListener { get; set; }
+
         BALLS _BALLS { get; set; }
 
         public static bool IGNORE_OUT_OF_RESOURCES { get; private set; } = false;
 
 
         public Program() {
+            _virginLIGMAListener = IGC.UnicastListener;
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
             if (_ini.TryParse(Me.CustomData)) {
@@ -59,11 +62,17 @@ namespace IngameScript {
 
             HandleCommand(argument);
 
-            if (BALLS_CommandListener.HasPendingMessage)
-                HandleIncomingLog(BALLS_CommandListener.AcceptMessage());
+            while (_virginLIGMAListener.HasPendingMessage) {
+                MyIGCMessage message = _virginLIGMAListener.AcceptMessage();
+                long ligmaId = message.Source;
+                AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage(), ligmaId);
+            }
 
-            if (UnicastListener.HasPendingMessage)
-                HandleUnicastMessage(UnicastListener.AcceptMessage());
+            if (Listener.HasPendingMessage)
+                HandleIncomingLog(Listener.AcceptMessage());
+
+            if (LIGMALogListener.HasPendingMessage)
+                _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
 
             switch (_BALLS.CurrentState) {
                 case BALLS.State.Active:
@@ -141,13 +150,13 @@ namespace IngameScript {
             }
         }
 
-        public void HandleUnicastMessage(MyIGCMessage message) {
+        public void AnnounceBALLS_Data(MyIGCMessage mesage, long entityId) {
             Dictionary<string, string> outgoingMetadata = new Dictionary<string, string>();
             Vector3D currentWorldPos = Me.GetPosition();
             outgoingMetadata.Add("X", currentWorldPos.X.ToString());
             outgoingMetadata.Add("Y", currentWorldPos.Y.ToString());
             outgoingMetadata.Add("Z", currentWorldPos.Z.ToString());
-            IGC.SendUnicastMessage(message.Source, FIRING_GROUP, new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
+            IGC.SendUnicastMessage(entityId, LIGMA_VARIABLES.VIRGIN_LIGMA_RESPONSE_CHANNEL, new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
         }
         public bool HaveEnoughResources() {
             if (IGNORE_OUT_OF_RESOURCES)

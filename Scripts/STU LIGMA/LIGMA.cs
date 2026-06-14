@@ -208,25 +208,19 @@ namespace IngameScript {
             }
 
             public bool DetermineFiringGroup() {
-                AddToLocalLogQueue($"flight group state machine is null? {_firingGroupDeterminatorStateMachine == null}");
                 if (_firingGroupDeterminatorStateMachine == null) {
                     _firingGroupDeterminatorStateMachine = DetermineFiringGroupCoroutine().GetEnumerator();
                 }
-
-                AddToLocalLogQueue($"flight group state machine is null? {_firingGroupDeterminatorStateMachine == null}");
-
                 if (!_firingGroupDeterminatorStateMachine.MoveNext()) {
                     _firingGroupDeterminatorStateMachine.Dispose();
                     _firingGroupDeterminatorStateMachine = null;
                     return true;
                 }
-
                 return false;
             }
 
             IEnumerable<bool> DetermineFiringGroupCoroutine() {
-                AddToLocalLogQueue("top of DetermineFiringGroupCoroutine");
-
+                SendTelemetry();
                 yield return true;
 
                 int i = 0;
@@ -238,7 +232,6 @@ namespace IngameScript {
                 while (BALLSListener.HasPendingMessage) {
                     FormatBALLSDiscoveryReply(BALLSListener.AcceptMessage());
                     n++;
-                    AddToLocalLogQueue($"dequeued messages: {n}");
                     yield return true;
                 }
 
@@ -248,6 +241,7 @@ namespace IngameScript {
 
             public static void FormatBALLSDiscoveryReply(MyIGCMessage message) {
                 try {
+                    CreateOkBroadcast("Found a BALLS");
                     STULog incomingLog = STULog.Deserialize(message.Data.ToString());
                     long sender_id = message.Source;
                     Vector3D incomingWorldPos = FormatBALLSDiscoveryReplyMetadata(incomingLog.Metadata);
@@ -294,26 +288,24 @@ namespace IngameScript {
                 if (_discoveredBALLS.Count == 0) // shortcut if no BALLS were found (very unlikely)
                 {
                     AcceptFiringGroup(_firingGroup);
-                    return;
                 } else if (_discoveredBALLS.Count == 1) // if you have one, you have none
                   {
-                    AcceptFiringGroup(_discoveredBALLS[0].FiringGroup);
-                    return;
+                    _firingGroup = _discoveredBALLS[0].FiringGroup;
+                    AcceptFiringGroup(_firingGroup);
                 } else // simply pick the one who's closest to me
                   {
                     Vector3D myPos = Me.GetPosition();
                     double shortestDistanceToMe = double.PositiveInfinity;
-                    string winningFiringGroup = "";
                     foreach (var balls in _discoveredBALLS) {
                         double measuredDistance = Math.Abs((myPos - _discoveredBALLS[balls.Key].WorldPosition).Length());
                         if (measuredDistance < shortestDistanceToMe) {
                             shortestDistanceToMe = measuredDistance;
-                            winningFiringGroup = _discoveredBALLS[balls.Key].FiringGroup;
+                            _firingGroup = _discoveredBALLS[balls.Key].FiringGroup;
                         }
                     }
-
-                    AcceptFiringGroup(winningFiringGroup);
+                    AcceptFiringGroup(_firingGroup);
                 }
+                CreateOkBroadcast($"Assigned to {_firingGroup}");
             }
 
             static void AcceptFiringGroup(string firingGroup) {
