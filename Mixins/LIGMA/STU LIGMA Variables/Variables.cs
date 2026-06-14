@@ -16,6 +16,7 @@
             public const string LIGMA_HQ_NAME = "LIGMA_HQ";
 
             public const string BALLS_ANNOUNCEMENT_CHANNEL = "BALLS_ANNOUNCEMENT_CHANNEL";
+            public const string BALLS_STATION_NAME = "BALLS-1";
             public const string VIRGIN_LIGMA_RESPONSE_CHANNEL = "VIRGIN_LIGMA_RESPONSE_CHANNEL";
 
             public const double PLANETARY_DETECTION_BUFFER = 2000;
