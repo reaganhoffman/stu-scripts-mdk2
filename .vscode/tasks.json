@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      // Ctrl+Shift+B. Builds + deploys the script you're currently editing
+      // to the Space Engineers local scripts folder.
+      "label": "MDK2: Deploy current script (Release)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/tools/mdk-deploy.ps1",
+        "-FromPath", "${file}",
+        "-Configuration", "Release"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "clear": true
+      }
+    },
+    {
+      // Compile-check only (no minify/deploy) — faster for catching errors.
+      "label": "MDK2: Build current script (Debug)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/tools/mdk-deploy.ps1",
+        "-FromPath", "${file}",
+        "-Configuration", "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "clear": true
+      }
+    }
+  ]
+}

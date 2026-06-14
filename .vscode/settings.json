@@ -1,0 +1,21 @@
+{
+  // This repo has ~50 independent solutions (one per script). Don't auto-load
+  // one on open — instead use the C# Dev Kit SOLUTION EXPLORER panel to open the
+  // specific script's .sln you want full IntelliSense for (it pulls in the
+  // shared Mixin projects automatically).
+  "dotnet.defaultSolution": "disable",
+
+  // Keep build artifacts out of the file tree / search.
+  "files.exclude": {
+    "**/obj": true,
+    "**/bin": true
+  },
+  "search.exclude": {
+    "**/obj": true,
+    "**/bin": true
+  },
+
+  // MDK2 scripts target C# 6 / .NET Framework 4.8 — keep the analyzers honest.
+  "dotnet.unitTests.runSettingsPath": "",
+  "omnisharp.useModernNet": true
+}
