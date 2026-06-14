@@ -58,7 +58,7 @@ namespace IngameScript {
             string firingGroup = _ini.Get("Configuration", "FiringGroup").ToString("");
             s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-            _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
+            _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_ANNOUNCEMENT_CHANNEL);
             _unicastListener = IGC.UnicastListener;
             _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime, IGC);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
@@ -83,9 +83,9 @@ namespace IngameScript {
             }
 
             // ONLY when hardware is finished loading, find BALLS listeners and make available to LIGMA's DetermineFiringGroup method
-            if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED)
-            {
+            if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED) {
                 IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners);
+                LIGMA.BALLS_Listeners.RemoveAll(name => !name.Tag.Contains(LIGMA_VARIABLES.BALLS_STATION_NAME));
                 RAN_BALLS_DISCOVERY = true;
             }
 
