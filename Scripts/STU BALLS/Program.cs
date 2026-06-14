@@ -9,8 +9,7 @@ namespace IngameScript {
         STUInventoryEnumerator InventoryEnumerator { get; set; }
         MyCommandLine CommandLine { get; set; } = new MyCommandLine();
         MyCommandLine WirelessMessageCommandLine { get; set; } = new MyCommandLine();
-        IMyBroadcastListener BALLS_CommandListener { get; set; }
-        IMyBroadcastListener VirginLIGMAListener { get; set; }
+        IMyBroadcastListener Listener { get; set; }
         IMyUnicastListener UnicastListener { get; set; }
         MyIni _ini { get; set; } = new MyIni();
         string BALLS_STATION_NAME { get; set; }
@@ -27,6 +26,7 @@ namespace IngameScript {
 
         public Program() {
             _virginLIGMAListener = IGC.UnicastListener;
+            Listener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_STATION_NAME + "-" + Me.EntityId);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
             if (_ini.TryParse(Me.CustomData)) {
@@ -43,8 +43,6 @@ namespace IngameScript {
             _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
-            BALLS_CommandListener = IGC.RegisterBroadcastListener(BALLS_STATION_NAME);
-            VirginLIGMAListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
             UnicastListener = IGC.UnicastListener;
 
             _BALLS.CurrentState = BALLS.State.Standby;
@@ -63,16 +61,11 @@ namespace IngameScript {
             HandleCommand(argument);
 
             while (_virginLIGMAListener.HasPendingMessage) {
-                MyIGCMessage message = _virginLIGMAListener.AcceptMessage();
-                long ligmaId = message.Source;
-                AnnounceBALLS_Data(VirginLIGMAListener.AcceptMessage(), ligmaId);
+                AnnounceBALLS_Data(_virginLIGMAListener.AcceptMessage());
             }
 
             if (Listener.HasPendingMessage)
                 HandleIncomingLog(Listener.AcceptMessage());
-
-            if (LIGMALogListener.HasPendingMessage)
-                _BALLS.AddToLocalLogQueue(STULog.Deserialize(LIGMALogListener.AcceptMessage().Data.ToString()));
 
             switch (_BALLS.CurrentState) {
                 case BALLS.State.Active:
@@ -150,13 +143,13 @@ namespace IngameScript {
             }
         }
 
-        public void AnnounceBALLS_Data(MyIGCMessage mesage, long entityId) {
+        public void AnnounceBALLS_Data(MyIGCMessage message) {
             Dictionary<string, string> outgoingMetadata = new Dictionary<string, string>();
             Vector3D currentWorldPos = Me.GetPosition();
             outgoingMetadata.Add("X", currentWorldPos.X.ToString());
             outgoingMetadata.Add("Y", currentWorldPos.Y.ToString());
             outgoingMetadata.Add("Z", currentWorldPos.Z.ToString());
-            IGC.SendUnicastMessage(entityId, LIGMA_VARIABLES.VIRGIN_LIGMA_RESPONSE_CHANNEL, new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
+            IGC.SendUnicastMessage(message.Source, LIGMA_VARIABLES.VIRGIN_LIGMA_RESPONSE_CHANNEL, new STULog(BALLS_STATION_NAME, FIRING_GROUP, STULogType.INFO, outgoingMetadata));
         }
         public bool HaveEnoughResources() {
             if (IGNORE_OUT_OF_RESOURCES)
