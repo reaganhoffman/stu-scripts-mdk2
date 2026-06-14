@@ -18,7 +18,6 @@ namespace IngameScript {
         STUInventoryEnumerator _inventoryEnumerator;
 
         LIGMA _missile;
-        MissileReadout _display;
         static STUMasterLogBroadcaster s_telemetryBroadcaster;
         static STUMasterLogBroadcaster s_logBroadcaster;
         IMyUnicastListener _unicastListener;
@@ -62,7 +61,6 @@ namespace IngameScript {
             _unicastListener = IGC.UnicastListener;
             _ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_DISCOVERY_CHANNEL);
             _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, _ballsListener, GridTerminalSystem, Me, Runtime);
-            _display = new MissileReadout(Me, 0, _missile);
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Launch, Launch);
