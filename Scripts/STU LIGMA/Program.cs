@@ -85,7 +85,7 @@ namespace IngameScript {
             // ONLY when hardware is finished loading, find BALLS listeners and make available to LIGMA's DetermineFiringGroup method
             if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED)
             {
-                IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners);
+                IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners, );
                 RAN_BALLS_DISCOVERY = true;
             }
 
