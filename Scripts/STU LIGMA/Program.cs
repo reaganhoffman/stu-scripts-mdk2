@@ -76,8 +76,6 @@ namespace IngameScript {
 
         void Main(string argument) {
 
-            LIGMA.LogScreen.Refresh();
-
             if (!FINISHED_LOADING_HARDWARE) {
                 FINISHED_LOADING_HARDWARE = _missile.LoadHardware(GridTerminalSystem);
                 return;
@@ -174,7 +172,7 @@ namespace IngameScript {
             } finally {
                 LIGMA.UpdateMeasurements();
                 LIGMA.SendTelemetry();
-
+                LIGMA.LogScreen.Refresh();
                 Echo($"Telemetry:");
                 Dictionary<string, string> telemetry = LIGMA.GetTelemetryDictionary();
                 foreach (var item in telemetry) {

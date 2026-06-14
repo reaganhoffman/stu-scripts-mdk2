@@ -515,7 +515,7 @@ namespace IngameScript {
             private void CreateLogSprite(STULog log, StringBuilder logSegment) {
                 CurrentFrame.Add(new MySprite() {
                     Type = SpriteType.TEXT,
-                    //Data = logSegment.ToString(),
+                    Data = logSegment.ToString(),
                     Position = Cursor,
                     RotationOrScale = Surface.FontSize,
                     Color = STULog.GetColor(log.Type),
