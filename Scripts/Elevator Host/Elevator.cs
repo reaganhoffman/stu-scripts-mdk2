@@ -12,10 +12,18 @@ namespace IngameScript
     {
         public class Elevator
         {
+            public const float BlockLength = 2.5f;
+            
             public enum Direction
             {
                 Up,
                 Down
+            }
+            public enum State
+            {
+                GoingUp,
+                GoingDown,
+                Stopped
             }
             public class FloorButton
             {
@@ -47,32 +55,40 @@ namespace IngameScript
 
             public string ID { get; set; } = string.Empty;
             public List<IMyPistonBase> Pistons { get; set; } = new List<IMyPistonBase>();
+            public float MaxElevationPossible { get; private set; }
+            public float MinElevationPossible { get; private set; }
             public Floor[] Floors { get; set; }
-            public CabButtonPanelDisplay CabButtonPanelDisplay { get; set; } = new CabButtonPanelDisplay();
             public IMyButtonPanel ButtonPanel { get; set; }
+            public CabButtonPanelDisplay CabButtonDisplay_1 { get; set; }
+            public CabButtonPanelDisplay CabButtonDisplay_2 { get; set; }
+            public CabButtonPanelDisplay CabButtonDisplay_3 { get; set; }
 
             public Elevator(string id, List<IMyPistonBase> pistons, List<Floor> floors, IMyButtonPanel buttonPanel)
             {
                 ID = id;
                 Pistons = pistons;
+                MinElevationPossible = Pistons.Count * 5.125f;
+                MaxElevationPossible = Pistons.Count * (5.125f + 10);
                 Floors = new Floor[floors.Count + 1];
                 foreach (var floor in floors)
                 {
                     Floors[floor.FloorNum] = floor; // ensures the floors are in the right order
                 }
                 ButtonPanel = buttonPanel;
-            }
-
-            int ElevationToFloorHeightBlockCount(float elevation)
-            {
-
+                CabButtonDisplay_1 = new CabButtonPanelDisplay(ButtonPanel, 0);
+                CabButtonDisplay_2 = new CabButtonPanelDisplay(ButtonPanel, 1);
+                CabButtonDisplay_3 = new CabButtonPanelDisplay(ButtonPanel, 2);
             }
 
             float FloorHeightBlockCountToElevation(int blockCount)
             {
-
+                return blockCount * BlockLength;
             }
 
+            float EachPistonDistanceToHitElevation(float elevation)
+            {
+                
+            }
         }
     }
     

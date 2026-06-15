@@ -9,6 +9,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Mixins
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Hardware Loading Utils", "..\..\Mixins\Hardware Loading Utils\Hardware Loading Utils.shproj", "{4EEDEFE0-703D-4133-876B-54CC6FBF49CB}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STULog", "..\..\Mixins\Logging\STULog\STULog.shproj", "{1EBA5AFF-373F-4112-BEE3-15B74121539E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,9 +29,11 @@ Global
 		SolutionGuid = {8BDD809F-02F3-4256-988A-A836E1C88FD2}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Logging\STULog\STULog.projitems*{1eba5aff-373f-4112-bee3-15b74121539e}*SharedItemsImports = 13
 		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{4eedefe0-703d-4133-876b-54cc6fbf49cb}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
 		..\..\Mixins\Displays\STU Display\STU_Display.projitems*{74e4dd59-897f-4407-bd55-109d28c9c6fe}*SharedItemsImports = 5
 		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{74e4dd59-897f-4407-bd55-109d28c9c6fe}*SharedItemsImports = 5
+		..\..\Mixins\Logging\STULog\STULog.projitems*{74e4dd59-897f-4407-bd55-109d28c9c6fe}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

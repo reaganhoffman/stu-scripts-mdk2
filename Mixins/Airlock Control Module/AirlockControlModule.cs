@@ -28,25 +28,46 @@ namespace IngameScript
         {
 
             const double DEFAULT_TIME_BUFFER = 1000f;
-            public struct Airlock
+            MyIni _ini { get; set; } = new MyIni();
+            Action<string> Echo { get; set; }
+            public List<Airlock> Airlocks { get; set; }
+            public List<SoloAirlock> SoloAirlocks { get; set; }
+            public bool SoloEnabled { get; private set; } = true;
+            public bool AirlockEnabled { get; private set; } = true;
+            public class Airlock
             {
                 public IMyDoor SideA { get; set; }
                 public IMyDoor SideB { get; set; }
                 public double TimeBufferMS { get; set; }
                 public AirlockStateMachine StateMachine { get; set; }
+                public Airlock(IMyDoor sideA, IMyDoor sideB, double timeBufferMS, AirlockStateMachine stateMachine) 
+                {
+                    SideA = sideA;
+                    SideB = sideB;
+                    TimeBufferMS = timeBufferMS;
+                    StateMachine = stateMachine;
+                }
             }
-            public struct SoloAirlock
+            public class SoloAirlock
             {
                 public IMyDoor Door { get; set; }
                 public double TimeBufferMS { get; set; }
                 public SoloAirlockStateMachine StateMachine { get; set; }
+                public SoloAirlock(IMyDoor door, double timeBufferMS, SoloAirlockStateMachine stateMachine)
+                {
+                    Door = door;
+                    TimeBufferMS = timeBufferMS;
+                    StateMachine = stateMachine;
+                }
             }
-            List<Airlock> Airlocks { get; set; } = new List<Airlock>();
-            List<SoloAirlock> SoloAirlocks { get; set; } = new List<SoloAirlock>();
+            public AirlockControlModule(Action<string> echo) 
+            {
+                Echo = echo;
+                Airlocks = new List<Airlock>();
+                SoloAirlocks = new List<SoloAirlock>();
+            }
 
-            public bool SoloEnabled { get; private set; } = true;
-            public bool AirlockEnabled { get; private set; } = true;
-
+            
             /// <summary>
             /// Searches through the grid, finds solo doors and airlock pairs and loads them into the script.
             /// </summary>
@@ -61,53 +82,48 @@ namespace IngameScript
                     doorDictionary.Add(door.CustomName.Trim().ToUpper(), door);
                 }
 
+                Echo("finished door dictionary<doorCustomName, doorEntity>");
+
                 List<long> doorsAlreadyAdded = new List<long>();
                 
                 foreach (var door in doors)
                 {
                     if (doorsAlreadyAdded.Contains(door.EntityId))
                         continue; // skip this door if we've already made an airlock object out of it
-                    MyIni ini = new MyIni();
+                    _ini.Clear();
 
                     MyIniParseResult result;
-                    if (!ini.TryParse(door.CustomData, out result))
+                    if (!_ini.TryParse(door.CustomData, out result))
                         continue; // this should skip the current block if attempting to parse its custom data fails
 
+                    Echo("passed _ini");
 
-                    string partner = "SOLO";
-                    double timeBuffer = DEFAULT_TIME_BUFFER;
-                    ini.Get("AIRLOCK", "PARTNER").TryGetString(out partner);
-                    if (ini.ContainsKey("AIRLOCK", "TIME_BUFFER"))
-                        ini.Get("AIRLOCK", "TIME_BUFFER").TryGetDouble(out timeBuffer);
+                    string partner = _ini.Get("AIRLOCK", "PARTNER").ToString("");
+                    double timeBuffer = _ini.Get("AIRLOCK", "TIME_BUFFER").ToDouble(DEFAULT_TIME_BUFFER);
 
                     if (partner.ToUpper() == "SOLO")
                     {
-                        SoloAirlock soloAirlock = new SoloAirlock();
-                        soloAirlock.Door = door;
-                        soloAirlock.TimeBufferMS = timeBuffer;
-                        soloAirlock.StateMachine = new SoloAirlockStateMachine(door, runtime, timeBuffer);
+                        SoloAirlock soloAirlock = new SoloAirlock(door, timeBuffer, new SoloAirlockStateMachine(door, runtime, timeBuffer));
                         SoloAirlocks.Add(soloAirlock);
                         doorsAlreadyAdded.Add(door.EntityId);
+                        Echo($"Added solo door {door.CustomName}");
                     }
                     else if (doorDictionary.ContainsKey(partner.Trim().ToUpper()))
                     {
-                        Airlock airlock = new Airlock();
-                        airlock.SideA = door;
                         IMyDoor partnerDoor;
                         if (!doorDictionary.TryGetValue(partner.Trim().ToUpper(), out partnerDoor))
                             throw new Exception();
-                        airlock.SideB = partnerDoor;
-                        airlock.TimeBufferMS = timeBuffer;
-                        airlock.StateMachine = new AirlockStateMachine(door, partnerDoor, runtime, timeBuffer);
+                        Airlock airlock = new Airlock(door, partnerDoor, timeBuffer, new AirlockStateMachine(door, partnerDoor, runtime, timeBuffer));
                         Airlocks.Add(airlock);
 
                         doorsAlreadyAdded.Add(door.EntityId);
                         doorsAlreadyAdded.Add(partnerDoor.EntityId);
-
+                        Echo($"Added airlock pair: {door.CustomName} & {partnerDoor.CustomName}");
                     }
 
                 }
             }
+
 
             /// <summary>
             /// Enumerates through the stored list of airlocks known to the program and prints them to the output.

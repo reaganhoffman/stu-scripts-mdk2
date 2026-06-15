@@ -11,7 +11,12 @@ namespace IngameScript
     {
         public class CabDisplay : STUDisplay
         {
-            public CabDisplay(IMyTerminalBlock block, int displayIndex, float fontSize = 1f, string font = "Monospace" ) : base(block, displayIndex, font, fontSize)
+            public CabDisplay(IMyTerminalBlock block, int displayIndex, float fontSize = 1f, string font = "Monospace" ) : base(block, displayIndex, fontSize, font)
+            {
+                
+            }
+
+            public void Refresh(int currentFloor, int desiredFloor, Elevator.State state)
             {
 
             }

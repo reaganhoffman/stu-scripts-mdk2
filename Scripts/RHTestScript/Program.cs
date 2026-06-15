@@ -20,7 +20,7 @@ namespace IngameScript
         public void Main(string argument, UpdateType updateSource)
         {
             IGC.GetBroadcastListeners(FoundListeners);
-            Echo($"GetBroadcastListeners: \n{FoundListeners}\nCount: {FoundListeners.Count}");
+            Echo($"GetBroadcastListeners: \n{FoundListeners}\nCount: {FoundListeners.Count}\nTag of 0th index: {FoundListeners[0].Tag.ToString()}");
             FoundListeners.Clear();
         }
 

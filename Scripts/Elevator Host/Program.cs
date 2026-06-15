@@ -25,7 +25,7 @@ namespace IngameScript
     public partial class Program : MyGridProgram
     {
         MyIni _ini { get; set; } = new MyIni();
-        public string ElevatorID { get; set; } = string.Empty;
+        public string ELEVATOR_ID { get; set; } = string.Empty;
         public Elevator _elevator { get; set; }
         
         public class Request
@@ -53,8 +53,8 @@ namespace IngameScript
                 // [ELEVATOR]
                 // ID=ELEVATOR_NAME
                 _ini.Clear();
-                if (!_ini.TryParse(Me.CustomData, "ELEVATOR")) throw new Exception(); // throws exception if tryparse returns false
-                ElevatorID = _ini.Get("ELEVATOR", "ID").ToString();
+                if (!_ini.TryParse(Me.CustomData, "ELEVATOR")) throw new Exception(); // throws exception if tryparse returns false (fails)
+                ELEVATOR_ID = _ini.Get("ELEVATOR", "ID").ToString("DEFAULT");
 
                 // search through all blocks, find common elevator components, assign those to elevator objects
 
@@ -176,7 +176,7 @@ namespace IngameScript
                         ));
                 }
 
-                _elevator = new Elevator(ElevatorID, _pistons, _floors, _cabButtonPanel.First());
+                _elevator = new Elevator(ELEVATOR_ID, _pistons, _floors, _cabButtonPanel.First());
             }
             catch (Exception e)
             {
@@ -190,7 +190,7 @@ namespace IngameScript
         {
             bool pass;
             _ini.Clear();
-            pass = _ini.TryParse(block.CustomData, "ELEVATOR") & _ini.Get("ELEVATOR", "ID").ToString() == ElevatorID;
+            pass = _ini.TryParse(block.CustomData, "ELEVATOR") & _ini.Get("ELEVATOR", "ID").ToString() == ELEVATOR_ID;
             _ini.Clear();
             return pass;
         }

@@ -6,14 +6,15 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        public static AirlockControlModule ACM { get; set; }
+        public AirlockControlModule ACM { get; set; }
         List<IMyDoor> Doors { get; set; }
         
         public Program()
         {
+            Doors = new List<IMyDoor>();
             GridTerminalSystem.GetBlocksOfType<IMyDoor>(Doors);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
-            ACM = new AirlockControlModule();
+            ACM = new AirlockControlModule(Echo);
             ACM.LoadAirlocks(Doors, Runtime);
         }
 

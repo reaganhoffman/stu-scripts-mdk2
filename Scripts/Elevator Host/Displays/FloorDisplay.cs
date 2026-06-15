@@ -11,7 +11,7 @@ namespace IngameScript
     {
         public class FloorDisplay : STUDisplay
         {
-            public FloorDisplay(IMyTerminalBlock block) : base(block, 0, "Monospace", 1f)
+            public FloorDisplay(IMyTerminalBlock block) : base(block, 0, 1f, "Monospace")
             {
 
             }
