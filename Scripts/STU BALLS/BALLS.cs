@@ -22,6 +22,7 @@ namespace IngameScript
 
             public State CurrentState { get; set; }
             
+            public Action<string> Echo { get; set; }
             public IMyGridTerminalSystem Grid { get; set; }
             public IMyGridProgramRuntimeInfo RuntimeInfo { get; set; }
             public IMyIntergridCommunicationSystem IGC { get; set; }
@@ -54,6 +55,7 @@ namespace IngameScript
 
 
             public BALLS(
+                Action<string> echo,
                 IMyGridTerminalSystem grid, 
                 IMyGridProgramRuntimeInfo runtime, 
                 IMyIntergridCommunicationSystem igc, 
@@ -61,6 +63,7 @@ namespace IngameScript
                 string balls_station_name,
                 string pcmSaveState)
             {
+                Echo = echo;
                 Grid = grid;
                 RuntimeInfo = runtime;
                 IGC = igc;
@@ -71,7 +74,7 @@ namespace IngameScript
 
                 HWLoader = new HWLoader(Grid, PB);
 
-                ACM = new AirlockControlModule();
+                ACM = new AirlockControlModule(Echo);
                 PCM = new PowerControlModule(pcmSaveState);
 
                 MainScreen = new LogScreen(PB, 0, 0.75f);

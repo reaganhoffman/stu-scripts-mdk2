@@ -30,8 +30,8 @@ namespace IngameScript {
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
 
             if (_ini.TryParse(Me.CustomData)) {
-                BALLS_STATION_NAME = _ini.Get("Configuration", "BALLSStationName").ToString("BALLS");
-                FIRING_GROUP = _ini.Get("Configuration", "FiringGroup").ToString("GOOCH");
+                BALLS_STATION_NAME = _ini.Get("BALLS", "BALLS_STATION_NAME").ToString("BALLS");
+                FIRING_GROUP = _ini.Get("BALLS", "FIRING_GROUP").ToString("GOOCH");
             } else {
                 Echo($"Malformed configuration in this PB's custom data.\n" +
                    $"Terminating script.");
@@ -39,7 +39,7 @@ namespace IngameScript {
                 return;
             }
 
-            _BALLS = new BALLS(GridTerminalSystem, Runtime, IGC, Me, BALLS_STATION_NAME, "");
+            _BALLS = new BALLS(Echo, GridTerminalSystem, Runtime, IGC, Me, BALLS_STATION_NAME, "");
             _BALLS.AddToLocalLogQueue("Initializing subsystems...");
 
             InventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
