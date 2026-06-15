@@ -56,24 +56,33 @@ namespace IngameScript {
                 Echo("Failed to parse configuration string");
             }
             string firingGroup = _ini.Get("Configuration", "FiringGroup").ToString("");
+            if (string.IsNullOrEmpty(firingGroup)) {
+		List<IMyTerminalBlock> allBlocks = new List<IMyTerminalBlock>();
+		grid.GetBlocksOfType<IMyProgrammableBlocks>(allBlocks, block => block.CustomData.Contains("[BALLS]"));
+		if (allBlocks.Count > 1) {
+			throw new Exception("More than one BALLS on this grid!");
+		} else if (allBlocks.Count == 0) {
+			throw new Exception("This LIGMA was initialized on a grid with no BALLS; LIGMA requires a BALLS instance to function!");	
+		} else {
+			string ballsData = allBlocks[0].CustomData;
+			if (!_ini.TryParse(ballsData)) {
+				throw new Exception("BALLS data malformed");
+			}
+			firingGroup = _ini.Get("BALLS", "FiringGroup").ToString("ERROR");
+		}
+            }  
             s_telemetryBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_TELEMETRY_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
             s_logBroadcaster = new STUMasterLogBroadcaster(LIGMA_VARIABLES.LIGMA_LOG_CHANNEL + firingGroup, IGC, TransmissionDistance.AntennaRelay);
-            //_ballsListener = IGC.RegisterBroadcastListener(LIGMA_VARIABLES.BALLS_ANNOUNCEMENT_CHANNEL);
             _unicastListener = IGC.UnicastListener;
             _missile = new LIGMA(s_telemetryBroadcaster, s_logBroadcaster, GridTerminalSystem, Me, Runtime, IGC);
+	    LIGMA.FiringGroup = firingGroup;
             _inventoryEnumerator = new STUInventoryEnumerator(GridTerminalSystem, Me);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Launch, Launch);
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Detonate, Detonate);
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.Test, Test);
             _LIGMACommands.Add(LIGMA_VARIABLES.COMMANDS.UpdateTargetData, HandleIncomingTargetData);
-            if (string.IsNullOrEmpty(firingGroup)) {
-                LIGMA.CreateWarningBroadcast("No firing group specified in configuration; attempting to determine firing group from BALLS");
-            } else {
-                LIGMA.CreateOkBroadcast($"Reporting to firing group {firingGroup}");
-                FIRING_GROUP_DETERMINED = true;
-            }
-        }
+ 	}
 
         void Main(string argument) {
 
@@ -83,21 +92,21 @@ namespace IngameScript {
             }
 
             // ONLY when hardware is finished loading, find BALLS listeners and make available to LIGMA's DetermineFiringGroup method
-            if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED) {
-                IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners);
-                Echo(LIGMA.BALLS_Listeners.Count.ToString());
-                foreach (var listener in LIGMA.BALLS_Listeners) {
-                    Echo(listener.Tag);
-                }
-                return;
-                LIGMA.BALLS_Listeners.RemoveAll(name => !name.Tag.Contains(LIGMA_VARIABLES.BALLS_STATION_NAME));
-                RAN_BALLS_DISCOVERY = true;
-            }
+//            if (!RAN_BALLS_DISCOVERY && !FIRING_GROUP_DETERMINED) {
+ //               IGC.GetBroadcastListeners(LIGMA.BALLS_Listeners);
+   //             Echo(LIGMA.BALLS_Listeners.Count.ToString());
+     //           foreach (var listener in LIGMA.BALLS_Listeners) {
+       //             Echo(listener.Tag);
+         //       }
+           //     return;
+             //   LIGMA.BALLS_Listeners.RemoveAll(name => !name.Tag.Contains(LIGMA_VARIABLES.BALLS_STATION_NAME));
+               // RAN_BALLS_DISCOVERY = true;
+           // }
 
-            if (!FIRING_GROUP_DETERMINED) {
-                FIRING_GROUP_DETERMINED = _missile.DetermineFiringGroup();
-                return;
-            }
+        //    if (!FIRING_GROUP_DETERMINED) {
+          //      FIRING_GROUP_DETERMINED = _missile.DetermineFiringGroup();
+            //    return;
+           // }
 
             try {
 
