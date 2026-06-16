@@ -154,7 +154,7 @@ namespace IngameScript {
 
                 private bool StraightFlight(Vector3D targetPoint) {
                     FlightController.OptimizeShipRoll(targetPoint);
-                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, FLIGHT_VELOCITY);
+                    FlightController.SetStableForwardVelocity(FLIGHT_VELOCITY);
                     var shipAligned = FlightController.AlignShipToTarget(targetPoint);
                     if (shipAligned) {
                         return true;

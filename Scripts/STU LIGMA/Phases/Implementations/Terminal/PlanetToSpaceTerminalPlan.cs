@@ -9,7 +9,7 @@ namespace IngameScript {
 
                 public override bool Run() {
                     FirstRunTasks();
-                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, TERMINAL_VELOCITY);
+                    FlightController.SetStableForwardVelocity(TERMINAL_VELOCITY);
                     FlightController.AlignShipToTarget(TargetData.Position);
                     FlightController.OptimizeShipRoll(TargetData.Position);
                     return false;

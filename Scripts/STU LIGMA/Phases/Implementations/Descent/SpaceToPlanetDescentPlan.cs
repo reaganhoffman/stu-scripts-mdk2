@@ -15,7 +15,7 @@ namespace IngameScript {
                     FirstRunTasks();
                     FlightController.AlignShipToTarget(TargetData.Position);
                     FlightController.OptimizeShipRoll(TargetData.Position);
-                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, DESCENT_VELOCITY);
+                    FlightController.SetStableForwardVelocity(DESCENT_VELOCITY);
 
                     if (RemoteControl.TryGetPlanetElevation(MyPlanetElevation.Surface, out CurrentElevation)) {
                         if (CurrentElevation <= ELEVATION_CUTOFF) {

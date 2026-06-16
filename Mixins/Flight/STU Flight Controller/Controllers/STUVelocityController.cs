@@ -90,12 +90,50 @@ namespace IngameScript {
                 /// </summary>
                 private class ThrusterGroupController {
 
+                    // Tolerance for velocity error; if the error is less than this, we're done
+                    private const double VELOCITY_ERROR_TOLERANCE = 0.02;
+                    // Extremely small gravity levels are neglible; if the gravity vector component is less than this, we don't need to counteract it,
+                    // otherwise we're just wasting computation
+                    private const double GRAVITY_ERROR_TOLERANCE = 0.02;
+
+                    private bool ALREADY_COUNTERING_GRAVITY = false;
+
                     private IMyThrust[] PosDirThrusters;
                     private IMyThrust[] NegDirThrusters;
 
                     public ThrusterGroupController(IMyThrust[] posDirThrusters, IMyThrust[] negDirThrusters) {
                         PosDirThrusters = posDirThrusters;
                         NegDirThrusters = negDirThrusters;
+                    }
+
+                    public bool SetVelocity(double currentVelocity, double desiredVelocity, double gravityVectorComponent) {
+
+                        double remainingVelocityToGain = desiredVelocity - currentVelocity;
+
+                        if (Math.Abs(remainingVelocityToGain) < VELOCITY_ERROR_TOLERANCE) {
+                            CounteractGravity(gravityVectorComponent);
+                            return true;
+                        }
+
+                        ALREADY_COUNTERING_GRAVITY = false;
+                        return Accelerate(remainingVelocityToGain, gravityVectorComponent);
+                    }
+
+                    private void CounteractGravity(double gravityVectorComponent) {
+                        // If we're operating on an axis that's fighting gravity, then we need to counteract gravity with acceleration of our own
+                        if (Math.Abs(gravityVectorComponent) > GRAVITY_ERROR_TOLERANCE && !ALREADY_COUNTERING_GRAVITY) {
+                            double counterForce = -gravityVectorComponent * ShipMass;
+                            ALREADY_COUNTERING_GRAVITY = true;
+                            ApplyThrust(counterForce);
+                        }
+                    }
+
+                    // https://www.desmos.com/calculator/rsdijct8fq
+                    public bool Accelerate(double remainingVelocityToGain, double gravityVectorComponent) {
+                        double newAcceleration = remainingVelocityToGain - gravityVectorComponent;
+                        double force = ShipMass * newAcceleration;
+                        ApplyThrust(force);
+                        return false;
                     }
 
                     public void ApplyThrust(double force) {
@@ -113,6 +151,19 @@ namespace IngameScript {
                     RightController.ApplyThrust(vector.X);
                     UpController.ApplyThrust(vector.Y);
                     ForwardController.ApplyThrust(vector.Z);
+                }
+
+                public bool SetVx(double currentVelocity, double desiredVelocity) {
+                    return RightController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.X);
+                }
+
+                public bool SetVy(double currentVelocity, double desiredVelocity) {
+                    return UpController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.Y);
+                }
+
+                public bool SetVz(double currentVelocity, double desiredVelocity) {
+                    // Flip Gz to account for flipped forward-back orientation of Remote Control
+                    return ForwardController.SetVelocity(currentVelocity, desiredVelocity, LocalGravityVector.Z);
                 }
 
                 public double CalculateMaxAcceleration_WorldFrame(Vector3D worldDirection)

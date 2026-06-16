@@ -95,7 +95,7 @@ namespace IngameScript {
 
                 private bool StraightFlight() {
                     FlightController.OptimizeShipRoll(TargetData.Position);
-                    FlightController.SetV_WorldFrame(Base6Directions.Direction.Forward, FLIGHT_VELOCITY);
+                    FlightController.SetStableForwardVelocity(FLIGHT_VELOCITY);
                     var shipAligned = FlightController.AlignShipToTarget(TargetData.Position);
 
                     if (shipAligned) {
