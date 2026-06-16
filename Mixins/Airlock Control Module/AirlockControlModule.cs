@@ -29,7 +29,6 @@ namespace IngameScript
 
             const double DEFAULT_TIME_BUFFER = 1000f;
             MyIni _ini { get; set; } = new MyIni();
-            Action<string> Echo { get; set; }
             public List<Airlock> Airlocks { get; set; }
             public List<SoloAirlock> SoloAirlocks { get; set; }
             public bool SoloEnabled { get; private set; } = true;
@@ -60,9 +59,8 @@ namespace IngameScript
                     StateMachine = stateMachine;
                 }
             }
-            public AirlockControlModule(Action<string> echo) 
+            public AirlockControlModule() 
             {
-                Echo = echo;
                 Airlocks = new List<Airlock>();
                 SoloAirlocks = new List<SoloAirlock>();
             }
@@ -82,8 +80,6 @@ namespace IngameScript
                     doorDictionary.Add(door.CustomName.Trim().ToUpper(), door);
                 }
 
-                Echo("finished door dictionary<doorCustomName, doorEntity>");
-
                 List<long> doorsAlreadyAdded = new List<long>();
                 
                 foreach (var door in doors)
@@ -96,8 +92,6 @@ namespace IngameScript
                     if (!_ini.TryParse(door.CustomData, out result))
                         continue; // this should skip the current block if attempting to parse its custom data fails
 
-                    Echo("passed _ini");
-
                     string partner = _ini.Get("AIRLOCK", "PARTNER").ToString("");
                     double timeBuffer = _ini.Get("AIRLOCK", "TIME_BUFFER").ToDouble(DEFAULT_TIME_BUFFER);
 
@@ -106,7 +100,6 @@ namespace IngameScript
                         SoloAirlock soloAirlock = new SoloAirlock(door, timeBuffer, new SoloAirlockStateMachine(door, runtime, timeBuffer));
                         SoloAirlocks.Add(soloAirlock);
                         doorsAlreadyAdded.Add(door.EntityId);
-                        Echo($"Added solo door {door.CustomName}");
                     }
                     else if (doorDictionary.ContainsKey(partner.Trim().ToUpper()))
                     {
@@ -118,7 +111,6 @@ namespace IngameScript
 
                         doorsAlreadyAdded.Add(door.EntityId);
                         doorsAlreadyAdded.Add(partnerDoor.EntityId);
-                        Echo($"Added airlock pair: {door.CustomName} & {partnerDoor.CustomName}");
                     }
 
                 }

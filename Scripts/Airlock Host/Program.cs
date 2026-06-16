@@ -14,7 +14,7 @@ namespace IngameScript
             Doors = new List<IMyDoor>();
             GridTerminalSystem.GetBlocksOfType<IMyDoor>(Doors);
             Runtime.UpdateFrequency = UpdateFrequency.Update10;
-            ACM = new AirlockControlModule(Echo);
+            ACM = new AirlockControlModule();
             ACM.LoadAirlocks(Doors, Runtime);
         }
 

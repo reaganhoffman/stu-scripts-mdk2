@@ -9,18 +9,19 @@ namespace IngameScript
 {
     partial class Program
     {
-        public class CabDisplay : STUDisplay
+        public class ElevatorPistons
         {
-            public CabDisplay(IMyTerminalBlock block) : base(block, 0, 1, "Monospace")
+            List<IMyPistonBase> Pistons { get; set; }
+
+            public ElevatorPistons(List<IMyPistonBase> pistons)
             {
-                
+                Pistons = pistons;
             }
 
-            public void Refresh(int currentFloor, int desiredFloor, Elevator.State state)
+            public void GoToFloor(Elevator.Floor floor)
             {
 
             }
         }
     }
-    
 }
