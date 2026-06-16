@@ -17,36 +17,37 @@ namespace IngameScript {
                 public Vector3D Center;
             }
 
-            public static Dictionary<string, Planet> CelestialBodies = new Dictionary<string, Planet> {
-            {
-                "TestEarth", new Planet {
-                    Name = "TestEarth",
-                    Radius = 61050.39,
-                    Center = new Vector3D(0, 0, 0)
-                }
-            },
-            {
-                "Luna", new Planet {
-                    Name = "Luna",
-                    Radius = 9453.8439,
-                    Center = new Vector3D(16400.0530046 ,  136405.82841528, -113627.17741361)
-                }
-            },
-                {
-                   "Mars", new Planet {
-                    Name = "Mars",
-                    Radius = 62763.4881,
-                    Center = new Vector3D(1031060.3327, 131094.9846, 1631139.8156)
-                   }
-            },
-                {
-                    "Crait", new Planet {
-                        Name = "Crait",
-                        Radius = 40644.8713,
-                        Center = new Vector3D(415363, 125322, -94326)
-                    }
-                }
-            };
+            public static Dictionary<string, Planet> CelestialBodies = new Dictionary<string, Planet>();
+            //public static Dictionary<string, Planet> CelestialBodies = new Dictionary<string, Planet> {
+            //{
+            //    "TestEarth", new Planet {
+            //        Name = "TestEarth",
+            //        Radius = 61050.39,
+            //        Center = new Vector3D(0, 0, 0)
+            //    }
+            //},
+            //{
+            //    "Luna", new Planet {
+            //        Name = "Luna",
+            //        Radius = 9453.8439,
+            //        Center = new Vector3D(16400.0530046 ,  136405.82841528, -113627.17741361)
+            //    }
+            //},
+            //    {
+            //       "Mars", new Planet {
+            //        Name = "Mars",
+            //        Radius = 62763.4881,
+            //        Center = new Vector3D(1031060.3327, 131094.9846, 1631139.8156)
+            //       }
+            //},
+            //    {
+            //        "Crait", new Planet {
+            //            Name = "Crait",
+            //            Radius = 40644.8713,
+            //            Center = new Vector3D(415363, 125322, -94326)
+            //        }
+            //    }
+            //};
 
             /// <summary>
             /// Finds the planet that contains the given point, with a default detection buffer of 1000m

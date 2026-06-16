@@ -5,8 +5,8 @@ namespace IngameScript {
         public partial class LIGMA {
             public class SpaceToSpaceLaunchPlan : ILaunchPlan {
 
-                private int LAUNCH_VELOCITY = 50;
-                private int LAUNCH_DISTANCE = 150;
+                private int LAUNCH_VELOCITY = 15;
+                private int LAUNCH_DISTANCE = 30;
 
                 public override bool Run() {
                     FirstRunTasks();
