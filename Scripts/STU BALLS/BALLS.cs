@@ -74,7 +74,7 @@ namespace IngameScript
 
                 HWLoader = new HWLoader(Grid, PB);
 
-                ACM = new AirlockControlModule(Echo);
+                ACM = new AirlockControlModule();
                 PCM = new PowerControlModule(pcmSaveState);
 
                 MainScreen = new LogScreen(PB, 0, 0.75f);
