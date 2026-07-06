@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using VRageMath;
 
-namespace IngameScript
-{
-    partial class Program
-    {
+namespace IngameScript {
+    partial class Program {
 
-        public static class AUTO_MINER_VARIABLES
-        {
+        public static class AUTO_MINER_VARIABLES {
 
             public const string AUTO_MINER_RECON_NAME = "AM-R";
             public const string AUTO_MINER_RECON_LOG_SUBSCRIBER_TAG = "AUTO_MINER_RECON_LOG_SUBSCRIBER";
@@ -30,8 +27,7 @@ namespace IngameScript
 
         }
 
-        public class MiningDroneData
-        {
+        public class MiningDroneData {
 
             public string Id { get; set; }
             public string Name { get; set; }
@@ -49,66 +45,54 @@ namespace IngameScript
             public Vector3D JobSite { get; set; }
             public int JobDepth { get; set; }
 
-            public static MiningDroneData Deserialize(string s)
-            {
+            public static MiningDroneData Deserialize(Dictionary<string, string> droneData) {
                 var drone = new MiningDroneData();
-
-                var parts = s.Split(';');
-                foreach (var part in parts)
-                {
-                    var kv = part.Split(':');
-                    if (kv.Length != 2)
-                        continue;
-
-                    var key = kv[0].Trim();
-                    var value = kv[1].Trim();
-
-                    switch (key)
-                    {
+                foreach (var key in droneData.Keys) {
+                    switch (key) {
                         case "Id":
-                            drone.Id = value;
+                            drone.Id = droneData[key];
                             break;
                         case "Name":
-                            drone.Name = value;
+                            drone.Name = droneData[key];
                             break;
                         case "State":
-                            drone.State = value;
+                            drone.State = droneData[key];
                             break;
                         case "WorldPosition":
-                            drone.WorldPosition = DeserializeVector3D(value);
+                            drone.WorldPosition = DeserializeVector3D(droneData[key]);
                             break;
                         case "WorldVelocity":
-                            drone.WorldVelocity = DeserializeVector3D(value);
+                            drone.WorldVelocity = DeserializeVector3D(droneData[key]);
                             break;
                         case "WorldAcceleration":
-                            drone.WorldAcceleration = DeserializeVector3D(value);
+                            drone.WorldAcceleration = DeserializeVector3D(droneData[key]);
                             break;
                         case "HydrogenLiters":
-                            drone.HydrogenLiters = double.Parse(value);
+                            drone.HydrogenLiters = double.Parse(droneData[key]);
                             break;
                         case "HydrogenCapacity":
-                            drone.HydrogenCapacity = double.Parse(value);
+                            drone.HydrogenCapacity = double.Parse(droneData[key]);
                             break;
                         case "PowerMegawatts":
-                            drone.PowerMegawatts = double.Parse(value);
+                            drone.PowerMegawatts = double.Parse(droneData[key]);
                             break;
                         case "PowerCapacity":
-                            drone.PowerCapacity = double.Parse(value);
+                            drone.PowerCapacity = double.Parse(droneData[key]);
                             break;
                         case "CargoLevel":
-                            drone.CargoLevel = double.Parse(value);
+                            drone.CargoLevel = double.Parse(droneData[key]);
                             break;
                         case "CargoCapacity":
-                            drone.CargoCapacity = double.Parse(value);
+                            drone.CargoCapacity = double.Parse(droneData[key]);
                             break;
                         case "JobPlane":
-                            drone.JobPlane = DeserializePlaneD(value);
+                            drone.JobPlane = DeserializePlaneD(droneData[key]);
                             break;
                         case "JobSite":
-                            drone.JobSite = DeserializeVector3D(value);
+                            drone.JobSite = DeserializeVector3D(droneData[key]);
                             break;
                         case "JobDepth":
-                            drone.JobDepth = int.Parse(value);
+                            drone.JobDepth = int.Parse(droneData[key]);
                             break;
                     }
                 }
@@ -116,13 +100,11 @@ namespace IngameScript
                 return drone;
             }
 
-            public static string FormatVector3D(Vector3D v)
-            {
+            public static string FormatVector3D(Vector3D v) {
                 return $"({v.X}, {v.Y}, {v.Z})";
             }
 
-            public static Vector3D DeserializeVector3D(string s)
-            {
+            public static Vector3D DeserializeVector3D(string s) {
                 // Remove parentheses and split by comma
                 s = s.Trim('(', ')');
                 var parts = s.Split(',');
@@ -136,8 +118,7 @@ namespace IngameScript
                 return new Vector3D(x, y, z);
             }
 
-            public static PlaneD DeserializePlaneD(string s)
-            {
+            public static PlaneD DeserializePlaneD(string s) {
                 // Remove parentheses and split by comma
                 s = s.Trim('(', ')');
                 var parts = s.Split(',');
@@ -152,8 +133,7 @@ namespace IngameScript
                 return new PlaneD(x, y, z, d);
             }
 
-            public string Serialize()
-            {
+            public string Serialize() {
                 var sb = new StringBuilder();
                 sb.Append($"Id: {Id}; ");
                 sb.Append($"Name: {Name}; ");
@@ -173,10 +153,8 @@ namespace IngameScript
                 return sb.ToString();
             }
 
-            public Dictionary<string, string> SerialDictionary()
-            {
-                Dictionary<string, string> dict = new Dictionary<string, string>
-                {
+            public Dictionary<string, string> SerialDictionary() {
+                Dictionary<string, string> dict = new Dictionary<string, string> {
                     ["Id"] = Id,
                     ["Name"] = Name,
                     ["State"] = State,
@@ -194,15 +172,13 @@ namespace IngameScript
                 return dict;
             }
 
-            public static string FormatPlaneD(PlaneD p)
-            {
+            public static string FormatPlaneD(PlaneD p) {
                 return $"({p.Normal.X}, {p.Normal.Y}, {p.Normal.Z}, {p.D})";
             }
 
         }
 
-        public class MinerState
-        {
+        public class MinerState {
             public const string INITIALIZE = "INITIALIZE";
             public const string IDLE = "IDLE";
             public const string FLY_TO_JOB_SITE = "FLY_TO_JOB_SITE";

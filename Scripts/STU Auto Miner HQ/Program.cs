@@ -139,16 +139,18 @@ namespace IngameScript {
                 MyIGCMessage message = _droneTelemetryListener.AcceptMessage();
                 try {
                     _tempIncomingLog = STULog.Deserialize(message.Data.ToString());
-                    _databaseWriter.TryWriteToRemote(_tempIncomingLog);
+                    // TODO: Should we route all drone data through HQ before writing to DB?
+                    // Current configuration is that drones do this independently
+                    // _databaseWriter?.TryWriteToRemote(_tempIncomingLog);
 
                     // Check if Metadata is not null and contains the key "MinerDroneData"
-                    if (!_tempIncomingLog.Metadata.ContainsKey("MinerDroneData")) {
-                        CreateHQLog("Incoming telemetry message does not contain MinerDroneData", STULogType.ERROR);
-                        continue; // Skip processing this message
-                    }
+                    //if (!_tempIncomingLog.Metadata.ContainsKey("MinerDroneData")) {
+                    //    CreateHQLog("Incoming telemetry message does not contain MinerDroneData", STULogType.ERROR);
+                    //    continue; // Skip processing this message
+                    //}
 
                     // Deserialize the drone data
-                    MiningDroneData drone = MiningDroneData.Deserialize(_tempIncomingLog.Metadata["MinerDroneData"]);
+                    MiningDroneData drone = MiningDroneData.Deserialize(_tempIncomingLog.Metadata);
 
                     if (_tempIncomingDroneTelemetryData.ContainsKey(drone.Id)) {
                         return;
