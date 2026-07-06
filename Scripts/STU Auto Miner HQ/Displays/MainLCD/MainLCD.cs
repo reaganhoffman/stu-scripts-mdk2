@@ -9,7 +9,7 @@ namespace IngameScript {
         public partial class MainLCD : STUDisplay {
 
 
-            public MainLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, font, fontSize) {
+            public MainLCD(IMyTerminalBlock block, int displayIndex, string font = "Monospace", float fontSize = 1) : base(block, displayIndex, fontSize, font) {
             }
 
             public void Update(Dictionary<string, MiningDroneData> droneData) {
