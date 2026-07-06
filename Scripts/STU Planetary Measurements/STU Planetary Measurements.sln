@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "STU Planetary Measurements", "STU Planetary Measurements.csproj", "{4AD89F9C-B1F6-45C9-9471-664EDB3158A0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display", "..\..\Shared Projects\Displays\STU Display\STU Display.shproj", "{57B50592-7BEB-4012-A879-DEF8C4C735F0}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Type", "..\..\Shared Projects\Displays\STU Display Type\STU Display Type.shproj", "{A2C2A7B0-3894-43F4-8EB5-71BFC87BE730}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "STU Display Draw Mapper", "..\..\Shared Projects\Displays\STU Display Draw Mapper\STU Display Draw Mapper.shproj", "{23E2D3A8-97CD-4E45-889C-1798F06F4240}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4AD89F9C-B1F6-45C9-9471-664EDB3158A0}.Debug|x64.ActiveCfg = Debug|x64
+		{4AD89F9C-B1F6-45C9-9471-664EDB3158A0}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {467A87E9-53E2-4E77-82B5-8C086246705A}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Shared Projects\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{23e2d3a8-97cd-4e45-889c-1798f06f4240}*SharedItemsImports = 13
+		..\..\Shared Projects\Displays\STU Display Draw Mapper\STU_Display_Draw_Mapper.projitems*{4ad89f9c-b1f6-45c9-9471-664edb3158a0}*SharedItemsImports = 4
+		..\..\Shared Projects\Displays\STU Display Type\STU_Display_Type.projitems*{4ad89f9c-b1f6-45c9-9471-664edb3158a0}*SharedItemsImports = 4
+		..\..\Shared Projects\Displays\STU Display\STU_Display.projitems*{4ad89f9c-b1f6-45c9-9471-664edb3158a0}*SharedItemsImports = 4
+		..\..\Shared Projects\Displays\STU Display\STU_Display.projitems*{57b50592-7beb-4012-a879-def8c4c735f0}*SharedItemsImports = 13
+		..\..\Shared Projects\Displays\STU Display Type\STU_Display_Type.projitems*{a2c2a7b0-3894-43f4-8eb5-71bfc87be730}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal
