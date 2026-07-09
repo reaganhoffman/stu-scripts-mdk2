@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Big Door Controller", "Big Door Controller.csproj", "{AF9E5920-616E-4733-AC6E-9A2AA1931653}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Hardware Loading Utils", "..\..\Mixins\Hardware Loading Utils\Hardware Loading Utils.shproj", "{4EEDEFE0-703D-4133-876B-54CC6FBF49CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF9E5920-616E-4733-AC6E-9A2AA1931653}.Debug|x64.ActiveCfg = Debug|x64
+		{AF9E5920-616E-4733-AC6E-9A2AA1931653}.Debug|x64.Build.0 = Debug|x64
+		{AF9E5920-616E-4733-AC6E-9A2AA1931653}.Release|x64.ActiveCfg = Release|x64
+		{AF9E5920-616E-4733-AC6E-9A2AA1931653}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {444D41EA-1E68-4062-83C1-67AF84CA9111}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{4eedefe0-703d-4133-876b-54cc6fbf49cb}*SharedItemsImports = 13
+		..\..\Mixins\Hardware Loading Utils\Hardware_Loading_Utils.projitems*{af9e5920-616e-4733-ac6e-9a2aa1931653}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal

@@ -25,13 +25,13 @@ namespace IngameScript
         static IMyGridTerminalSystem Grid { get; set; }
         static IMyProgrammableBlock PB { get; set; }
 
-        public class HWLoader
+        public static class HWLoader
         {
-            public HWLoader(IMyGridTerminalSystem grid, IMyProgrammableBlock pb)
-            {
-                Grid = grid;
-                PB = pb;
-            }
+            //public HWLoader(IMyGridTerminalSystem grid, IMyProgrammableBlock pb)
+            //{
+            //    Grid = grid;
+            //    PB = pb;
+            //}
 
             public static T[] LoadAllBlocksOfType<T>() where T : class, IMyTerminalBlock
             {
