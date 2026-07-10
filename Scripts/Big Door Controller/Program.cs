@@ -24,7 +24,7 @@ namespace IngameScript
 {
     public partial class Program : MyGridProgram
     {
-        //static HWLoader Loader { get; set; }
+        HWLoader Loader { get; set; }
         public const float FAST = 2;
         public const float MEDIUM = 1f;
         public const float SLOW = 0.1f;
@@ -79,9 +79,11 @@ namespace IngameScript
 
         public Program()
         {
-            //Loader = new HWLoader(Grid, Me);
+            Loader = new HWLoader(GridTerminalSystem, Me);
             LoadHardware();
             CurrentState = TryDetermineState();
+
+            Runtime.UpdateFrequency = UpdateFrequency.Update10;
         }
 
         public void Save()
@@ -91,22 +93,24 @@ namespace IngameScript
 
         public void LoadHardware()
         {
-            MP1 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 1");
-            MP2 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 2");
-            MP3 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 3");
-            H = HWLoader.LoadBlockByName<IMyMotorStator>("Big Door Hinge");
-            RP1 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Right Piston 1");
-            RP2 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Right Piston 2");
-            RR = HWLoader.LoadBlockByName<IMyMotorStator>("Big Door Right Rotor");
-            LP1 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Left Piston 1");
-            LP2 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Left Piston 2");
-            LR = HWLoader.LoadBlockByName<IMyMotorStator>("Big Door Left Rotor");
-            BP1 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Back Piston 1");
-            BP2 = HWLoader.LoadBlockByName<IMyPistonBase>("Big Door Back Piston 2");
+            MP1 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 1");
+            MP2 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 2");
+            MP3 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Main Piston 3");
+            H = Loader.LoadBlockByName<IMyMotorStator>("Big Door Hinge");
+            RP1 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Right Piston 1");
+            RP2 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Right Piston 2");
+            RR = Loader.LoadBlockByName<IMyMotorStator>("Big Door Right Rotor");
+            LP1 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Left Piston 1");
+            LP2 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Left Piston 2");
+            LR = Loader.LoadBlockByName<IMyMotorStator>("Big Door Left Rotor");
+            BP1 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Back Piston 1");
+            BP2 = Loader.LoadBlockByName<IMyPistonBase>("Big Door Back Piston 2");
         }
 
         public void Main(string argument, UpdateType updateSource)
         {
+            Echo($"Received command: {argument}");
+            Echo($"Current phase: {CurrentPhase}");
             Run();
 
             switch (argument.Trim().ToUpper())
