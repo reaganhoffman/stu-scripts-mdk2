@@ -144,6 +144,49 @@ namespace IngameScript
             switch (CurrentPhase)
             {
                 case Phase.Closed: break;
+                case Phase.RetractSidePiston2s:
+                    CurrentState = State.Opening;
+                    RP2.Velocity = -FAST;
+                    LP2.Velocity = -FAST;
+                    if (RP2.CurrentPosition <= PISTON_MIN_POSITION && LP2.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.RetractSidePiston1s;
+                    break;
+                case Phase.RetractSidePiston1s:
+                    RP1.Velocity = -FAST;
+                    LP1.Velocity = -FAST;
+                    if (RP1.CurrentPosition <= PISTON_MIN_POSITION && LP1.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.RotateStoreSideRotors;
+                    break;
+                case Phase.RotateStoreSideRotors:
+                    RR.TargetVelocityRPM = -FAST;
+                    LR.TargetVelocityRPM = FAST;
+                    if (Math.Abs(RR.Angle / Math.PI) - 0.5 <= PISTON_TOLERANCE &&
+                        Math.Abs(LR.Angle / Math.PI) - 0.5 <= PISTON_TOLERANCE) CurrentPhase = Phase.SlightUpMP3;
+                    break;
+                case Phase.SlightUpMP3:
+                    MP3.Velocity = MEDIUM;
+                    if (Math.Abs(MP3.CurrentPosition - 10) <= PISTON_TOLERANCE) CurrentPhase = Phase.HingeUp;
+                    break;
+                case Phase.HingeUp:
+                    H.TargetVelocityRPM = -FAST;
+                    if (H.Angle * 180 / Math.PI <= 0.1) CurrentPhase = Phase.RetractMainPistons;
+                    break;
+                case Phase.RetractMainPistons:
+                    MP3.MinLimit = 0f;
+                    MP1.Velocity = -MEDIUM;
+                    MP2.Velocity = -MEDIUM;
+                    MP3.Velocity = -MEDIUM;
+                    if (MP1.CurrentPosition <= PISTON_MIN_POSITION &&
+                        MP2.CurrentPosition <= PISTON_MIN_POSITION &&
+                        MP3.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.ExtendBP1;
+                    break;
+                case Phase.ExtendBP1:
+                    BP1.Velocity = FAST;
+                    if (BP1.CurrentPosition >= 9) CurrentPhase = Phase.ExtendBP2;
+                    break;
+                case Phase.ExtendBP2:
+                    BP2.Velocity = MEDIUM;
+                    if (Math.Abs(BP2.CurrentPosition - BP2.MaxLimit) <= 0.1) CurrentPhase = Phase.Opened; CurrentState = State.Open;
+                    break;
+                case Phase.Opened: break;
                 case Phase.RetractBP2:
                     CurrentState = State.Opening;
                     BP2.Velocity = -FAST;
@@ -151,24 +194,24 @@ namespace IngameScript
                     break;
                 case Phase.RetractBP1:
                     BP1.Velocity = -FAST;
-                    if (BP1.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.SlightUpMP3;
+                    if (BP1.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.ExtendMainPistons;
                     break;
-                case Phase.SlightUpMP3:
+                case Phase.ExtendMainPistons:
+                    MP1.Velocity = MEDIUM;
+                    MP2.Velocity = MEDIUM;
                     MP3.Velocity = MEDIUM;
-                    if (Math.Abs(MP3.CurrentPosition - 10) <= PISTON_TOLERANCE) CurrentPhase = Phase.HingeUp;
+                    if (MP1.CurrentPosition > 9.5 &&
+                        MP2.CurrentPosition > 9.5 &&
+                        MP3.CurrentPosition > 9.5) CurrentPhase = Phase.HingeDown;
                     break;
-                case Phase.HingeUp:
-                    H.TargetVelocityRPM = -MEDIUM;
-                    if (Math.Abs(H.Angle / Math.PI * 180) <= -2) CurrentPhase = Phase.RetractMainPistons;
+                case Phase.HingeDown:
+                    H.TargetVelocityRPM = MEDIUM;
+                    if (Math.Abs(H.Angle) <= PISTON_TOLERANCE) CurrentPhase = Phase.SlightDownMP3;
                     break;
-                case Phase.RetractMainPistons:
-                    MP3.MinLimit = 0f;
-                    MP1.Velocity = -FAST;
-                    MP2.Velocity = -FAST;
-                    MP3.Velocity = -FAST;
-                    if (MP1.CurrentPosition <= PISTON_MIN_POSITION &&
-                        MP2.CurrentPosition <= PISTON_MIN_POSITION &&
-                        MP3.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.RotateDeploySideRotors;
+                case Phase.SlightDownMP3:
+                    MP3.MinLimit = 9.63f;
+                    MP3.Velocity = -SLOW;
+                    if (Math.Abs(MP3.CurrentPosition) - 9.63f <= 0.1) CurrentPhase = Phase.RotateDeploySideRotors;
                     break;
                 case Phase.RotateDeploySideRotors:
                     RR.TargetVelocityRPM = FAST;
@@ -184,42 +227,7 @@ namespace IngameScript
                 case Phase.ExtendSidePiston2s:
                     RP2.Velocity = FAST;
                     LP2.Velocity = FAST;
-                    if (RP2.CurrentPosition >= 2 && LP2.CurrentPosition >= 2) CurrentPhase = Phase.Opened; CurrentState = State.Open;
-                    break;
-                case Phase.Opened: break;
-                case Phase.RetractSidePiston2s:
-                    CurrentState = State.Closing;
-                    RP2.Velocity = -FAST;
-                    LP2.Velocity = -FAST;
-                    if (RP2.CurrentPosition <= PISTON_MIN_POSITION && LP2.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.RetractSidePiston1s;
-                    break;
-                case Phase.RetractSidePiston1s:
-                    RP1.Velocity = -FAST;
-                    LP1.Velocity = -FAST;
-                    if (RP1.CurrentPosition <= PISTON_MIN_POSITION && LP1.CurrentPosition <= PISTON_MIN_POSITION) CurrentPhase = Phase.RotateStoreSideRotors;
-                    break;
-                case Phase.RotateStoreSideRotors:
-                    RR.TargetVelocityRPM = -FAST;
-                    LR.TargetVelocityRPM = FAST;
-                    if (Math.Abs(RR.Angle / Math.PI) - 0.5 <= PISTON_TOLERANCE &&
-                        Math.Abs(LR.Angle / Math.PI) - 0.5 <= PISTON_TOLERANCE) CurrentPhase = Phase.ExtendMainPistons;
-                    break;
-                case Phase.ExtendMainPistons:
-                    MP1.Velocity = FAST;
-                    MP2.Velocity = FAST;
-                    MP3.Velocity = FAST;
-                    if (Math.Abs(MP1.CurrentPosition) - 10 <= 0 &&
-                        Math.Abs(MP2.CurrentPosition) - 10 <= 0 &&
-                        Math.Abs(MP3.CurrentPosition) - 10 <= 0) CurrentPhase = Phase.HingeDown;
-                    break;
-                case Phase.HingeDown:
-                    H.TargetVelocityRPM = MEDIUM;
-                    if (Math.Abs(H.Angle) <= PISTON_TOLERANCE) CurrentPhase = Phase.SlightDownMP3;
-                    break;
-                case Phase.SlightDownMP3:
-                    MP3.MinLimit = 9.5f;
-                    MP3.Velocity = -SLOW;
-                    if (Math.Abs(MP3.CurrentPosition) - 9.5f <= 0) CurrentPhase = Phase.Closed; CurrentState = State.Closed;
+                    if (RP2.CurrentPosition >= 2 && LP2.CurrentPosition >= 2) CurrentPhase = Phase.Closed; CurrentState = State.Closed;
                     break;
             }
         }
@@ -227,13 +235,13 @@ namespace IngameScript
         public void Open()
         {
             CurrentState = State.Opening;
-            CurrentPhase = Phase.RetractBP2;
+            CurrentPhase = Phase.RetractSidePiston2s;
         }
 
         public void Close()
         {
             CurrentState = State.Closing;
-            CurrentPhase = Phase.RetractSidePiston2s;
+            CurrentPhase = Phase.RetractBP2;
         }
 
         public void Toggle()
