@@ -77,6 +77,8 @@ namespace IngameScript
                 Dictionary<string, IMyDoor> doorDictionary = new Dictionary<string, IMyDoor>();
                 foreach (var door in doors)
                 {
+                    if (doorDictionary.ContainsKey(door.CustomName.Trim().ToUpper())) 
+                        continue;
                     doorDictionary.Add(door.CustomName.Trim().ToUpper(), door);
                 }
 

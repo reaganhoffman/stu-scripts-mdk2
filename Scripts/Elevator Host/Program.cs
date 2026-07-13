@@ -26,6 +26,7 @@ namespace IngameScript
     public partial class Program : MyGridProgram
     {
         MyIni Ini { get; set; } = new MyIni();
+        HWLoader Loader { get; set; }
         public string ELEVATOR_ID { get; set; } = string.Empty;
         public Elevator _elevator { get; set; }
         public List<Elevator.Floor> _floors { get; set; }
@@ -48,6 +49,9 @@ namespace IngameScript
 
         public Program()
         {
+            // initialize HWLoader
+            Loader = new HWLoader(GridTerminalSystem, Me);
+
             // open PB's custom data, find elevator ID and get all keys, which denote floors and their block height above basement
             // [ELEVATOR]
             // ID=ELEVATOR_NAME
@@ -61,12 +65,11 @@ namespace IngameScript
             // now we can find the pistons
             // [ELEVATOR]
             // ID=ELEVATOR_NAME
-            List<IMyPistonBase> pistons = new List<IMyPistonBase>();
-            Grid.GetBlocksOfType(pistons, piston => piston.CustomData.Contains("[ELEVATOR]"));
+            List<IMyPistonBase> pistons = Loader.LoadAllBlocksOfTypeWithCustomData<IMyPistonBase>("[ELEVATOR]").ToList();
             foreach (var piston in pistons)
             {
                 Ini.Clear();
-                if (CheckID(piston))
+                if (CheckID(piston, Ini.Get("ELEVATOR", "ID").ToString()))
                 {
                     _pistons.Add(piston);
                 }
@@ -106,8 +109,7 @@ namespace IngameScript
             // ID=ELEVATOR_NAME
             // TYPE={FLOOR | CAB}
             // FLOOR=#
-            List<IMyTerminalBlock> screens = new List<IMyTerminalBlock>();
-            Grid.GetBlocksOfType(screens, screen => screen.CustomData.Contains("[ELEVATOR]"));
+            List<IMyTerminalBlock> screens = Loader.LoadAllBlocksOfTypeWithCustomData<IMyTerminalBlock>("[ELEVATOR]").ToList();
 
             IMyTerminalBlock candidate = screens.First(); // this may cause debugging headaches later...
             foreach (var screen in screens)
@@ -132,8 +134,7 @@ namespace IngameScript
             // ID=ELEVATOR_NAME
             // TYPE={FLOOR | CAB}
             // FLOOR=#
-            List<IMyTerminalBlock> screens = new List<IMyTerminalBlock>();
-            Grid.GetBlocksOfType(screens, screen => screen.CustomData.Contains("[ELEVATOR]"));
+            List<IMyTerminalBlock> screens = Loader.LoadAllBlocksOfTypeWithCustomData<IMyTerminalBlock>("[ELEVATOR]").ToList();
 
             IMyTerminalBlock candidate = screens.First(); // this may cause debugging headaches later...
             foreach (var screen in screens)
@@ -161,18 +162,17 @@ namespace IngameScript
 
         void LoadHardware()
         {
-            
+
 
             // loop through all doors that have the [ELEVATOR] section in their custom data
             // [ELEVATOR]
             // ID=ELEVATOR_NAME
             // FLOOR=#
-            List<IMyDoor> doors = new List<IMyDoor>();
-            Grid.GetBlocksOfType(doors, door => door.CustomData.Contains("[ELEVATOR]"));
+            List<IMyDoor> doors = Loader.LoadAllBlocksOfTypeWithCustomData<IMyDoor>("[ELEVATOR]").ToList();
             foreach (var door in doors)
             {
                 Ini.Clear();
-                if (CheckID(door))
+                if (CheckID(door, Ini.Get("ELEVATOR", "ID").ToString()))
                 {
                     int floorNum = Ini.Get("ELEVATOR", "FLOOR").ToInt16(Int16.MinValue);
                     if (floorNum == Int16.MinValue) continue; // skip this door for malformed unparsable floor number
@@ -187,12 +187,11 @@ namespace IngameScript
             // TYPE={FLOOR | CAB}
             // FLOOR=#
             // DIRECTION={UP | DOWN}
-            List<IMyButtonPanel> buttonPanels = new List<IMyButtonPanel>();
-            Grid.GetBlocksOfType(buttonPanels, panel => panel.CustomData.Contains("[ELEVATOR]"));
+            List<IMyButtonPanel> buttonPanels = Loader.LoadAllBlocksOfTypeWithCustomData<IMyButtonPanel>("[ELEVATOR]").ToList();
             foreach (var buttonPanel in buttonPanels)
             {
                 Ini.Clear();
-                if (CheckID(buttonPanel))
+                if (CheckID(buttonPanel, Ini.Get("ELEVATOR", "ID").ToString()))
                 {
                     string type = Ini.Get("ELEVATOR", "TYPE").ToString(string.Empty);
                     int floorNum = Ini.Get("ELEVATOR", "FLOOR").ToInt16(Int16.MinValue);
